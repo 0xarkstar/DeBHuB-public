@@ -1,0 +1,24 @@
+{
+  "name": "irysbase",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "clean": "turbo run clean",
+    "contracts:deploy": "cd packages/contracts && npm run deploy",
+    "contracts:compile": "cd packages/contracts && npm run build",
+    "api:dev": "cd apps/api && npm run dev",
+    "web:dev": "cd apps/web && npm run dev"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "turbo": "^1.13.4",
+    "typescript": "^5.0.0"
+  }
+}

@@ -1,0 +1,43 @@
+type Post {
+  id: ID!
+  irysTransactionId: String!
+  content: String!
+  authorAddress: String!
+  timestamp: String!
+  version: Int!
+  previousVersionId: String
+}
+
+type Query {
+  "PostgreSQL을 통한 효율적인 쿼리"
+  postsByAuthor(authorAddress: String!, limit: Int, offset: Int): [Post!]!
+  
+  "특정 포스트의 전체 버전 히스토리 조회"
+  postHistory(id: ID!): [Post!]!
+  
+  "Irys에서 직접 데이터 검증 (선택적)"
+  verifyPostFromIrys(irysTransactionId: String!): Post
+}
+
+type Mutation {
+  "새로운 게시물을 Irys에 업로드하고 PostgreSQL에 동기화"
+  createPost(content: String!): Post!
+  
+  "기존 게시물 업데이트 (새 버전 생성)"
+  updatePost(id: ID!, content: String!): Post!
+}
+
+type Subscription {
+  "블록체인 이벤트 기반 준실시간 알림"
+  postUpdates: PostUpdate!
+}
+
+type PostUpdate {
+  type: UpdateType!
+  post: Post!
+}
+
+enum UpdateType {
+  CREATED
+  UPDATED
+}

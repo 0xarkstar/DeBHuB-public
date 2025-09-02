@@ -1,0 +1,20 @@
+{
+  "name": "@irysbase/shared",
+  "version": "1.0.0",
+  "description": "Shared types and utilities for IrysBase",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "ethers": "^6.8.0"
+  }
+}

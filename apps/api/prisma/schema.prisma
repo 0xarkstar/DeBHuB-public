@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id                String    @id @default(cuid())
+  irysTransactionId String    @unique @map("irys_transaction_id")
+  content           String
+  authorAddress     String    @map("author_address")
+  timestamp         DateTime  @default(now())
+  version           Int       @default(1)
+  previousVersionId String?   @map("previous_version_id")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+  
+  @@index([authorAddress])
+  @@index([timestamp])
+  @@index([version])
+  @@map("posts")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  address       String    @unique
+  role          String?
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  
+  @@map("users")
+}
+
+model SyncStatus {
+  id               Int       @id @default(autoincrement())
+  lastSyncedBlock  BigInt    @default(0) @map("last_synced_block")
+  isHealthy        Boolean   @default(true) @map("is_healthy")
+  lastSyncTime     DateTime  @default(now()) @map("last_sync_time")
+  syncType         String    @map("sync_type") // "irys" or "blockchain"
+  
+  @@map("sync_status")
+}
+
+model ContractEvent {
+  id              String    @id @default(cuid())
+  eventName       String    @map("event_name")
+  contractAddress String    @map("contract_address")
+  blockNumber     BigInt    @map("block_number")
+  transactionHash String    @map("transaction_hash")
+  logIndex        Int       @map("log_index")
+  args            Json      // Store event arguments as JSON
+  processed       Boolean   @default(false)
+  createdAt       DateTime  @default(now()) @map("created_at")
+  
+  @@unique([transactionHash, logIndex])
+  @@index([eventName])
+  @@index([blockNumber])
+  @@index([processed])
+  @@map("contract_events")
+}
