@@ -71,8 +71,40 @@ syncQueue.process('sync-irys', async (job) => {
   console.log('🔄 Syncing Irys transactions');
   
   try {
-    // This would implement Irys-specific sync logic
-    // For now, just mark as healthy
+    // Find posts with placeholder content that need syncing
+    const postsToSync = await prisma.post.findMany({
+      where: {
+        OR: [
+          { content: { contains: 'Content to be synced from Irys' } },
+          { content: { contains: 'Content pending sync from Irys' } },
+          { content: { contains: 'Updated content to be synced from Irys' } },
+          { content: { contains: 'Updated content pending sync from Irys' } },
+          { content: { contains: 'Content sync failed' } },
+          { content: { contains: 'Updated content sync failed' } },
+        ],
+      },
+      take: 10, // Process in batches
+    });
+    
+    console.log(`📥 Found ${postsToSync.length} posts to sync from Irys`);
+    
+    for (const post of postsToSync) {
+      try {
+        const contentData = await irysService.getPost(post.irysTransactionId);
+        
+        if (contentData?.content) {
+          await prisma.post.update({
+            where: { id: post.id },
+            data: { content: contentData.content },
+          });
+          
+          console.log(`✅ Synced content for post ${post.irysTransactionId}`);
+        }
+      } catch (error) {
+        console.error(`Failed to sync post ${post.irysTransactionId}:`, error);
+      }
+    }
+    
     await prisma.syncStatus.upsert({
       where: { syncType: 'irys' },
       update: {
@@ -150,14 +182,14 @@ async function processPostCreatedEvent(event: ethers.EventLog) {
     return;
   }
   
-  // Try to fetch content from Irys
+  // Fetch actual content from Irys
   try {
-    // This would fetch actual content from Irys
-    // For now, create a placeholder
+    const contentData = await irysService.getPost(irysTransactionId);
+    
     await prisma.post.create({
       data: {
         irysTransactionId,
-        content: 'Content to be synced from Irys',
+        content: contentData?.content || 'Content not available',
         authorAddress: author,
         version: 1,
         timestamp: new Date(Number(timestamp) * 1000),
@@ -167,6 +199,21 @@ async function processPostCreatedEvent(event: ethers.EventLog) {
     console.log(`✅ Created post from blockchain event: ${irysTransactionId}`);
   } catch (error) {
     console.error(`Failed to create post from event:`, error);
+    
+    // Create post with error placeholder if Irys fetch fails
+    try {
+      await prisma.post.create({
+        data: {
+          irysTransactionId,
+          content: 'Content sync failed - please retry',
+          authorAddress: author,
+          version: 1,
+          timestamp: new Date(Number(timestamp) * 1000),
+        },
+      });
+    } catch (createError) {
+      console.error('Failed to create fallback post:', createError);
+    }
   }
 }
 
@@ -185,18 +232,35 @@ async function processPostUpdatedEvent(event: ethers.EventLog) {
     return;
   }
   
-  // Create new version
-  await prisma.post.create({
-    data: {
-      irysTransactionId: newTransactionId,
-      content: 'Updated content to be synced from Irys',
-      authorAddress: author,
-      version: previousPost.version + 1,
-      previousVersionId: previousTransactionId,
-    },
-  });
-  
-  console.log(`✅ Created updated post from blockchain event: ${newTransactionId}`);
+  // Fetch updated content from Irys and create new version
+  try {
+    const contentData = await irysService.getPost(newTransactionId);
+    
+    await prisma.post.create({
+      data: {
+        irysTransactionId: newTransactionId,
+        content: contentData?.content || 'Updated content not available',
+        authorAddress: author,
+        version: previousPost.version + 1,
+        previousVersionId: previousTransactionId,
+      },
+    });
+    
+    console.log(`✅ Created updated post from blockchain event: ${newTransactionId}`);
+  } catch (error) {
+    console.error('Failed to fetch updated content from Irys:', error);
+    
+    // Create post with error placeholder if Irys fetch fails
+    await prisma.post.create({
+      data: {
+        irysTransactionId: newTransactionId,
+        content: 'Updated content sync failed - please retry',
+        authorAddress: author,
+        version: previousPost.version + 1,
+        previousVersionId: previousTransactionId,
+      },
+    });
+  }
 }
 
 // Start periodic sync

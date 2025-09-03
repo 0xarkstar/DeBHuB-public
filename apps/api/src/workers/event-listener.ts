@@ -2,10 +2,12 @@ import { ethers } from 'ethers';
 import { PrismaClient } from '@prisma/client';
 import { PubSub } from 'graphql-subscriptions';
 import { BlockchainService } from '../services/blockchain';
+import { IrysService } from '../services/irys';
 
 const prisma = new PrismaClient();
 const pubsub = new PubSub();
 const blockchainService = new BlockchainService();
+const irysService = new IrysService();
 
 const POST_UPDATES_EVENT = 'POST_UPDATES';
 
@@ -132,11 +134,22 @@ class EventListener {
     });
 
     if (!existingPost) {
-      // Create placeholder post (actual content would be synced separately)
+      let content = 'Content pending sync from Irys';
+      
+      // Try to fetch actual content from Irys
+      try {
+        const contentData = await irysService.getPost(irysTransactionId);
+        if (contentData?.content) {
+          content = contentData.content;
+        }
+      } catch (error) {
+        console.warn(`Failed to fetch content from Irys for ${irysTransactionId}:`, error);
+      }
+      
       const post = await prisma.post.create({
         data: {
           irysTransactionId,
-          content: 'Content pending sync from Irys',
+          content,
           authorAddress: author,
           version: 1,
           timestamp: new Date(Number(timestamp) * 1000),
@@ -195,10 +208,22 @@ class EventListener {
     });
 
     if (previousPost) {
+      let content = 'Updated content pending sync from Irys';
+      
+      // Try to fetch actual updated content from Irys
+      try {
+        const contentData = await irysService.getPost(newTransactionId);
+        if (contentData?.content) {
+          content = contentData.content;
+        }
+      } catch (error) {
+        console.warn(`Failed to fetch updated content from Irys for ${newTransactionId}:`, error);
+      }
+      
       const post = await prisma.post.create({
         data: {
           irysTransactionId: newTransactionId,
-          content: 'Updated content pending sync from Irys',
+          content,
           authorAddress: author,
           version: previousPost.version + 1,
           previousVersionId: previousTransactionId,
