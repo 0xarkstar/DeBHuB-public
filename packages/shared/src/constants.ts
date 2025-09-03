@@ -3,7 +3,7 @@ export const CONTRACT_ADDRESSES = {
   POSTS: process.env.NEXT_PUBLIC_POSTS_CONTRACT || ''
 };
 
-export const IRYS_CONFIG = {
+export const IRYS_CONSTANTS = {
   GATEWAY_URL: 'https://gateway.irys.xyz',
   UPLOADER_URL: 'https://uploader.irys.xyz',
   QUERY_URL: 'https://query.irys.xyz',
