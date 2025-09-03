@@ -23,7 +23,7 @@ export enum UpdateType {
 }
 
 export interface IrysTag {
-  name: string;
+  name: 'Content-Type' | 'App-Name' | 'table' | 'author-address' | 'timestamp' | 'version' | 'previous-id';
   value: string;
 }
 

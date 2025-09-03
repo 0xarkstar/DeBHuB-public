@@ -3,7 +3,17 @@
     "allow": [
       "mcp__claude-context__index_codebase",
       "Bash(dir:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "mcp__claude-context__get_indexing_status",
+      "mcp__claude-context__search_code",
+      "Bash(npm run typecheck:*)",
+      "Bash(npm run lint)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm db:generate:*)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

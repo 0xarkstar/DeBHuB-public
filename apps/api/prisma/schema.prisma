@@ -39,7 +39,7 @@ model SyncStatus {
   lastSyncedBlock  BigInt    @default(0) @map("last_synced_block")
   isHealthy        Boolean   @default(true) @map("is_healthy")
   lastSyncTime     DateTime  @default(now()) @map("last_sync_time")
-  syncType         String    @map("sync_type") // "irys" or "blockchain"
+  syncType         String    @unique @map("sync_type") // "irys" or "blockchain"
   
   @@map("sync_status")
 }

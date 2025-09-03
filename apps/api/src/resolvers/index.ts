@@ -111,8 +111,8 @@ export const resolvers = {
         throw new Error('Unauthorized: creator role required');
       }
 
-      // Upload to Irys
-      const irysTransactionId = await irysService.uploadPost(content, authorAddress);
+      // Upload to Irys with version 1 (new post)
+      const irysTransactionId = await irysService.uploadPost(content, authorAddress, 1);
 
       // Register on blockchain
       const signerKey = process.env.SIGNER_PRIVATE_KEY;
@@ -181,7 +181,12 @@ export const resolvers = {
 
       // Create new version with mutable reference pattern
       const newVersion = existingPost.version + 1;
-      const irysTransactionId = await irysService.uploadPost(content, authorAddress);
+      const irysTransactionId = await irysService.updatePost(
+        content, 
+        authorAddress, 
+        existingPost.irysTransactionId, 
+        newVersion
+      );
 
       // Register update on blockchain
       const signerKey = process.env.SIGNER_PRIVATE_KEY;
@@ -189,9 +194,12 @@ export const resolvers = {
         throw new Error('Signer private key not configured');
       }
 
-      // Note: This would call updatePost method on the contract
-      // For now, just register as new post
-      await blockchainService.registerPost(irysTransactionId, signerKey);
+      // Register update on blockchain with mutable reference
+      await blockchainService.updatePost(
+        irysTransactionId, 
+        existingPost.irysTransactionId, 
+        signerKey
+      );
 
       // Create new version in PostgreSQL
       const dbPost = await prisma.post.create({

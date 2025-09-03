@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { CONTRACT_ADDRESSES, IRYS_VM_CHAIN_ID } from '@irysbase/shared';
 
 export class BlockchainService {
   private provider: ethers.JsonRpcProvider;
@@ -6,9 +7,9 @@ export class BlockchainService {
   private postsContract: ethers.Contract;
 
   constructor() {
-    this.provider = new ethers.JsonRpcProvider(
-      process.env.RPC_URL || 'http://localhost:8545'
-    );
+    // Default to IrysVM network
+    const rpcUrl = process.env.RPC_URL || 'https://rpc.irys.computer';
+    this.provider = new ethers.JsonRpcProvider(rpcUrl);
 
     const authRolesABI = [
       "function hasRole(address user, string memory role) external view returns (bool)",
@@ -17,18 +18,20 @@ export class BlockchainService {
     ];
 
     const postsABI = [
-      "function registerPost(string memory irysTxId) external",
-      "event PostCreated(address indexed author, string irysTxId, uint256 timestamp)"
+      "function registerPost(string memory irysTransactionId) external",
+      "function updatePost(string memory newTransactionId, string memory previousTransactionId) external",
+      "event PostCreated(address indexed author, string irysTransactionId, uint256 timestamp)",
+      "event PostUpdated(address indexed author, string newTransactionId, string previousTransactionId)"
     ];
 
     this.authRolesContract = new ethers.Contract(
-      process.env.AUTH_ROLES_CONTRACT_ADDRESS || '',
+      process.env.AUTH_ROLES_CONTRACT_ADDRESS || CONTRACT_ADDRESSES.AUTH_ROLES,
       authRolesABI,
       this.provider
     );
 
     this.postsContract = new ethers.Contract(
-      process.env.POSTS_CONTRACT_ADDRESS || '',
+      process.env.POSTS_CONTRACT_ADDRESS || CONTRACT_ADDRESSES.POSTS,
       postsABI,
       this.provider
     );
@@ -43,18 +46,39 @@ export class BlockchainService {
     }
   }
 
-  async registerPost(irysTxId: string, signerPrivateKey: string): Promise<string> {
+  async registerPost(irysTransactionId: string, signerPrivateKey: string): Promise<string> {
     try {
       const wallet = new ethers.Wallet(signerPrivateKey, this.provider);
       const postsWithSigner = this.postsContract.connect(wallet);
       
-      const tx = await postsWithSigner.registerPost(irysTxId);
+      const tx = await postsWithSigner.registerPost(irysTransactionId);
       const receipt = await tx.wait();
       
+      console.log(`✅ Post registered on blockchain: ${receipt.hash}`);
       return receipt.hash;
     } catch (error) {
       console.error('Failed to register post on blockchain:', error);
       throw new Error('Failed to register post on blockchain');
+    }
+  }
+
+  async updatePost(
+    newTransactionId: string, 
+    previousTransactionId: string, 
+    signerPrivateKey: string
+  ): Promise<string> {
+    try {
+      const wallet = new ethers.Wallet(signerPrivateKey, this.provider);
+      const postsWithSigner = this.postsContract.connect(wallet);
+      
+      const tx = await postsWithSigner.updatePost(newTransactionId, previousTransactionId);
+      const receipt = await tx.wait();
+      
+      console.log(`✅ Post updated on blockchain: ${receipt.hash}`);
+      return receipt.hash;
+    } catch (error) {
+      console.error('Failed to update post on blockchain:', error);
+      throw new Error('Failed to update post on blockchain');
     }
   }
 

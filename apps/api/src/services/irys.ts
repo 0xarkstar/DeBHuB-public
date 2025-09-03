@@ -2,6 +2,7 @@ import { Uploader } from '@irys/upload';
 import { Query } from '@irys/query';
 import { createClient } from 'redis';
 import { Post, IrysTag } from '../types';
+import { createPostTags, createMutableReference } from '@irysbase/shared';
 
 const IRYS_GATEWAY_URL = 'https://gateway.irys.xyz';
 
@@ -25,21 +26,39 @@ export class IrysService {
     this.redisClient.connect().catch(console.error);
   }
 
-  async uploadPost(content: string, authorAddress: string): Promise<string> {
-    const tags: IrysTag[] = [
-      { name: "Content-Type", value: "text/plain" },
-      { name: "App-Name", value: "IrysBase" },
-      { name: "table", value: "posts" },
-      { name: "author-address", value: authorAddress }
-    ];
+  async uploadPost(
+    content: string, 
+    authorAddress: string, 
+    version: number = 1, 
+    previousId?: string
+  ): Promise<string> {
+    // Use shared utility to create proper tags with mutable reference pattern
+    const tags = createPostTags(authorAddress, version, previousId);
+
+    // For updates, wrap content in mutable reference structure
+    let uploadContent = content;
+    if (previousId && version > 1) {
+      const mutableRef = createMutableReference(content, previousId, version);
+      uploadContent = JSON.stringify(mutableRef);
+    }
 
     try {
-      const receipt = await this.uploader.upload(content, { tags });
+      const receipt = await this.uploader.upload(uploadContent, { tags });
+      console.log(`✅ Uploaded to Irys: ${receipt.id} (version ${version})`);
       return receipt.id;
     } catch (error) {
       console.error('Failed to upload to Irys:', error);
       throw new Error('Failed to upload post to Irys');
     }
+  }
+
+  async updatePost(
+    newContent: string,
+    authorAddress: string,
+    previousTransactionId: string,
+    newVersion: number
+  ): Promise<string> {
+    return this.uploadPost(newContent, authorAddress, newVersion, previousTransactionId);
   }
 
   async getPostsByAuthor(authorAddress: string): Promise<Post[]> {

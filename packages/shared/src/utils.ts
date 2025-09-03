@@ -14,6 +14,13 @@ export const IRYS_VM_CONFIG = {
   blockExplorerUrls: ['https://explorer.irys.computer']
 };
 
+export const IRYS_CONFIG = {
+  GATEWAY_URL: 'https://gateway.irys.xyz',
+  UPLOADER_URL: 'https://uploader.irys.xyz',
+  QUERY_URL: 'https://query.irys.xyz',
+  TOKEN: 'ethereum'
+};
+
 export const IRYS_TAGS = {
   CONTENT_TYPE: 'Content-Type',
   APP_NAME: 'App-Name',
@@ -24,7 +31,11 @@ export const IRYS_TAGS = {
   PREVIOUS_ID: 'previous-id'
 } as const;
 
-export function createPostTags(authorAddress: string, version: number = 1, previousId?: string) {
+export function createPostTags(
+  authorAddress: string, 
+  version: number = 1, 
+  previousId?: string
+) {
   const tags = [
     { name: IRYS_TAGS.CONTENT_TYPE, value: 'application/json' },
     { name: IRYS_TAGS.APP_NAME, value: 'IrysBase' },
@@ -34,11 +45,26 @@ export function createPostTags(authorAddress: string, version: number = 1, previ
     { name: IRYS_TAGS.VERSION, value: version.toString() }
   ];
 
+  // Mutable reference pattern: link to previous version for updates
   if (previousId) {
-    tags.push({ name: IRYS_TAGS.PREVIOUS_ID, value: previousId });
+    tags.push({ name: IRYS_TAGS.PREVIOUS_ID as any, value: previousId });
   }
 
   return tags;
+}
+
+export function createMutableReference(
+  content: string,
+  previousTransactionId: string,
+  version: number
+) {
+  return {
+    type: 'post-update',
+    previousId: previousTransactionId,
+    content: content,
+    version: version,
+    timestamp: new Date().toISOString()
+  };
 }
 
 export function validateWalletSignature(
