@@ -28,6 +28,7 @@ irysbase/
 
 ## Tech Stack
 
+- **Package Manager**: pnpm (with workspaces)
 - **Monorepo**: Turborepo
 - **Frontend**: Next.js 14, TypeScript, Tailwind CSS, shadcn/ui, Apollo Client, ethers.js
 - **Backend**: Node.js, Apollo Server, Prisma ORM, Bull Queue, Redis
@@ -36,11 +37,18 @@ irysbase/
 - **Storage**: @irys/upload, @irys/query
 - **Real-time**: GraphQL Subscriptions, WebSocket support
 
+## Prerequisites
+
+- Node.js 18+ 
+- pnpm 8+ (install with `npm install -g pnpm`)
+- PostgreSQL
+- Redis
+
 ## Quick Start
 
 1. **Install dependencies**
    ```bash
-   npm install
+   pnpm install
    ```
 
 2. **Set up environment variables**
@@ -50,12 +58,12 @@ irysbase/
 3. **Deploy smart contracts**
    ```bash
    cd packages/contracts
-   npx hardhat run scripts/deploy.ts --network localhost
+   pnpm run deploy
    ```
 
 4. **Start development servers**
    ```bash
-   npm run dev
+   pnpm run dev
    ```
 
 ## Core Features
@@ -82,17 +90,35 @@ irysbase/
 
 ```bash
 # Start all services
-npm run dev
+pnpm run dev
 
 # Build all packages
-npm run build
+pnpm run build
 
 # Type checking
-npm run typecheck
+pnpm run typecheck
 
 # Linting
-npm run lint
+pnpm run lint
+
+# Install dependencies (faster with pnpm)
+pnpm install
+
+# Add dependencies to specific workspace
+pnpm add <package> --filter @irysbase/web
+pnpm add <package> --filter @irysbase/api
+
+# Run scripts in specific workspace
+pnpm run dev --filter @irysbase/web
+pnpm run dev --filter @irysbase/api
 ```
+
+## pnpm Workspace Benefits
+
+- **Faster installations**: Shared node_modules with hard links
+- **Disk space efficiency**: Deduplicated packages across workspaces  
+- **Strict dependency management**: Prevents phantom dependencies
+- **Better monorepo support**: Native workspace protocol (`workspace:*`)
 
 ## Deployment
 
