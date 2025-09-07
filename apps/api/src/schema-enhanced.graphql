@@ -1,0 +1,510 @@
+# Enhanced GraphQL Schema for IrysBase Platform
+# Implements the complete document management system from the plan
+
+# Core Document Types
+type Project {
+  id: ID!
+  name: String!
+  slug: String!
+  description: String
+  ownerId: String!
+  organizationId: String
+  visibility: ProjectVisibility!
+  settings: ProjectSettings!
+  
+  # Irys metadata
+  irysId: String!
+  permanentUrl: String!
+  
+  # Relations
+  documents: [Document!]!
+  collaborators: [Collaborator!]!
+  
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Document {
+  id: ID!
+  projectId: String!
+  path: String!
+  title: String!
+  content: String!
+  contentHash: String!
+  authorId: String!
+  version: Int!
+  parentId: String
+  order: Int!
+  
+  # Metadata
+  metadata: DocumentMetadata!
+  
+  # Irys permanent storage
+  irysId: String!
+  irysProof: String!
+  
+  # Relations
+  project: Project!
+  author: User!
+  parent: Document
+  children: [Document!]!
+  versions: [Version!]!
+  comments: [Comment!]!
+  translations: [Translation!]!
+  
+  createdAt: String!
+  updatedAt: String!
+  publishedAt: String
+}
+
+type Version {
+  id: ID!
+  documentId: String!
+  versionNumber: Int!
+  content: String!
+  contentDiff: String!
+  authorId: String!
+  commitMessage: String!
+  
+  # Blockchain proof
+  irysId: String!
+  blockHeight: Int!
+  signature: String!
+  
+  # Relations
+  document: Document!
+  author: User!
+  
+  timestamp: String!
+}
+
+type User {
+  id: ID!
+  address: String!
+  name: String
+  avatar: String
+  email: String
+  
+  # Relations
+  projects: [Project!]!
+  documents: [Document!]!
+  collaborations: [Collaborator!]!
+  
+  createdAt: String!
+}
+
+type Collaborator {
+  id: ID!
+  projectId: String!
+  userId: String!
+  role: CollaboratorRole!
+  permissions: [String!]!
+  invitedBy: String!
+  acceptedAt: String
+  
+  # Relations
+  project: Project!
+  user: User!
+  inviter: User!
+  
+  createdAt: String!
+}
+
+type Comment {
+  id: ID!
+  documentId: String!
+  versionId: String
+  authorId: String!
+  content: String!
+  lineStart: Int
+  lineEnd: Int
+  resolved: Boolean!
+  resolvedBy: String
+  threadId: String
+  
+  # Relations
+  document: Document!
+  author: User!
+  thread: [Comment!]
+  
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Translation {
+  id: ID!
+  documentId: String!
+  language: String!
+  title: String!
+  content: String!
+  translatorId: String!
+  reviewed: Boolean!
+  reviewedBy: String
+  
+  # Relations
+  document: Document!
+  translator: User!
+  
+  createdAt: String!
+  updatedAt: String!
+}
+
+# AI and Search Types
+type SearchResult {
+  documentId: String!
+  title: String!
+  content: String!
+  similarity: Float!
+  highlights: [String!]!
+  metadata: DocumentMetadata!
+}
+
+type QAAnswer {
+  question: String!
+  answer: String!
+  confidence: Float!
+  sources: [AnswerSource!]!
+  generatedAt: String!
+}
+
+type AnswerSource {
+  documentId: String!
+  title: String!
+  similarity: Float!
+  excerpt: String!
+}
+
+type FunctionResult {
+  success: Boolean!
+  data: JSON
+  error: String
+  executionTime: Int!
+}
+
+# Collaboration Types
+type CollaborationSession {
+  id: String!
+  documentId: String!
+  participants: [SessionParticipant!]!
+  createdAt: String!
+}
+
+type SessionParticipant {
+  userId: String!
+  name: String!
+  avatar: String
+  cursor: CursorPosition
+  selection: Selection
+  joinedAt: String!
+}
+
+type CursorPosition {
+  line: Int!
+  column: Int!
+}
+
+type Selection {
+  start: CursorPosition!
+  end: CursorPosition!
+}
+
+# Input Types
+input CreateProjectInput {
+  name: String!
+  slug: String!
+  description: String
+  organizationId: String
+  visibility: ProjectVisibility!
+  settings: ProjectSettingsInput!
+}
+
+input CreateDocumentInput {
+  projectId: String!
+  path: String!
+  title: String!
+  content: String!
+  parentId: String
+  order: Int
+  metadata: DocumentMetadataInput!
+}
+
+input UpdateDocumentInput {
+  id: String!
+  title: String
+  content: String
+  metadata: DocumentMetadataInput
+}
+
+input CreateVersionInput {
+  documentId: String!
+  content: String!
+  commitMessage: String!
+}
+
+input AddCollaboratorInput {
+  projectId: String!
+  userId: String!
+  role: CollaboratorRole!
+  permissions: [String!]
+}
+
+input CreateCommentInput {
+  documentId: String!
+  versionId: String
+  content: String!
+  lineStart: Int
+  lineEnd: Int
+  threadId: String
+}
+
+input SearchDocumentsInput {
+  query: String!
+  projectId: String
+  type: SearchType
+  limit: Int = 10
+}
+
+input AskQuestionInput {
+  question: String!
+  projectId: String
+  context: [String!]
+}
+
+input InvokeFunctionInput {
+  functionName: String!
+  payload: JSON!
+}
+
+# Supporting Types
+type ProjectSettings {
+  allowContributions: Boolean
+  rewardContributors: Boolean
+  languages: [String!]
+  theme: String
+  customDomain: String
+}
+
+input ProjectSettingsInput {
+  allowContributions: Boolean
+  rewardContributors: Boolean
+  languages: [String!]
+  theme: String
+  customDomain: String
+}
+
+type DocumentMetadata {
+  description: String
+  keywords: [String!]
+  readingTime: Int
+  difficulty: DocumentDifficulty
+  lastModifiedBy: String
+}
+
+input DocumentMetadataInput {
+  description: String
+  keywords: [String!]
+  readingTime: Int
+  difficulty: DocumentDifficulty
+  lastModifiedBy: String
+}
+
+# Enums
+enum ProjectVisibility {
+  PUBLIC
+  PRIVATE
+  UNLISTED
+}
+
+enum CollaboratorRole {
+  OWNER
+  ADMIN
+  EDITOR
+  REVIEWER
+  VIEWER
+}
+
+enum DocumentDifficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum SearchType {
+  SEMANTIC
+  FULLTEXT
+  HYBRID
+}
+
+# Scalars
+scalar JSON
+scalar DateTime
+
+# Main Query Type
+type Query {
+  # Legacy posts (keep for backward compatibility)
+  postsByAuthor(authorAddress: String!, limit: Int, offset: Int): [Post!]!
+  postHistory(id: ID!): [Post!]!
+  verifyPostFromIrys(irysTransactionId: String!): Post
+
+  # Project queries
+  project(id: String): Project
+  projectBySlug(slug: String!): Project
+  myProjects(limit: Int, offset: Int): [Project!]!
+  publicProjects(limit: Int, offset: Int): [Project!]!
+
+  # Document queries
+  document(id: String!): Document
+  documentByPath(projectId: String!, path: String!): Document
+  projectDocuments(projectId: String!, limit: Int, offset: Int): [Document!]!
+  documentHistory(documentId: String!): [Version!]!
+
+  # Search queries
+  searchDocuments(input: SearchDocumentsInput!): [SearchResult!]!
+  askQuestion(input: AskQuestionInput!): QAAnswer!
+  suggestRelated(documentId: String!, limit: Int = 5): [SearchResult!]!
+
+  # Collaboration queries
+  collaborationSession(documentId: String!): CollaborationSession
+  activeUsers(documentId: String!): [SessionParticipant!]!
+  
+  # User queries
+  me: User
+  user(id: String!): User
+
+  # Analytics
+  projectMetrics(projectId: String!, timeframe: String): JSON
+}
+
+# Main Mutation Type
+type Mutation {
+  # Legacy posts (keep for backward compatibility)
+  createPost(content: String!): Post!
+  updatePost(id: ID!, content: String!): Post!
+
+  # Project mutations
+  createProject(input: CreateProjectInput!): Project!
+  updateProject(id: String!, input: CreateProjectInput!): Project!
+  deleteProject(id: String!): Boolean!
+
+  # Document mutations
+  createDocument(input: CreateDocumentInput!): Document!
+  updateDocument(input: UpdateDocumentInput!): Document!
+  deleteDocument(id: String!): Boolean!
+  publishDocument(id: String!): Document!
+  
+  # Version mutations
+  createVersion(input: CreateVersionInput!): Version!
+  revertToVersion(documentId: String!, versionNumber: Int!): Document!
+
+  # Collaboration mutations
+  addCollaborator(input: AddCollaboratorInput!): Collaborator!
+  updateCollaboratorRole(collaboratorId: String!, role: CollaboratorRole!): Collaborator!
+  removeCollaborator(collaboratorId: String!): Boolean!
+  joinCollaboration(documentId: String!): CollaborationSession!
+  leaveCollaboration(documentId: String!): Boolean!
+
+  # Comment mutations
+  createComment(input: CreateCommentInput!): Comment!
+  resolveComment(commentId: String!): Comment!
+  deleteComment(commentId: String!): Boolean!
+
+  # AI function mutations
+  invokeFunction(input: InvokeFunctionInput!): FunctionResult!
+
+  # Translation mutations
+  createTranslation(documentId: String!, language: String!, content: String!): Translation!
+  
+  # Storage mutations
+  uploadFile(projectId: String!, file: Upload!): UploadResult!
+}
+
+# Subscription Type
+type Subscription {
+  # Legacy subscription
+  postUpdates: PostUpdate!
+
+  # Document subscriptions
+  documentChanged(documentId: String!): DocumentChangeEvent!
+  projectUpdated(projectId: String!): ProjectUpdateEvent!
+  
+  # Collaboration subscriptions
+  collaborationUpdated(documentId: String!): CollaborationEvent!
+  cursorMoved(documentId: String!): CursorEvent!
+  
+  # Comment subscriptions
+  commentAdded(documentId: String!): Comment!
+  
+  # Notification subscriptions
+  notifications(userId: String!): NotificationEvent!
+}
+
+# Subscription Event Types
+type DocumentChangeEvent {
+  type: String!
+  documentId: String!
+  userId: String!
+  change: JSON!
+  timestamp: String!
+}
+
+type ProjectUpdateEvent {
+  type: String!
+  projectId: String!
+  data: JSON!
+  timestamp: String!
+}
+
+type CollaborationEvent {
+  type: String!
+  documentId: String!
+  userId: String!
+  data: JSON!
+  timestamp: String!
+}
+
+type CursorEvent {
+  userId: String!
+  position: CursorPosition!
+  timestamp: String!
+}
+
+type NotificationEvent {
+  type: String!
+  title: String!
+  message: String!
+  data: JSON
+  timestamp: String!
+}
+
+# Upload Types
+scalar Upload
+
+type UploadResult {
+  id: String!
+  url: String!
+  permanentUrl: String!
+  size: Int!
+  type: String!
+  metadata: JSON!
+}
+
+# Legacy Post Type (keep for backward compatibility)
+type Post {
+  id: ID!
+  irysTransactionId: String!
+  content: String!
+  authorAddress: String!
+  timestamp: String!
+  version: Int!
+  previousVersionId: String
+}
+
+type PostUpdate {
+  type: UpdateType!
+  post: Post!
+}
+
+enum UpdateType {
+  CREATED
+  UPDATED
+}
