@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.19.12",
+    "concurrently": "^9.2.1",
     "turbo": "^1.13.4",
     "typescript": "^5.9.2"
   }

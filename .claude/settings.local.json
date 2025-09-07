@@ -16,7 +16,8 @@
       "Bash(git add:*)",
       "Bash(git push:*)",
       "Bash(pnpm run:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(timeout 10s pnpm run dev:enhanced)"
     ],
     "deny": [],
     "ask": []

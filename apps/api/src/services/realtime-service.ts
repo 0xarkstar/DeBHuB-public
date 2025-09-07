@@ -274,17 +274,23 @@ export class RealtimeService {
     const subscription = this.pubsub.asyncIterator(['DOCUMENT_CHANGED']);
     
     const processMessages = async () => {
-      for await (const message of subscription) {
-        if (message.documentId === documentId) {
-          callback(message);
+      try {
+        for await (const message of subscription) {
+          if (message.documentId === documentId) {
+            callback(message);
+          }
         }
+      } catch (error) {
+        console.error('Error processing subscription messages:', error);
       }
     };
 
     processMessages();
 
     return () => {
-      subscription.return?.();
+      if (subscription.return) {
+        subscription.return();
+      }
     };
   }
 
@@ -292,14 +298,28 @@ export class RealtimeService {
     documentId: string,
     callback: (comment: CommentEvent) => void
   ): Promise<() => void> {
-    return this.pubsub.subscribe('NEW_COMMENT', callback);
+    const unsubscribe = this.pubsub.subscribe('NEW_COMMENT', (payload) => {
+      if (payload.documentId === documentId) {
+        callback(payload);
+      }
+    });
+    return () => {
+      if (typeof unsubscribe === 'function') {
+        unsubscribe();
+      }
+    };
   }
 
   async subscribeToReviewRequests(
     userId: string,
     callback: (request: ReviewEvent) => void
   ): Promise<() => void> {
-    return this.pubsub.subscribe(`REVIEW_REQUEST_${userId}`, callback);
+    const unsubscribe = this.pubsub.subscribe(`REVIEW_REQUEST_${userId}`, callback);
+    return () => {
+      if (typeof unsubscribe === 'function') {
+        unsubscribe();
+      }
+    };
   }
 
   /**
@@ -364,9 +384,14 @@ export class RealtimeService {
   /**
    * Private helper methods
    */
-  private handleSessionMessage(sessionId: string, userId: string, message: Buffer): void {
+  private handleSessionMessage(sessionId: string, userId: string, message: Buffer | ArrayBuffer | Buffer[]): void {
     try {
-      const data = JSON.parse(message.toString());
+      const messageStr = message instanceof ArrayBuffer 
+        ? new TextDecoder().decode(message)
+        : Array.isArray(message) 
+          ? Buffer.concat(message).toString()
+          : message.toString();
+      const data = JSON.parse(messageStr);
       
       switch (data.type) {
         case 'cursor':

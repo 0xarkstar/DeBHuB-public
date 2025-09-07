@@ -1,5 +1,5 @@
-import { Uploader } from '@irys/upload';
-import { Query } from '@irys/query';
+import Uploader from '@irys/upload';
+import Query from '@irys/query';
 import { createClient } from 'redis';
 import { Post, IrysTag } from '../types';
 import { createPostTags, createMutableReference } from '@irysbase/shared';
@@ -7,17 +7,17 @@ import { createPostTags, createMutableReference } from '@irysbase/shared';
 const IRYS_GATEWAY_URL = 'https://gateway.irys.xyz';
 
 export class IrysService {
-  private uploader: Uploader;
-  private query: Query;
+  private uploader: any;
+  private query: any;
   private redisClient: ReturnType<typeof createClient>;
 
   constructor() {
-    this.uploader = new Uploader({
-      url: "https://uploader.irys.xyz",
+    // Fix Uploader instantiation
+    this.uploader = Uploader({
       token: "ethereum",
     });
     
-    this.query = new Query({ url: "https://uploader.irys.xyz" });
+    this.query = Query();
     
     this.redisClient = createClient({
       url: process.env.REDIS_URL || 'redis://localhost:6379'
@@ -122,5 +122,37 @@ export class IrysService {
     } catch (error) {
       console.warn('Redis cache invalidation failed:', error);
     }
+  }
+
+  // Enhanced methods for platform services
+  async uploadData(
+    data: string | Buffer,
+    tags: Array<{ name: string; value: string }>
+  ): Promise<{ id: string }> {
+    try {
+      const receipt = await this.uploader.upload(data, { tags });
+      console.log(`✅ Uploaded data to Irys: ${receipt.id}`);
+      return { id: receipt.id };
+    } catch (error) {
+      console.error('Failed to upload data to Irys:', error);
+      throw new Error('Failed to upload data to Irys');
+    }
+  }
+
+  async getData(transactionId: string): Promise<any> {
+    try {
+      const response = await fetch(`${IRYS_GATEWAY_URL}/${transactionId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.text();
+    } catch (error) {
+      console.error(`Failed to get data for transaction ${transactionId}:`, error);
+      throw new Error('Failed to fetch data from Irys');
+    }
+  }
+
+  async getPost(transactionId: string): Promise<any> {
+    return this.getData(transactionId);
   }
 }

@@ -57,7 +57,7 @@ export class IrysBasePlatformImpl implements IrysBasePlatform {
     this.initializeServices();
   }
 
-  private initializeServices() {
+  private initializeServices(): void {
     // Initialize core services
     this.core = {
       auth: null, // Will use existing auth service

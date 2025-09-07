@@ -51,8 +51,10 @@ const combinedResolvers = {
     ...resolvers.Subscription,
     ...enhancedResolvers.Subscription,
   },
-  // Add type resolvers from enhanced resolvers
-  ...enhancedResolvers,
+  // Add type resolvers from enhanced resolvers (excluding Query, Mutation, Subscription)
+  Project: enhancedResolvers.Project,
+  Document: enhancedResolvers.Document,
+  User: enhancedResolvers.User,
 };
 
 const schema = makeExecutableSchema({ 
