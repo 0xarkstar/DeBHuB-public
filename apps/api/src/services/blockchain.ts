@@ -51,7 +51,7 @@ export class BlockchainService {
       const wallet = new ethers.Wallet(signerPrivateKey, this.provider);
       const postsWithSigner = this.postsContract.connect(wallet);
       
-      const tx = await postsWithSigner.registerPost(irysTransactionId);
+      const tx = await postsWithSigner.getFunction("registerPost")(irysTransactionId);
       const receipt = await tx.wait();
       
       console.log(`✅ Post registered on blockchain: ${receipt.hash}`);
@@ -71,7 +71,7 @@ export class BlockchainService {
       const wallet = new ethers.Wallet(signerPrivateKey, this.provider);
       const postsWithSigner = this.postsContract.connect(wallet);
       
-      const tx = await postsWithSigner.updatePost(newTransactionId, previousTransactionId);
+      const tx = await postsWithSigner.getFunction("updatePost")(newTransactionId, previousTransactionId);
       const receipt = await tx.wait();
       
       console.log(`✅ Post updated on blockchain: ${receipt.hash}`);

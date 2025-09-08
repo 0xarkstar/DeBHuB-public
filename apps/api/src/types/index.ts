@@ -10,6 +10,14 @@ export interface Context {
   signature?: string;
 }
 
+export interface GraphQLContext {
+  authorAddress?: string;
+  signature?: string;
+  user?: any;
+  userAddress?: string;
+  message?: string;
+}
+
 export interface IrysTag {
   name: string;
   value: string;

@@ -24,7 +24,7 @@ function mapDatabasePostToGraphQL(dbPost: DatabasePost): Post {
     authorAddress: dbPost.authorAddress,
     timestamp: dbPost.timestamp.toISOString(),
     version: dbPost.version,
-    previousVersionId: dbPost.previousVersionId,
+    previousVersionId: dbPost.previousVersionId || undefined,
   };
 }
 

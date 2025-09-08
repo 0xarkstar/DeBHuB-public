@@ -27,7 +27,7 @@ class EventListener {
   private isRunning = false;
   private reconnectAttempts = 0;
   private provider: ethers.JsonRpcProvider;
-  private healthCheckTimer?: NodeJS.Timer;
+  private healthCheckTimer?: NodeJS.Timeout;
 
   constructor() {
     this.provider = new ethers.JsonRpcProvider(

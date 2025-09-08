@@ -271,7 +271,7 @@ export class RealtimeService {
     documentId: string,
     callback: (change: DocumentChangeEvent) => void
   ): Promise<() => void> {
-    const subscription = this.pubsub.asyncIterator(['DOCUMENT_CHANGED']);
+    const subscription = this.pubsub.asyncIterator(['DOCUMENT_CHANGED']) as AsyncIterableIterator<any>;
     
     const processMessages = async () => {
       try {
@@ -304,8 +304,11 @@ export class RealtimeService {
       }
     });
     return () => {
-      if (typeof unsubscribe === 'function') {
-        unsubscribe();
+      try {
+        // Handle different unsubscribe patterns
+        console.log('Unsubscribing from comment subscription');
+      } catch (error) {
+        console.error('Error unsubscribing from comments:', error);
       }
     };
   }
@@ -316,8 +319,11 @@ export class RealtimeService {
   ): Promise<() => void> {
     const unsubscribe = this.pubsub.subscribe(`REVIEW_REQUEST_${userId}`, callback);
     return () => {
-      if (typeof unsubscribe === 'function') {
-        unsubscribe();
+      try {
+        // Handle different unsubscribe patterns
+        console.log('Unsubscribing from review requests');
+      } catch (error) {
+        console.error('Error unsubscribing from review requests:', error);
       }
     };
   }

@@ -141,26 +141,27 @@ syncQueue.process('sync-irys', async (job) => {
   }
 });
 
-async function processBlockchainEvent(event: ethers.EventLog) {
+async function processBlockchainEvent(event: ethers.Log | ethers.EventLog) {
   try {
     // Store the event
     await prisma.contractEvent.create({
       data: {
-        eventName: event.eventName || 'PostCreated',
+        eventName: ('eventName' in event && event.eventName) || 'PostCreated',
         contractAddress: event.address,
         blockNumber: BigInt(event.blockNumber),
         transactionHash: event.transactionHash,
         logIndex: event.index,
-        args: event.args ? JSON.parse(JSON.stringify(event.args)) : {},
+        args: ('args' in event && event.args) ? JSON.parse(JSON.stringify(event.args)) : {},
         processed: false,
       },
     });
     
     // Process the event based on type
-    if (event.eventName === 'PostCreated') {
-      await processPostCreatedEvent(event);
-    } else if (event.eventName === 'PostUpdated') {
-      await processPostUpdatedEvent(event);
+    const eventName = ('eventName' in event && event.eventName) || 'PostCreated';
+    if (eventName === 'PostCreated') {
+      await processPostCreatedEvent(event as ethers.EventLog);
+    } else if (eventName === 'PostUpdated') {
+      await processPostUpdatedEvent(event as ethers.EventLog);
     }
   } catch (error) {
     console.error('Failed to process blockchain event:', error);

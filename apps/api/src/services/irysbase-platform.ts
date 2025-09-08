@@ -54,6 +54,11 @@ export class IrysBasePlatformImpl implements IrysBasePlatform {
     private irysService: IrysService,
     private config: PlatformConfig = {}
   ) {
+    // Initialize services in constructor
+    this.core = {} as IrysBasePlatform['core'];
+    this.advanced = {} as IrysBasePlatform['advanced'];
+    this.tools = {} as IrysBasePlatform['tools'];
+    
     this.initializeServices();
   }
 

@@ -1,0 +1,25 @@
+{
+  "name": "@irysbase/core",
+  "version": "1.0.0",
+  "description": "IrysBase Core Orchestrator - Central coordination for all services",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@irysbase/shared": "workspace:*",
+    "@irysbase/irys-integration": "workspace:*",
+    "@irysbase/ai-integration": "workspace:*",
+    "@prisma/client": "^5.22.0",
+    "events": "^3.3.0",
+    "redis": "^4.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.12",
+    "typescript": "^5.9.2"
+  }
+}
