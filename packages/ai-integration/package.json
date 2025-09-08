@@ -1,0 +1,24 @@
+{
+  "name": "@irysbase/ai-integration",
+  "version": "1.0.0",
+  "description": "AI services integration for IrysBase",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rimraf dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "openai": "^4.20.0",
+    "cohere-ai": "^7.6.0",
+    "@huggingface/inference": "^2.6.0",
+    "axios": "^1.6.0",
+    "@types/node": "^20.19.12"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.0",
+    "typescript": "^5.9.2"
+  }
+}

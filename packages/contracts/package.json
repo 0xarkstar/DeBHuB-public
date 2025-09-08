@@ -9,6 +9,9 @@
     "typechain": "hardhat typechain",
     "clean": "hardhat clean"
   },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.9.3"
+  },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^6.1.0",
     "@types/chai": "^4.3.6",

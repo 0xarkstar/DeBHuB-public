@@ -28,6 +28,14 @@ model User {
   id            String    @id @default(cuid())
   address       String    @unique
   role          String?
+  
+  // Relations
+  projects      Project[]
+  documents     Document[]
+  comments      Comment[]
+  versions      Version[]
+  collaborations Collaborator[]
+  
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
   
@@ -61,3 +69,294 @@ model ContractEvent {
   @@index([processed])
   @@map("contract_events")
 }
+
+// Enhanced models for Irys integration and IrysBase platform
+
+model Project {
+  id          String      @id @default(cuid())
+  name        String
+  description String?
+  slug        String      @unique
+  
+  // Owner and team
+  ownerId     String      @map("owner_id")
+  owner       User        @relation(fields: [ownerId], references: [id])
+  
+  // Configuration
+  settings    Json        @default("{}")
+  isPublic    Boolean     @default(false) @map("is_public")
+  visibility  String      @default("private") // public, private, internal
+  
+  // Irys integration
+  irysId      String?     @unique @map("irys_id")
+  permanentUrl String?    @map("permanent_url")
+  
+  // Relations
+  documents     Document[]
+  collaborators Collaborator[]
+  
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  
+  @@map("projects")
+}
+
+model Document {
+  id              String    @id @default(cuid())
+  projectId       String    @map("project_id")
+  path            String    // /docs/getting-started
+  title           String
+  content         String    @db.Text
+  contentHash     String    @map("content_hash") // SHA-256 해시
+  order           Int       @default(0) // Document order within project
+  
+  // Irys 데이터
+  irysId          String?   @unique @map("irys_id")
+  irysProof       String?   @db.Text @map("irys_proof")
+  permanentUrl    String?   @map("permanent_url")
+  transactions    IrysTransaction[]
+  
+  // 메타데이터
+  metadata        Json      @default("{}")
+  tags            String[]  @default([])
+  
+  // 버전 관리
+  version         Int       @default(1)
+  versions        Version[]
+  
+  // 관계
+  project         Project   @relation(fields: [projectId], references: [id])
+  authorId        String    @map("author_id")
+  author          User      @relation(fields: [authorId], references: [id])
+  comments        Comment[]
+  
+  // 프로그래머블 데이터
+  accessRules     Json?     @map("access_rules")
+  triggers        Json?     @default("[]")
+  
+  // AI 기능
+  embedding       Json?     // Vector embedding for search
+  summary         String?   @db.Text
+  aiSuggestions   Json?     @map("ai_suggestions")
+  
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  publishedAt     DateTime? @map("published_at")
+  
+  @@unique([projectId, path])
+  @@index([projectId, publishedAt])
+  @@index([authorId])
+  @@index([irysId])
+  @@map("documents")
+}
+
+model Version {
+  id              String    @id @default(cuid())
+  documentId      String    @map("document_id")
+  document        Document  @relation(fields: [documentId], references: [id])
+  versionNumber   Int       @map("version_number")
+  content         String    @db.Text
+  contentDiff     String?   @db.Text @map("content_diff") // 이전 버전과의 차이
+  
+  // 블록체인 증명
+  irysId          String?   @unique @map("irys_id")
+  blockHeight     BigInt?   @map("block_height")
+  blockHash       String?   @map("block_hash")
+  signature       String?   // 작성자 서명
+  timestamp       DateTime  @default(now()) // Version timestamp
+  
+  authorId        String    @map("author_id")
+  author          User      @relation(fields: [authorId], references: [id])
+  commitMessage   String    @map("commit_message")
+  
+  createdAt       DateTime  @default(now()) @map("created_at")
+  
+  @@unique([documentId, versionNumber])
+  @@index([authorId, createdAt])
+  @@map("versions")
+}
+
+model Comment {
+  id          String    @id @default(cuid())
+  documentId  String    @map("document_id")
+  document    Document  @relation(fields: [documentId], references: [id])
+  
+  content     String    @db.Text
+  authorId    String    @map("author_id")
+  author      User      @relation(fields: [authorId], references: [id])
+  
+  // Threading
+  parentId    String?   @map("parent_id")
+  parent      Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies     Comment[] @relation("CommentReplies")
+  
+  // Position in document (for inline comments)
+  position    Json?     // { line: number, column: number, selection: string }
+  
+  resolved    Boolean   @default(false)
+  resolvedAt  DateTime? @map("resolved_at")
+  resolvedBy  String?   @map("resolved_by")
+  
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  
+  @@index([documentId])
+  @@index([authorId])
+  @@map("comments")
+}
+
+// Collaborator model for project access
+model Collaborator {
+  id          String    @id @default(cuid())
+  projectId   String    @map("project_id")
+  project     Project   @relation(fields: [projectId], references: [id])
+  userId      String    @map("user_id")  
+  user        User      @relation(fields: [userId], references: [id])
+  role        String    @default("viewer") // owner, admin, editor, viewer
+  permissions Json      @default("[]")
+  
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  
+  @@unique([projectId, userId])
+  @@map("collaborators")
+}
+
+// Irys 통합 테이블
+model IrysTransaction {
+  id              String    @id @default(cuid())
+  transactionId   String    @unique @map("transaction_id") // Irys transaction ID
+  type            String    // 'upload', 'programmable', 'permanent'
+  status          String    // 'pending', 'confirmed', 'failed'
+  size            BigInt
+  cost            Decimal?
+  tags            Json      @default("{}")
+  metadata        Json      @default("{}")
+  
+  // 관계
+  documentId      String?   @map("document_id")
+  document        Document? @relation(fields: [documentId], references: [id])
+  
+  // Gateway info
+  gatewayUrl      String?   @map("gateway_url")
+  receipt         Json?     // Irys receipt
+  
+  createdAt       DateTime  @default(now()) @map("created_at")
+  confirmedAt     DateTime? @map("confirmed_at")
+  
+  @@index([status, createdAt])
+  @@index([documentId])
+  @@index([type])
+  @@map("irys_transactions")
+}
+
+model ProgrammableDataRule {
+  id              String    @id @default(cuid())
+  documentId      String    @map("document_id")
+  name            String
+  type            String    // 'access', 'trigger', 'royalty'
+  
+  // 규칙 정의
+  condition       Json?     // 실행 조건
+  action          Json      // 실행 액션
+  parameters      Json?     // 추가 파라미터
+  
+  // 실행 통계
+  executionCount  Int       @default(0) @map("execution_count")
+  lastExecutedAt  DateTime? @map("last_executed_at")
+  
+  enabled         Boolean   @default(true)
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  
+  @@index([documentId, type])
+  @@index([enabled, type])
+  @@map("programmable_data_rules")
+}
+
+// AI and Vector DB integration
+model VectorEmbedding {
+  id          String    @id @default(cuid())
+  entityType  String    @map("entity_type") // 'document', 'comment', 'project'
+  entityId    String    @map("entity_id")
+  
+  // Vector data
+  embedding   Json      // Float array stored as JSON
+  dimensions  Int       @default(1536) // OpenAI ada-002 default
+  model       String    @default("text-embedding-ada-002")
+  
+  // Metadata for search
+  content     String    @db.Text // Original content
+  metadata    Json      @default("{}")
+  
+  // External vector DB references
+  pineconeId  String?   @map("pinecone_id")
+  qdrantId    String?   @map("qdrant_id")
+  weaviateId  String?   @map("weaviate_id")
+  
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  
+  @@unique([entityType, entityId])
+  @@index([entityType])
+  @@index([model])
+  @@map("vector_embeddings")
+}
+
+model AIAnalysis {
+  id          String    @id @default(cuid())
+  entityType  String    @map("entity_type") // 'document', 'project'
+  entityId    String    @map("entity_id")
+  
+  // Analysis results
+  summary     String?   @db.Text
+  keywords    String[]  @default([])
+  sentiment   String?   // 'positive', 'negative', 'neutral'
+  readability Float?    // Readability score
+  
+  // Suggestions
+  improvements Json?    @default("[]") // AI improvement suggestions
+  seoTips     Json?     @default("[]") @map("seo_tips")
+  
+  // Model info
+  model       String    @default("gpt-3.5-turbo")
+  version     String    @default("1.0")
+  confidence  Float?
+  
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  
+  @@unique([entityType, entityId, version])
+  @@index([entityType])
+  @@index([createdAt])
+  @@map("ai_analyses")
+}
+
+// Enhanced User model
+model UserExtended {
+  userId      String    @id @map("user_id") // References User.id
+  
+  // Profile
+  displayName String?   @map("display_name")
+  bio         String?   @db.Text
+  avatar      String?
+  
+  // Preferences
+  theme       String    @default("light")
+  language    String    @default("en")
+  timezone    String    @default("UTC")
+  
+  // AI preferences
+  aiEnabled   Boolean   @default(true) @map("ai_enabled")
+  aiModel     String    @default("gpt-3.5-turbo") @map("ai_model")
+  
+  // Usage statistics
+  documentsCreated  Int @default(0) @map("documents_created")
+  collaborations    Int @default(0)
+  
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  
+  @@map("user_extended")
+}
+
