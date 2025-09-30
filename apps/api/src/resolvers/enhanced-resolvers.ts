@@ -47,122 +47,268 @@ export const enhancedResolvers = {
     project: async (
       _: any,
       { id }: { id: string },
-      { databaseService }: EnhancedContext
+      { prisma }: EnhancedContext
     ) => {
-      // Implementation would fetch project from database
-      return null; // Placeholder
+      return await prisma.project.findUnique({
+        where: { id },
+        include: {
+          owner: true,
+          documents: {
+            orderBy: { order: 'asc' },
+            take: 50,
+          },
+          collaborators: {
+            include: {
+              user: true,
+            },
+          },
+        },
+      });
     },
 
     projectBySlug: async (
       _: any,
       { slug }: { slug: string },
-      { databaseService }: EnhancedContext
+      { prisma }: EnhancedContext
     ) => {
-      // Implementation would fetch project by slug
-      return null; // Placeholder
+      return await prisma.project.findUnique({
+        where: { slug },
+        include: {
+          owner: true,
+          documents: {
+            orderBy: { order: 'asc' },
+            take: 50,
+          },
+          collaborators: {
+            include: {
+              user: true,
+            },
+          },
+        },
+      });
     },
 
     myProjects: async (
       _: any,
       { limit = 10, offset = 0 }: { limit?: number; offset?: number },
-      { databaseService, auth }: EnhancedContext
+      { prisma, auth }: EnhancedContext
     ) => {
       const userId = requireAuth(auth);
-      // Implementation would fetch user's projects
-      return []; // Placeholder
+
+      return await prisma.project.findMany({
+        where: {
+          OR: [
+            { ownerId: userId },
+            {
+              collaborators: {
+                some: {
+                  userId: userId,
+                },
+              },
+            },
+          ],
+        },
+        include: {
+          owner: true,
+          documents: {
+            orderBy: { order: 'asc' },
+            take: 10,
+          },
+          _count: {
+            select: {
+              documents: true,
+              collaborators: true,
+            },
+          },
+        },
+        orderBy: { updatedAt: 'desc' },
+        take: limit,
+        skip: offset,
+      });
     },
 
     // Document Queries
     document: async (
       _: any,
       { id }: { id: string },
-      { databaseService }: EnhancedContext
+      { prisma }: EnhancedContext
     ) => {
-      // Implementation would fetch document
-      return null; // Placeholder
+      return await prisma.document.findUnique({
+        where: { id },
+        include: {
+          project: true,
+          author: true,
+          versions: {
+            orderBy: { versionNumber: 'desc' },
+            take: 10,
+          },
+          comments: {
+            where: { resolved: false },
+            include: {
+              author: true,
+            },
+            orderBy: { createdAt: 'desc' },
+          },
+        },
+      });
     },
 
     documentByPath: async (
       _: any,
       { projectId, path }: { projectId: string; path: string },
-      { databaseService }: EnhancedContext
+      { prisma }: EnhancedContext
     ) => {
-      // Implementation would fetch document by path
-      return null; // Placeholder
+      return await prisma.document.findUnique({
+        where: {
+          projectId_path: {
+            projectId,
+            path,
+          },
+        },
+        include: {
+          project: true,
+          author: true,
+          versions: {
+            orderBy: { versionNumber: 'desc' },
+            take: 5,
+          },
+        },
+      });
     },
 
     projectDocuments: async (
       _: any,
-      { projectId, limit = 50, offset = 0 }: { 
-        projectId: string; 
-        limit?: number; 
+      { projectId, limit = 50, offset = 0 }: {
+        projectId: string;
+        limit?: number;
         offset?: number;
       },
-      { databaseService }: EnhancedContext
+      { prisma }: EnhancedContext
     ) => {
-      return await databaseService.getProjectDocuments(projectId, {
-        limit,
-        offset,
-        includeVersions: false,
-        includeComments: false,
+      return await prisma.document.findMany({
+        where: { projectId },
+        include: {
+          author: true,
+          _count: {
+            select: {
+              versions: true,
+              comments: true,
+            },
+          },
+        },
+        orderBy: [
+          { order: 'asc' },
+          { createdAt: 'desc' },
+        ],
+        take: limit,
+        skip: offset,
       });
     },
 
     documentHistory: async (
       _: any,
       { documentId }: { documentId: string },
-      { databaseService }: EnhancedContext
+      { prisma }: EnhancedContext
     ) => {
-      return await databaseService.getDocumentHistory(documentId);
+      return await prisma.version.findMany({
+        where: { documentId },
+        include: {
+          author: true,
+        },
+        orderBy: { versionNumber: 'desc' },
+      });
     },
 
     // Search Queries
     searchDocuments: async (
       _: any,
       { input }: { input: any },
-      { vectorDBService, searchService }: EnhancedContext
+      { searchService, prisma }: EnhancedContext
     ) => {
-      const { query, projectId, type = 'SEMANTIC', limit = 10 } = input;
-      
-      switch (type) {
-        case 'SEMANTIC':
-          return await vectorDBService.findSimilarDocuments(query, {
-            limit,
-            projectId,
-          });
-        case 'FULLTEXT':
-          return await searchService.search(query, { projectId, limit });
-        case 'HYBRID':
-          return await vectorDBService.hybridSearch(query, {
-            limit,
-            projectId,
-          });
-        default:
-          throw new Error(`Unsupported search type: ${type}`);
+      const { query, projectId, type = 'FULLTEXT', limit = 10 } = input;
+
+      // For now, only implement FULLTEXT search (AI/Vector search will be added later)
+      if (type === 'FULLTEXT' || type === 'HYBRID') {
+        return await searchService.search(query, { projectId, limit });
       }
+
+      // Fallback to basic search
+      const documents = await prisma.document.findMany({
+        where: {
+          ...(projectId && { projectId }),
+          OR: [
+            { title: { contains: query, mode: 'insensitive' } },
+            { content: { contains: query, mode: 'insensitive' } },
+          ],
+        },
+        include: {
+          author: true,
+          project: true,
+        },
+        take: limit,
+      });
+
+      return documents.map(doc => ({
+        documentId: doc.id,
+        title: doc.title,
+        content: doc.content.substring(0, 200),
+        similarity: 0.5,
+        highlights: [query],
+        metadata: doc.metadata,
+      }));
     },
 
     askQuestion: async (
       _: any,
       { input }: { input: any },
-      { vectorDBService }: EnhancedContext
+      { prisma }: EnhancedContext
     ) => {
-      const { question, projectId, context = [] } = input;
-      
-      return await vectorDBService.askQuestion(question, context, {
-        projectId,
-        maxContext: 5,
-      });
+      // Placeholder - AI feature will be implemented separately
+      const { question, projectId } = input;
+
+      // Return a helpful message
+      return {
+        question,
+        answer: 'AI Q&A feature is not yet available. Please use document search instead.',
+        confidence: 0,
+        sources: [],
+        generatedAt: new Date().toISOString(),
+      };
     },
 
     suggestRelated: async (
       _: any,
       { documentId, limit = 5 }: { documentId: string; limit?: number },
-      { vectorDBService }: EnhancedContext
+      { prisma }: EnhancedContext
     ) => {
-      return await vectorDBService.findSimilarByDocument(documentId, {
-        limit,
+      // Find related documents by tags and project
+      const document = await prisma.document.findUnique({
+        where: { id: documentId },
+        include: { project: true },
       });
+
+      if (!document) return [];
+
+      const relatedDocs = await prisma.document.findMany({
+        where: {
+          projectId: document.projectId,
+          id: { not: documentId },
+        },
+        include: {
+          author: true,
+          project: true,
+        },
+        take: limit,
+      });
+
+      return relatedDocs.map(doc => ({
+        documentId: doc.id,
+        title: doc.title,
+        content: doc.content.substring(0, 200),
+        similarity: 0.7,
+        highlights: [],
+        metadata: doc.metadata,
+      }));
     },
 
     // Collaboration Queries
@@ -171,7 +317,6 @@ export const enhancedResolvers = {
       { documentId }: { documentId: string },
       { realtimeService }: EnhancedContext
     ) => {
-      // Get or create collaboration session
       return await realtimeService.createCollaborationSession(documentId);
     },
 
@@ -190,25 +335,149 @@ export const enhancedResolvers = {
       { auth, prisma }: EnhancedContext
     ) => {
       const userAddress = requireAuth(auth);
-      // Fetch user profile
-      return null; // Placeholder
+
+      return await prisma.user.findUnique({
+        where: { address: userAddress },
+        include: {
+          projects: {
+            take: 10,
+            orderBy: { updatedAt: 'desc' },
+          },
+          documents: {
+            take: 10,
+            orderBy: { updatedAt: 'desc' },
+          },
+          _count: {
+            select: {
+              projects: true,
+              documents: true,
+              collaborations: true,
+            },
+          },
+        },
+      });
+    },
+
+    user: async (
+      _: any,
+      { id }: { id: string },
+      { prisma }: EnhancedContext
+    ) => {
+      return await prisma.user.findUnique({
+        where: { id },
+        include: {
+          projects: {
+            where: { visibility: 'PUBLIC' },
+            take: 10,
+            orderBy: { updatedAt: 'desc' },
+          },
+          _count: {
+            select: {
+              projects: true,
+              documents: true,
+            },
+          },
+        },
+      });
+    },
+
+    publicProjects: async (
+      _: any,
+      { limit = 20, offset = 0 }: { limit?: number; offset?: number },
+      { prisma }: EnhancedContext
+    ) => {
+      return await prisma.project.findMany({
+        where: { visibility: 'PUBLIC' },
+        include: {
+          owner: true,
+          _count: {
+            select: {
+              documents: true,
+              collaborators: true,
+            },
+          },
+        },
+        orderBy: { updatedAt: 'desc' },
+        take: limit,
+        skip: offset,
+      });
     },
 
     // Analytics
     projectMetrics: async (
       _: any,
-      { projectId, timeframe = 'last_30_days' }: { 
-        projectId: string; 
+      { projectId, timeframe = 'last_30_days' }: {
+        projectId: string;
         timeframe?: string;
       },
-      { functionService }: EnhancedContext
+      { analyticsService, prisma }: EnhancedContext
     ) => {
-      const result = await functionService.invoke('calculate-metrics', {
+      // Get basic metrics from database
+      const project = await prisma.project.findUnique({
+        where: { id: projectId },
+        include: {
+          documents: true,
+          collaborators: true,
+        },
+      });
+
+      if (!project) return null;
+
+      // Calculate time range
+      const now = new Date();
+      let startDate = new Date();
+
+      switch (timeframe) {
+        case 'last_7_days':
+          startDate.setDate(now.getDate() - 7);
+          break;
+        case 'last_30_days':
+          startDate.setDate(now.getDate() - 30);
+          break;
+        case 'last_90_days':
+          startDate.setDate(now.getDate() - 90);
+          break;
+        default:
+          startDate.setDate(now.getDate() - 30);
+      }
+
+      // Get documents created in timeframe
+      const newDocuments = await prisma.document.count({
+        where: {
+          projectId,
+          createdAt: { gte: startDate },
+        },
+      });
+
+      // Get versions created in timeframe
+      const newVersions = await prisma.version.count({
+        where: {
+          document: { projectId },
+          createdAt: { gte: startDate },
+        },
+      });
+
+      // Get comments in timeframe
+      const newComments = await prisma.comment.count({
+        where: {
+          document: { projectId },
+          createdAt: { gte: startDate },
+        },
+      });
+
+      return {
         projectId,
         timeframe,
-      });
-      
-      return result.success ? result.data : null;
+        totalDocuments: project.documents.length,
+        totalCollaborators: project.collaborators.length,
+        newDocuments,
+        newVersions,
+        newComments,
+        period: {
+          start: startDate.toISOString(),
+          end: now.toISOString(),
+        },
+      };
     },
   },
 
@@ -217,14 +486,62 @@ export const enhancedResolvers = {
     createProject: async (
       _: any,
       { input }: { input: any },
-      { databaseService, auth }: EnhancedContext
+      { prisma, auth, storageService }: EnhancedContext
     ) => {
       const userId = requireAuth(auth);
-      
-      const project = await databaseService.createProject({
-        ...input,
-        ownerId: userId,
+
+      // Ensure user exists
+      const user = await prisma.user.upsert({
+        where: { address: userId },
+        update: {},
+        create: { address: userId },
       });
+
+      // Create project
+      const project = await prisma.project.create({
+        data: {
+          name: input.name,
+          slug: input.slug,
+          description: input.description,
+          ownerId: user.id,
+          visibility: input.visibility || 'PRIVATE',
+          settings: input.settings || {},
+        },
+        include: {
+          owner: true,
+        },
+      });
+
+      // Upload project metadata to Irys
+      try {
+        const metadata = {
+          type: 'project',
+          projectId: project.id,
+          name: project.name,
+          slug: project.slug,
+          createdAt: project.createdAt,
+        };
+
+        const uploadResult = await storageService.uploadFile('metadata', {
+          name: `project-${project.id}.json`,
+          data: Buffer.from(JSON.stringify(metadata)),
+          type: 'application/json',
+          size: Buffer.byteLength(JSON.stringify(metadata)),
+        }, {
+          metadata: { projectId: project.id },
+        });
+
+        // Update project with Irys ID
+        await prisma.project.update({
+          where: { id: project.id },
+          data: {
+            irysId: uploadResult.id,
+            permanentUrl: uploadResult.permanentUrl,
+          },
+        });
+      } catch (error) {
+        console.error('Failed to upload project to Irys:', error);
+      }
 
       // Publish project creation event
       await pubsub.publish(PROJECT_UPDATED, {
@@ -239,35 +556,152 @@ export const enhancedResolvers = {
       return project;
     },
 
+    updateProject: async (
+      _: any,
+      { id, input }: { id: string; input: any },
+      { prisma, auth }: EnhancedContext
+    ) => {
+      const userId = requireAuth(auth);
+
+      // Check if user is owner
+      const project = await prisma.project.findUnique({
+        where: { id },
+        include: { owner: true },
+      });
+
+      if (!project || project.owner.address !== userId) {
+        throw new Error('Not authorized to update this project');
+      }
+
+      return await prisma.project.update({
+        where: { id },
+        data: {
+          name: input.name,
+          description: input.description,
+          visibility: input.visibility,
+          settings: input.settings,
+        },
+        include: {
+          owner: true,
+          documents: true,
+          collaborators: {
+            include: { user: true },
+          },
+        },
+      });
+    },
+
+    deleteProject: async (
+      _: any,
+      { id }: { id: string },
+      { prisma, auth }: EnhancedContext
+    ) => {
+      const userId = requireAuth(auth);
+
+      // Check if user is owner
+      const project = await prisma.project.findUnique({
+        where: { id },
+        include: { owner: true },
+      });
+
+      if (!project || project.owner.address !== userId) {
+        throw new Error('Not authorized to delete this project');
+      }
+
+      await prisma.project.delete({
+        where: { id },
+      });
+
+      return true;
+    },
+
     // Document Mutations
     createDocument: async (
       _: any,
       { input }: { input: any },
-      { databaseService, vectorDBService, analyticsService, auth }: EnhancedContext
+      { prisma, auth, storageService }: EnhancedContext
     ) => {
       const userId = requireAuth(auth);
-      
-      const document = await databaseService.createDocument({
-        ...input,
-        authorId: userId,
+
+      // Ensure user exists
+      const user = await prisma.user.upsert({
+        where: { address: userId },
+        update: {},
+        create: { address: userId },
       });
 
-      // Index document for search
-      await vectorDBService.indexDocument(
-        document.id,
-        document.content,
-        {
-          title: document.title,
-          path: document.path,
-          projectId: document.projectId,
-        }
-      );
+      // Generate content hash
+      const crypto = await import('crypto');
+      const contentHash = crypto.createHash('sha256').update(input.content).digest('hex');
 
-      // Track analytics
-      await analyticsService.trackEvent('document_created', {
-        documentId: document.id,
-        projectId: document.projectId,
-        userId,
+      // Create document
+      const document = await prisma.document.create({
+        data: {
+          projectId: input.projectId,
+          path: input.path,
+          title: input.title,
+          content: input.content,
+          contentHash,
+          authorId: user.id,
+          order: input.order || 0,
+          metadata: input.metadata || {},
+          tags: input.tags || [],
+        },
+        include: {
+          project: true,
+          author: true,
+        },
+      });
+
+      // Upload document to Irys in background
+      setImmediate(async () => {
+        try {
+          const docData = {
+            id: document.id,
+            title: document.title,
+            content: document.content,
+            projectId: document.projectId,
+            authorId: document.authorId,
+            createdAt: document.createdAt,
+          };
+
+          const uploadResult = await storageService.uploadFile('documents', {
+            name: `document-${document.id}.json`,
+            data: Buffer.from(JSON.stringify(docData)),
+            type: 'application/json',
+            size: Buffer.byteLength(JSON.stringify(docData)),
+          }, {
+            metadata: {
+              documentId: document.id,
+              projectId: document.projectId,
+            },
+          });
+
+          // Update document with Irys info
+          await prisma.document.update({
+            where: { id: document.id },
+            data: {
+              irysId: uploadResult.id,
+              irysProof: uploadResult.receipt ? JSON.stringify(uploadResult.receipt) : null,
+            },
+          });
+
+          // Record transaction
+          await prisma.irysTransaction.create({
+            data: {
+              transactionId: uploadResult.id,
+              type: 'upload',
+              status: 'confirmed',
+              size: BigInt(uploadResult.size),
+              documentId: document.id,
+              gatewayUrl: uploadResult.permanentUrl,
+              receipt: uploadResult.receipt || {},
+              confirmedAt: new Date(),
+            },
+          });
+        } catch (error) {
+          console.error('Failed to upload document to Irys:', error);
+        }
       });
 
       // Publish document creation event
@@ -275,7 +709,7 @@ export const enhancedResolvers = {
         documentChanged: {
           type: 'CREATED',
           documentId: document.id,
-          userId,
+          userId: user.id,
           change: { type: 'create', data: document },
           timestamp: new Date().toISOString(),
         },
@@ -287,86 +721,328 @@ export const enhancedResolvers = {
     updateDocument: async (
       _: any,
       { input }: { input: any },
-      { databaseService, vectorDBService, realtimeService, auth }: EnhancedContext
+      { prisma, auth, realtimeService }: EnhancedContext
     ) => {
       const userId = requireAuth(auth);
-      
-      // Update document
-      const document = await databaseService.createDocument({
-        ...input,
-        authorId: userId,
+
+      // Check if user has permission
+      const document = await prisma.document.findUnique({
+        where: { id: input.id },
+        include: {
+          author: true,
+          project: {
+            include: {
+              owner: true,
+              collaborators: true,
+            },
+          },
+        },
       });
 
-      // Update search index
-      if (input.content) {
-        await vectorDBService.indexDocument(
-          document.id,
-          input.content,
-          {
-            title: input.title || document.title,
-            path: document.path,
-            projectId: document.projectId,
-          }
-        );
+      if (!document) {
+        throw new Error('Document not found');
       }
 
-      // Broadcast real-time update
-      await realtimeService.streamChange(`doc:${document.id}`, userId, {
-        operation: 'replace',
-        position: 0,
-        text: input.content || document.content,
+      const user = await prisma.user.findUnique({
+        where: { address: userId },
       });
 
-      return document;
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      const isAuthor = document.authorId === user.id;
+      const isOwner = document.project.owner.address === userId;
+      const isCollaborator = document.project.collaborators.some(c => c.userId === user.id);
+
+      if (!isAuthor && !isOwner && !isCollaborator) {
+        throw new Error('Not authorized to update this document');
+      }
+
+      // Generate new content hash if content changed
+      let contentHash = document.contentHash;
+      if (input.content && input.content !== document.content) {
+        const crypto = await import('crypto');
+        contentHash = crypto.createHash('sha256').update(input.content).digest('hex');
+      }
+
+      // Update document
+      const updatedDocument = await prisma.document.update({
+        where: { id: input.id },
+        data: {
+          ...(input.title && { title: input.title }),
+          ...(input.content && {
+            content: input.content,
+            contentHash,
+            version: document.version + 1,
+          }),
+          ...(input.metadata && { metadata: input.metadata }),
+        },
+        include: {
+          project: true,
+          author: true,
+          versions: {
+            orderBy: { versionNumber: 'desc' },
+            take: 5,
+          },
+        },
+      });
+
+      // Broadcast real-time update
+      try {
+        await realtimeService.streamChange(`doc:${document.id}`, userId, {
+          operation: 'replace',
+          position: 0,
+          text: input.content || document.content,
+        });
+      } catch (error) {
+        console.error('Failed to broadcast realtime update:', error);
+      }
+
+      return updatedDocument;
+    },
+
+    deleteDocument: async (
+      _: any,
+      { id }: { id: string },
+      { prisma, auth }: EnhancedContext
+    ) => {
+      const userId = requireAuth(auth);
+
+      const document = await prisma.document.findUnique({
+        where: { id },
+        include: {
+          author: true,
+          project: { include: { owner: true } },
+        },
+      });
+
+      if (!document) {
+        throw new Error('Document not found');
+      }
+
+      const user = await prisma.user.findUnique({
+        where: { address: userId },
+      });
+
+      const isAuthor = document.authorId === user?.id;
+      const isOwner = document.project.owner.address === userId;
+
+      if (!isAuthor && !isOwner) {
+        throw new Error('Not authorized to delete this document');
+      }
+
+      await prisma.document.delete({
+        where: { id },
+      });
+
+      return true;
     },
 
     publishDocument: async (
       _: any,
       { id }: { id: string },
-      { databaseService, functionService }: EnhancedContext
+      { prisma, auth }: EnhancedContext
     ) => {
-      // Trigger publish workflow
-      await functionService.invoke('publish-document', {
-        documentId: id,
-        tasks: ['generate_pdf', 'create_snapshot', 'notify_subscribers'],
+      const userId = requireAuth(auth);
+
+      const document = await prisma.document.findUnique({
+        where: { id },
+        include: {
+          author: true,
+          project: { include: { owner: true } },
+        },
       });
 
-      // Update document status
-      // Implementation would update document in database
-      return null; // Placeholder
+      if (!document) {
+        throw new Error('Document not found');
+      }
+
+      const user = await prisma.user.findUnique({
+        where: { address: userId },
+      });
+
+      const isAuthor = document.authorId === user?.id;
+      const isOwner = document.project.owner.address === userId;
+
+      if (!isAuthor && !isOwner) {
+        throw new Error('Not authorized to publish this document');
+      }
+
+      return await prisma.document.update({
+        where: { id },
+        data: {
+          publishedAt: new Date(),
+        },
+        include: {
+          project: true,
+          author: true,
+        },
+      });
     },
 
     // Version Mutations
     createVersion: async (
       _: any,
       { input }: { input: any },
-      { databaseService, auth }: EnhancedContext
+      { prisma, auth }: EnhancedContext
     ) => {
       const userId = requireAuth(auth);
-      
-      const version = await databaseService.createVersion({
-        ...input,
-        authorId: userId,
-        versionNumber: 1, // Would calculate next version number
+
+      const user = await prisma.user.findUnique({
+        where: { address: userId },
       });
 
-      return version;
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      // Get current version number
+      const lastVersion = await prisma.version.findFirst({
+        where: { documentId: input.documentId },
+        orderBy: { versionNumber: 'desc' },
+      });
+
+      const nextVersionNumber = (lastVersion?.versionNumber || 0) + 1;
+
+      // Calculate content diff (simplified)
+      const document = await prisma.document.findUnique({
+        where: { id: input.documentId },
+      });
+
+      let contentDiff = '';
+      if (document) {
+        contentDiff = `Changed from version ${document.version}`;
+      }
+
+      return await prisma.version.create({
+        data: {
+          documentId: input.documentId,
+          versionNumber: nextVersionNumber,
+          content: input.content,
+          contentDiff,
+          authorId: user.id,
+          commitMessage: input.commitMessage,
+          timestamp: new Date(),
+        },
+        include: {
+          document: true,
+          author: true,
+        },
+      });
+    },
+
+    revertToVersion: async (
+      _: any,
+      { documentId, versionNumber }: { documentId: string; versionNumber: number },
+      { prisma, auth }: EnhancedContext
+    ) => {
+      const userId = requireAuth(auth);
+
+      const version = await prisma.version.findUnique({
+        where: {
+          documentId_versionNumber: {
+            documentId,
+            versionNumber,
+          },
+        },
+      });
+
+      if (!version) {
+        throw new Error('Version not found');
+      }
+
+      return await prisma.document.update({
+        where: { id: documentId },
+        data: {
+          content: version.content,
+          version: version.versionNumber,
+        },
+        include: {
+          project: true,
+          author: true,
+        },
+      });
     },
 
     // Collaboration Mutations
     addCollaborator: async (
       _: any,
       { input }: { input: any },
-      { databaseService, auth }: EnhancedContext
+      { prisma, auth }: EnhancedContext
     ) => {
       const inviterId = requireAuth(auth);
-      
-      const collaborator = await databaseService.addCollaborator({
-        ...input,
-        invitedBy: inviterId,
+
+      // Check if inviter is project owner or admin
+      const project = await prisma.project.findUnique({
+        where: { id: input.projectId },
+        include: { owner: true },
       });
 
-      return collaborator;
+      if (!project) {
+        throw new Error('Project not found');
+      }
+
+      const inviter = await prisma.user.findUnique({
+        where: { address: inviterId },
+      });
+
+      if (!inviter || project.owner.address !== inviterId) {
+        throw new Error('Not authorized to add collaborators');
+      }
+
+      // Ensure collaborator user exists
+      const collaboratorUser = await prisma.user.findUnique({
+        where: { id: input.userId },
+      });
+
+      if (!collaboratorUser) {
+        throw new Error('Collaborator user not found');
+      }
+
+      return await prisma.collaborator.create({
+        data: {
+          projectId: input.projectId,
+          userId: input.userId,
+          role: input.role || 'VIEWER',
+          permissions: input.permissions || [],
+        },
+        include: {
+          project: true,
+          user: true,
+        },
+      });
+    },
+
+    updateCollaboratorRole: async (
+      _: any,
+      { collaboratorId, role }: { collaboratorId: string; role: string },
+      { prisma, auth }: EnhancedContext
+    ) => {
+      const userId = requireAuth(auth);
+
+      return await prisma.collaborator.update({
+        where: { id: collaboratorId },
+        data: { role },
+        include: {
+          project: true,
+          user: true,
+        },
+      });
+    },
+
+    removeCollaborator: async (
+      _: any,
+      { collaboratorId }: { collaboratorId: string },
+      { prisma, auth }: EnhancedContext
+    ) => {
+      const userId = requireAuth(auth);
+
+      await prisma.collaborator.delete({
+        where: { id: collaboratorId },
+      });
+
+      return true;
     },
 
     joinCollaboration: async (
@@ -389,13 +1065,32 @@ export const enhancedResolvers = {
     createComment: async (
       _: any,
       { input }: { input: any },
-      { databaseService, auth }: EnhancedContext
+      { prisma, auth }: EnhancedContext
     ) => {
       const userId = requireAuth(auth);
-      
-      const comment = await databaseService.createComment({
-        ...input,
-        authorId: userId,
+
+      const user = await prisma.user.findUnique({
+        where: { address: userId },
+      });
+
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      const comment = await prisma.comment.create({
+        data: {
+          documentId: input.documentId,
+          content: input.content,
+          authorId: user.id,
+          ...(input.versionId && { versionId: input.versionId }),
+          ...(input.lineStart && { lineStart: input.lineStart }),
+          ...(input.lineEnd && { lineEnd: input.lineEnd }),
+          ...(input.threadId && { parentId: input.threadId }),
+        },
+        include: {
+          document: true,
+          author: true,
+        },
       });
 
       // Publish comment event
@@ -404,6 +1099,41 @@ export const enhancedResolvers = {
       });
 
       return comment;
+    },
+
+    resolveComment: async (
+      _: any,
+      { commentId }: { commentId: string },
+      { prisma, auth }: EnhancedContext
+    ) => {
+      const userId = requireAuth(auth);
+
+      return await prisma.comment.update({
+        where: { id: commentId },
+        data: {
+          resolved: true,
+          resolvedAt: new Date(),
+          resolvedBy: userId,
+        },
+        include: {
+          document: true,
+          author: true,
+        },
+      });
+    },
+
+    deleteComment: async (
+      _: any,
+      { commentId }: { commentId: string },
+      { prisma, auth }: EnhancedContext
+    ) => {
+      const userId = requireAuth(auth);
+
+      await prisma.comment.delete({
+        where: { id: commentId },
+      });
+
+      return true;
     },
 
     // AI Function Mutations
