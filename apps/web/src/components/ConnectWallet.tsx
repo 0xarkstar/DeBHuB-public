@@ -8,13 +8,24 @@ import { irysVM } from '@/lib/wagmi';
 import { useState, useEffect } from 'react';
 
 export function ConnectWallet() {
-  const { address, isConnected } = useAccount();
-  const chainId = useChainId();
-  const { switchChain } = useSwitchChain();
+  const [mounted, setMounted] = useState(false);
+  const account = useAccount();
+  const chainIdHook = useChainId();
+  const switchChainHook = useSwitchChain();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
 
-  const isWrongNetwork = isConnected && chainId !== irysVM.id;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Safe access to wagmi hooks after mount
+  const address = mounted ? account.address : undefined;
+  const isConnected = mounted ? account.isConnected : false;
+  const chainId = mounted ? chainIdHook : undefined;
+  const switchChain = mounted ? switchChainHook.switchChain : undefined;
+
+  const isWrongNetwork = isConnected && chainId && chainId !== irysVM.id;
 
   // Check auth status from localStorage
   useEffect(() => {
@@ -51,7 +62,9 @@ export function ConnectWallet() {
   };
 
   const handleSwitchNetwork = () => {
-    switchChain({ chainId: irysVM.id });
+    if (switchChain) {
+      switchChain({ chainId: irysVM.id });
+    }
   };
 
   return (

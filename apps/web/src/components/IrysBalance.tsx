@@ -4,43 +4,25 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { Button } from './ui/button'
 import { Wallet, RefreshCw, ExternalLink } from 'lucide-react'
-import { useWalletStore } from '../store/wallet'
-import { formatIrysBalance } from '@irysbase/shared'
-import { ethers } from 'ethers'
+import { useAccount, useBalance } from 'wagmi'
+import { formatEther } from 'viem'
 
 export function IrysBalance() {
-  const { address, isConnected, provider } = useWalletStore()
-  const [balance, setBalance] = useState<string>('0')
-  const [isLoading, setIsLoading] = useState(false)
+  const { address, isConnected } = useAccount()
+  const { data: balanceData, refetch, isLoading } = useBalance({
+    address: address,
+  })
+
   const [fundingUrl, setFundingUrl] = useState<string>('')
 
-  const fetchBalance = async () => {
-    if (!address || !provider || !isConnected) {
-      setBalance('0')
-      return
-    }
-
-    setIsLoading(true)
-    try {
-      const balance = await provider.getBalance(address)
-      setBalance(balance.toString())
-      
-      // Set funding URL for IrysVM
-      setFundingUrl(`https://faucet.irys.computer?address=${address}`)
-    } catch (error) {
-      console.error('Failed to fetch Irys balance:', error)
-      setBalance('0')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   useEffect(() => {
-    fetchBalance()
-  }, [address, isConnected, provider])
+    if (address) {
+      setFundingUrl(`https://faucet.irys.computer?address=${address}`)
+    }
+  }, [address])
 
   const handleRefresh = () => {
-    fetchBalance()
+    refetch()
   }
 
   const handleFunding = () => {
@@ -53,12 +35,16 @@ export function IrysBalance() {
     return null
   }
 
+  const balance = balanceData?.value || BigInt(0)
+  const formattedBalance = formatEther(balance)
+  const balanceNum = parseFloat(formattedBalance)
+
   return (
     <Card className="w-full">
       <CardHeader className="pb-3">
         <CardTitle className="text-sm font-medium flex items-center gap-2">
           <Wallet className="h-4 w-4" />
-          Irys Balance
+          Balance
         </CardTitle>
       </CardHeader>
       <CardContent className="pt-0">
@@ -68,10 +54,12 @@ export function IrysBalance() {
               {isLoading ? (
                 <RefreshCw className="h-5 w-5 animate-spin" />
               ) : (
-                formatIrysBalance(balance)
+                balanceNum.toFixed(4)
               )}
             </span>
-            <span className="text-xs text-muted-foreground">IRYS</span>
+            <span className="text-xs text-muted-foreground">
+              {balanceData?.symbol || 'ETH'}
+            </span>
           </div>
           <div className="flex gap-2">
             <Button
@@ -92,11 +80,11 @@ export function IrysBalance() {
             </Button>
           </div>
         </div>
-        
-        {parseFloat(ethers.formatEther(balance)) < 0.01 && (
+
+        {balanceNum < 0.01 && (
           <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-md">
             <p className="text-xs text-yellow-700 dark:text-yellow-300">
-              Low balance. Consider funding your wallet to create posts.
+              Low balance. Consider funding your wallet to create documents.
             </p>
           </div>
         )}

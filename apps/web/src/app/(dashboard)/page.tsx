@@ -10,8 +10,9 @@ import { ProjectCard } from '@/components/dashboard/ProjectCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { GET_MY_PROJECTS } from '@/lib/graphql/queries';
+import { WalletGuard } from '@/components/WalletGuard';
 
-export default function DashboardPage() {
+function DashboardContent() {
   const { isConnected } = useAccount();
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -110,5 +111,13 @@ export default function DashboardPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <WalletGuard>
+      <DashboardContent />
+    </WalletGuard>
   );
 }

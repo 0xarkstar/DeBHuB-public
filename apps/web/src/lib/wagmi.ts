@@ -30,5 +30,5 @@ export const config = getDefaultConfig({
     [mainnet.id]: http(),
     [sepolia.id]: http(),
   },
-  ssr: true,
+  ssr: false, // Disable SSR for WalletConnect
 });

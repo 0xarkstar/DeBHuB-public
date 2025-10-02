@@ -15,12 +15,12 @@ import { useState } from 'react';
 
 import { ConnectWallet } from '@/components/ConnectWallet';
 import { NetworkStatus } from '@/components/shared/NetworkStatus';
+import { IrysBalance } from '@/components/IrysBalance';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-  { name: 'Projects', href: '/projects', icon: FolderOpen },
   { name: 'Search', href: '/search', icon: Search },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
@@ -61,8 +61,13 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           </div>
 
           {/* Network Status */}
-          <div className="mb-6">
+          <div className="mb-4">
             <NetworkStatus compact />
+          </div>
+
+          {/* Irys Balance */}
+          <div className="mb-6">
+            <IrysBalance />
           </div>
 
           {/* Navigation */}
