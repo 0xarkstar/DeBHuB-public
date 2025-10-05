@@ -4,6 +4,7 @@ import {
   Folder,
   Database,
   Link2,
+  BarChart3,
   Search,
   Settings,
   Menu,
@@ -20,6 +21,7 @@ const navigation = [
   { name: 'Projects', href: '/', icon: Folder },
   { name: 'Storage', href: '/storage', icon: Database },
   { name: 'Blockchain', href: '/blockchain', icon: Link2 },
+  { name: 'Usage', href: '/usage', icon: BarChart3 },
   { name: 'Search', href: '/search', icon: Search },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];

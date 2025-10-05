@@ -61,6 +61,11 @@ export const GET_MY_PROJECTS = gql`
       owner {
         address
       }
+      storage {
+        irysGB
+        monthlyCostUSD
+      }
+      syncStatus
     }
   }
 `;
@@ -105,6 +110,11 @@ export const GET_PUBLIC_PROJECTS = gql`
       owner {
         address
       }
+      storage {
+        irysGB
+        monthlyCostUSD
+      }
+      syncStatus
     }
   }
 `;

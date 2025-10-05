@@ -10,6 +10,7 @@ import SearchPage from './pages/SearchPage'
 import SettingsPage from './pages/SettingsPage'
 import StoragePage from './pages/StoragePage'
 import BlockchainPage from './pages/BlockchainPage'
+import UsagePage from './pages/UsagePage'
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="search" element={<SearchPage />} />
             <Route path="storage" element={<StoragePage />} />
             <Route path="blockchain" element={<BlockchainPage />} />
+            <Route path="usage" element={<UsagePage />} />
             <Route path="settings" element={<SettingsPage />} />
           </Route>
         </Routes>

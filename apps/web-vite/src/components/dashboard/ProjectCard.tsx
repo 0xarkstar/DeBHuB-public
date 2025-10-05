@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Folder, FileText, Users, Clock, MoreVertical, Globe, Lock, EyeOff } from 'lucide-react';
+import { Folder, FileText, Users, Clock, MoreVertical, Globe, Lock, EyeOff, HardDrive, CheckCircle, AlertCircle, DollarSign, Database } from 'lucide-react';
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -17,6 +17,11 @@ interface ProjectCardProps {
     owner?: {
       address: string;
     };
+    storage?: {
+      irysGB: number;
+      monthlyCostUSD: number;
+    };
+    syncStatus?: 'synced' | 'pending' | 'conflict';
   };
   showOwner?: boolean;
   readOnly?: boolean;
@@ -46,6 +51,28 @@ export function ProjectCard({ project, showOwner = false, readOnly = false }: Pr
     if (diffHours < 24) return `${diffHours}h ago`;
     if (diffDays < 30) return `${diffDays}d ago`;
     return date.toLocaleDateString();
+  };
+
+  const getSyncStatusIcon = () => {
+    if (!project.syncStatus) return null;
+
+    switch (project.syncStatus) {
+      case 'synced':
+        return <CheckCircle className="h-3.5 w-3.5 text-green-600" />;
+      case 'pending':
+        return <AlertCircle className="h-3.5 w-3.5 text-orange-600" />;
+      case 'conflict':
+        return <AlertCircle className="h-3.5 w-3.5 text-red-600" />;
+    }
+  };
+
+  const formatCurrency = (amount: number): string => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount);
   };
 
   return (
@@ -106,6 +133,44 @@ export function ProjectCard({ project, showOwner = false, readOnly = false }: Pr
           </p>
         )}
 
+        {/* Storage Metrics */}
+        {project.storage && (
+          <div className="mt-3 space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 px-2 py-1 bg-purple-50 text-purple-700 rounded text-xs">
+                  <HardDrive className="h-3 w-3" />
+                  <span className="font-medium">{project.storage.irysGB.toFixed(2)} GB on Irys</span>
+                </div>
+                {project.syncStatus && (
+                  <div className={cn(
+                    'flex items-center gap-1 px-2 py-1 rounded text-xs',
+                    project.syncStatus === 'synced' && 'bg-green-50 text-green-700',
+                    project.syncStatus === 'pending' && 'bg-orange-50 text-orange-700',
+                    project.syncStatus === 'conflict' && 'bg-red-50 text-red-700'
+                  )}>
+                    {getSyncStatusIcon()}
+                    <span className="capitalize">{project.syncStatus}</span>
+                  </div>
+                )}
+              </div>
+              {!readOnly && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  asChild
+                  className="h-6 text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <Link to="/storage" className="flex items-center gap-1">
+                    <Database className="h-3 w-3" />
+                    View Storage
+                  </Link>
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
+
         {showOwner && project.owner && (
           <div className="mt-3 text-xs text-muted-foreground">
             Owner: {project.owner.address.slice(0, 6)}...{project.owner.address.slice(-4)}
@@ -124,6 +189,12 @@ export function ProjectCard({ project, showOwner = false, readOnly = false }: Pr
               <Users className="h-4 w-4" />
               <span>{project.collaboratorsCount}</span>
             </div>
+            {project.storage && (
+              <div className="flex items-center gap-1.5 text-green-600 font-medium">
+                <DollarSign className="h-4 w-4" />
+                <span>{formatCurrency(project.storage.monthlyCostUSD)}/mo</span>
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-1.5 text-xs">
             <Clock className="h-3.5 w-3.5" />

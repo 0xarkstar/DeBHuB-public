@@ -23,7 +23,31 @@ function DashboardContent() {
   );
 
   const projects = data?.myProjects || data?.publicProjects || [];
-  const filteredProjects = projects.filter((project: any) =>
+
+  // Add mock storage data for projects (until backend implements storage metrics)
+  const projectsWithStorage = projects.map((project: any, index: number) => {
+    // Only add storage data if not already present from backend
+    if (project.storage && project.syncStatus !== undefined) {
+      return project;
+    }
+
+    // Mock storage metrics based on document count
+    const baseGB = Math.max(0.01, project.documentsCount * 0.15); // ~150MB per doc
+    const variation = (index % 5) * 0.1; // Add some variation
+    const irysGB = parseFloat((baseGB + variation).toFixed(2));
+    const monthlyCostUSD = parseFloat((irysGB * 2.5).toFixed(2)); // ~$2.50/GB
+
+    const syncStatuses = ['synced', 'pending', 'conflict'] as const;
+    const syncStatus = syncStatuses[index % 3];
+
+    return {
+      ...project,
+      storage: { irysGB, monthlyCostUSD },
+      syncStatus,
+    };
+  });
+
+  const filteredProjects = projectsWithStorage.filter((project: any) =>
     project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     project.slug.toLowerCase().includes(searchQuery.toLowerCase()) ||
     project.description?.toLowerCase().includes(searchQuery.toLowerCase())
