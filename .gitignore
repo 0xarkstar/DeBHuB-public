@@ -1,116 +1,179 @@
-# Dependencies
+# ============================================
+# IrysBase .gitignore
+# ============================================
+
+# -------------------- Dependencies --------------------
 node_modules/
-.pnp
+.pnp/
 .pnp.js
-
-# Production builds
-.next/
-dist/
-build/
-
-# Environment files
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
-coverage/
-*.lcov
-
-# nyc test coverage
-.nyc_output
-
-# Dependency directories
 jspm_packages/
+.yarn/
+!.yarn/releases
+!.yarn/plugins
 
-# Optional npm cache directory
-.npm
+# -------------------- Build Outputs --------------------
+# Next.js
+.next/
+out/
 
-# Optional eslint cache
-.eslintcache
+# Vite
+dist/
+dist-ssr/
 
-# Optional REPL history
-.node_repl_history
-
-# Output of 'npm pack'
-*.tgz
-
-# Yarn Integrity file
-.yarn-integrity
-
-# parcel-bundler cache (https://parceljs.org/)
-.cache
-.parcel-cache
-
-# next.js build output
-.next
-
-# nuxt.js build output
-.nuxt
-
-# vuepress build output
-.vuepress/dist
-
-# Serverless directories
-.serverless/
-
-# FuseBox cache
-.fusebox/
-
-# DynamoDB Local files
-.dynamodb/
-
-# TernJS port file
-.tern-port
-
-# Stores VSCode versions used for testing VSCode extensions
-.vscode-test
+# General builds
+build/
+*.local
 
 # Turbo
-.turbo
-
-# Hardhat
-artifacts/
-cache/
-typechain-types/
+.turbo/
 
 # TypeScript
 *.tsbuildinfo
 tsconfig.tsbuildinfo
 
+# -------------------- Environment Variables --------------------
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+
+# Claude Code settings
+.claude/settings.local.json
+
+# -------------------- Logs --------------------
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pnpm-debug.log*
+
+# -------------------- Runtime Data --------------------
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# -------------------- Testing --------------------
+# Coverage
+coverage/
+*.lcov
+.nyc_output/
+
+# Playwright
+playwright-report/
+test-results/
+playwright/.cache/
+
+# -------------------- Cache --------------------
+# General cache
+.cache/
+.parcel-cache/
+
+# Optional caches
+.npm/
+.eslintcache
+.node_repl_history
+
+# -------------------- Database --------------------
 # Prisma
-prisma/migrations/**/migration.sql.bak
+**/prisma/migrations/**/migration.sql.bak
+**/prisma/dev.db
+**/prisma/dev.db-journal
 
-# MacOS
-.DS_Store
+# PostgreSQL dumps
+*.sql
+*.dump
 
-# IDEs
+# -------------------- Blockchain --------------------
+# Hardhat
+artifacts/
+cache/
+typechain-types/
+deployments/localhost/
+
+# Private keys (NEVER commit!)
+*.key
+*.pem
+.secret
+
+# -------------------- IDEs & Editors --------------------
+# VSCode
 .vscode/
+.vscode-test/
+*.code-workspace
+
+# JetBrains
 .idea/
+*.iml
+*.iws
+*.ipr
+
+# Vim
 *.swp
 *.swo
 *~
+.vim/
 
-# Testing
-.nyc_output
-playwright-report/
-test-results/
+# Emacs
+\#*\#
+.\#*
 
-# Misc
-*.log
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# -------------------- Operating Systems --------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+nul
+
+# Linux
+.directory
+.Trash-*
+
+# -------------------- Temporary Files --------------------
 .temp/
 .tmp/
+*.tmp
+*.bak
+*.backup
+*.orig
+
+# -------------------- Package Outputs --------------------
+*.tgz
+*.tar.gz
+*.zip
+
+# -------------------- Serverless --------------------
+.serverless/
+.fusebox/
+.dynamodb/
+
+# -------------------- Documentation --------------------
+# Generated docs (if using doc generators)
+docs/api-generated/
+.docusaurus/
+
+# -------------------- Monitoring & Analytics --------------------
+.sentryclirc
+
+# -------------------- Misc --------------------
+.tern-port
