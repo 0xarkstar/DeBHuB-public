@@ -10,14 +10,17 @@ A production-ready Web3 Backend-as-a-Service (BaaS) platform that combines Irys 
 
 IrysBase is a comprehensive platform that provides:
 
-- **Permanent Data Storage** - Immutable storage on Irys DataChain
-- **Fast Querying** - PostgreSQL for complex queries and real-time operations
-- **Real-time Collaboration** - WebSocket-based document collaboration with cursor sharing
-- **Programmable Data** - Smart rules, triggers, and automated workflows
-- **Edge Computing** - Deploy functions to global edge locations
-- **Advanced Search** - Full-text and semantic search capabilities
-- **Analytics & Insights** - Built-in metrics, activity tracking, and reporting
-- **GraphQL API** - Modern API with queries, mutations, and subscriptions
+- **Permanent Data Storage** ✅ - Immutable storage on Irys DataChain
+- **Fast Querying** ✅ - PostgreSQL for complex queries and real-time operations
+- **Real-time Collaboration** ✅ - WebSocket-based document collaboration with cursor sharing
+- **Programmable Data** ⚠️ - Smart rules, triggers, and automated workflows (70% complete)
+- **Edge Computing** ⚠️ - Deploy functions to global edge locations (50% complete, security improvements needed)
+- **Advanced Search** ✅ - Full-text search capabilities (semantic search 40% complete)
+- **Analytics & Insights** ✅ - Built-in metrics, activity tracking, and reporting
+- **GraphQL API** ✅ - Modern API with queries, mutations, and subscriptions
+
+**Platform Status:** Production-ready for core document management (60-65% overall completion)
+**See [PROJECT_STATUS.md](./PROJECT_STATUS.md) for detailed feature completion.**
 
 ## 📚 Documentation
 
@@ -92,12 +95,13 @@ IrysBase implements a hybrid architecture combining decentralized and traditiona
 - **WebSocket (ws)** - Real-time bidirectional communication
 
 ### Frontend
-- **Next.js 14** - React framework with App Router
-- **Apollo Client** - GraphQL client with caching
-- **Zustand** - Lightweight state management
+- **Next.js 14** - React framework with App Router (production-ready)
+- **Apollo Client** - GraphQL client with caching and error handling
+- **Wagmi v2** - React hooks for Web3 wallet integration
+- **RainbowKit** - Beautiful wallet connection UI
 - **shadcn/ui** - Accessible component library
 - **Tailwind CSS** - Utility-first CSS framework
-- **ethers.js v6** - Ethereum wallet integration
+- **Viem** - TypeScript Ethereum library
 
 ### Storage & Database
 - **PostgreSQL** - Relational database for queries
