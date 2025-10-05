@@ -19,9 +19,10 @@ interface ProjectCardProps {
     };
   };
   showOwner?: boolean;
+  readOnly?: boolean;
 }
 
-export function ProjectCard({ project, showOwner = false }: ProjectCardProps) {
+export function ProjectCard({ project, showOwner = false, readOnly = false }: ProjectCardProps) {
   const getVisibilityIcon = () => {
     switch (project.visibility) {
       case 'PUBLIC':
@@ -82,13 +83,15 @@ export function ProjectCard({ project, showOwner = false }: ProjectCardProps) {
               </div>
             </div>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="opacity-0 group-hover:opacity-100 transition-opacity"
-          >
-            <MoreVertical className="h-4 w-4" />
-          </Button>
+          {!readOnly && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <MoreVertical className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </CardHeader>
 

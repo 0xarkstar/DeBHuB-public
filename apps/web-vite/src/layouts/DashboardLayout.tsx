@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import {
-  LayoutDashboard,
+  Folder,
+  Database,
+  Link2,
   Search,
   Settings,
   Menu,
@@ -15,7 +17,9 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 const navigation = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard },
+  { name: 'Projects', href: '/', icon: Folder },
+  { name: 'Storage', href: '/storage', icon: Database },
+  { name: 'Blockchain', href: '/blockchain', icon: Link2 },
   { name: 'Search', href: '/search', icon: Search },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];

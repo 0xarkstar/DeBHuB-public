@@ -28,14 +28,18 @@ export function Providers({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  // Before wallet providers load, render without them
+  // Before wallet providers load, show loading
   if (!mounted || !walletComponents) {
     return (
-      <QueryClientProvider client={queryClient}>
-        <ApolloWrapper>
-          {children}
-        </ApolloWrapper>
-      </QueryClientProvider>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        background: '#0f172a'
+      }}>
+        <div>Loading...</div>
+      </div>
     );
   }
 

@@ -7,6 +7,9 @@ import DocumentPage from './pages/DocumentPage'
 import NewProjectPage from './pages/NewProjectPage'
 import ProjectPage from './pages/ProjectPage'
 import SearchPage from './pages/SearchPage'
+import SettingsPage from './pages/SettingsPage'
+import StoragePage from './pages/StoragePage'
+import BlockchainPage from './pages/BlockchainPage'
 
 function App() {
   return (
@@ -19,6 +22,9 @@ function App() {
             <Route path="projects/new" element={<NewProjectPage />} />
             <Route path="projects/:id" element={<ProjectPage />} />
             <Route path="search" element={<SearchPage />} />
+            <Route path="storage" element={<StoragePage />} />
+            <Route path="blockchain" element={<BlockchainPage />} />
+            <Route path="settings" element={<SettingsPage />} />
           </Route>
         </Routes>
       </Providers>

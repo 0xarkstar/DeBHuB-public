@@ -4,7 +4,13 @@ Design guidelines for building IrysBase user interfaces.
 
 ## 🎯 Core Design Philosophy
 
-IrysBase is a **distributed BaaS platform** that should provide a **developer-friendly** experience while **abstracting blockchain complexity**. We benchmark Supabase's intuitive developer experience while reflecting the unique characteristics of distributed systems.
+IrysBase is a **Blockchain-based Backend-as-a-Service (BaaS)** platform that provides:
+- **Permanent Document Storage** via Irys DataChain
+- **Version-controlled Content Management** with blockchain verification
+- **Developer-friendly Interface** that abstracts Web3 complexity
+- **Supabase-like UX** adapted for permanent, immutable storage
+
+**Key Difference from Supabase**: While Supabase is database-first (tables & queries), IrysBase is document-first (content & permanence).
 
 ---
 
@@ -177,19 +183,23 @@ IrysBase is a **distributed BaaS platform** that should provide a **developer-fr
 4. **First Document** → Step-by-step guide with cost explanation
 5. **Explore Features** → Progressive feature exposure
 
-### Developer Flow
+### Developer Flow (BaaS Platform Users)
 
-1. **API Keys** → GraphQL endpoint and authentication
-2. **Schema Explorer** → Real-time documentation
-3. **Query Playground** → Testing environment
-4. **SDK Integration** → Code examples and tutorials
+1. **Project Setup** → Create project and configure settings
+2. **Document Management** → Upload, edit, and publish content
+3. **Storage Analytics** → Monitor Irys usage and costs
+4. **Permanent Links** → Access and share immutable content
+5. **Collaboration** → Invite team members and manage permissions
+
+**Note**: Unlike Supabase (where devs write SQL), IrysBase users manage documents through the UI. API access is for programmatic document operations, not schema design.
 
 ### Power User Flow
 
-1. **Batch Operations** → Bulk data processing
-2. **Advanced Queries** → Complex filtering and sorting
-3. **Data Export** → Backup and analysis export
-4. **Monitoring** → Usage and performance monitoring
+1. **Batch Operations** → Bulk document publishing to Irys
+2. **Storage Management** → Optimize costs and verify data integrity
+3. **Data Export** → Download all documents with metadata
+4. **Blockchain Monitoring** → Track sync status and transaction history
+5. **Team Collaboration** → Advanced permission management and audit logs
 
 ---
 
@@ -271,26 +281,34 @@ IrysBase is a **distributed BaaS platform** that should provide a **developer-fr
 ## 🛠️ Technology Stack
 
 ### UI Framework
-- **Next.js 14** - React framework with App Router
+- **React + Vite** - Fast development with HMR (migrated from Next.js)
 - **shadcn/ui** - Accessible component library
 - **Tailwind CSS** - Utility-first CSS framework
 - **Radix UI** - Unstyled accessible components
 
 ### State Management
-- **Zustand** - Lightweight state management
-- **Apollo Client** - GraphQL client with caching
+- **Apollo Client** - GraphQL client with caching and subscriptions
+- **React Query** - Server state management
 
 ### Web3 Integration
-- **ethers.js v6** - Ethereum wallet integration
-- **MetaMask SDK** - Wallet connection
+- **wagmi** - React Hooks for Ethereum
+- **RainbowKit** - Beautiful wallet connection UI
+- **viem** - TypeScript Ethereum library
 
 ---
 
-**Remember**: IrysBase is not just a web application—it's a **gateway to distributed infrastructure**. The key is providing an experience where users enjoy blockchain benefits without feeling its complexity.
+**Remember**: IrysBase is a **BaaS platform for permanent content**, not a database admin tool. Think "Supabase for documents" rather than "Supabase for SQL".
 
 ---
 
-For more information:
-- [Architecture](./ARCHITECTURE.md)
-- [API Reference](./API.md)
-- [Getting Started](./GETTING_STARTED.md)
+## 📚 Related Documentation
+
+- **[Frontend Specification](./FRONTEND_SPEC.md)** - Detailed page designs and user flows
+- [Architecture](./ARCHITECTURE.md) - System architecture
+- [API Reference](./API.md) - GraphQL schema
+- [Getting Started](./GETTING_STARTED.md) - Setup guide
+
+---
+
+**Last Updated**: 2025-10-06
+**Next Review**: After Phase 2 implementation

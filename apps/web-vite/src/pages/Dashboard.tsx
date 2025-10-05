@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { Plus, Search } from 'lucide-react';
+import { Plus, Search, Wallet } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { useAccount } from 'wagmi';
@@ -7,19 +7,22 @@ import { useAccount } from 'wagmi';
 import { ProjectCard } from '@/components/dashboard/ProjectCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { GET_MY_PROJECTS } from '@/lib/graphql/queries';
-import { WalletGuard } from '@/components/WalletGuard';
+import { GET_MY_PROJECTS, GET_PUBLIC_PROJECTS } from '@/lib/graphql/queries';
+import { ConnectWallet } from '@/components/ConnectWallet';
 
 function DashboardContent() {
   const { isConnected } = useAccount();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const { data, loading, error } = useQuery(GET_MY_PROJECTS, {
-    variables: { limit: 50, offset: 0 },
-    skip: !isConnected,
-  });
+  // Fetch user's projects if connected, otherwise fetch public projects
+  const { data, loading, error } = useQuery(
+    isConnected ? GET_MY_PROJECTS : GET_PUBLIC_PROJECTS,
+    {
+      variables: { limit: 50, offset: 0 },
+    }
+  );
 
-  const projects = data?.myProjects || [];
+  const projects = data?.myProjects || data?.publicProjects || [];
   const filteredProjects = projects.filter((project: any) =>
     project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     project.slug.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -28,12 +31,71 @@ function DashboardContent() {
 
   if (!isConnected) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center max-w-md">
-          <h2 className="text-2xl font-bold mb-2">Welcome to IrysBase</h2>
-          <p className="text-muted-foreground mb-6">
-            Connect your wallet to get started with your decentralized documentation platform
-          </p>
+      <div className="space-y-6">
+        {/* Welcome Banner */}
+        <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg p-8 text-white">
+          <div className="max-w-2xl">
+            <h2 className="text-3xl font-bold mb-3">Welcome to IrysBase</h2>
+            <p className="text-lg mb-6 text-indigo-100">
+              Explore decentralized documentation projects powered by Irys permanent storage
+            </p>
+            <div className="flex items-center gap-4">
+              <ConnectWallet />
+              <p className="text-sm text-indigo-200">
+                Connect to create your own projects
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Public Projects Section */}
+        <div>
+          <div className="mb-4">
+            <h3 className="text-2xl font-bold mb-2">Public Projects</h3>
+            <p className="text-muted-foreground">
+              Browse publicly available documentation projects
+            </p>
+          </div>
+
+          {/* Search Bar */}
+          <div className="relative max-w-md mb-6">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search public projects..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+
+          {/* Projects Grid */}
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-48 bg-muted animate-pulse rounded-lg" />
+              ))}
+            </div>
+          ) : error ? (
+            <div className="text-center py-12 border-2 border-dashed rounded-lg">
+              <p className="text-red-600 mb-2">Failed to load public projects</p>
+              <p className="text-sm text-muted-foreground">{error.message}</p>
+            </div>
+          ) : filteredProjects.length === 0 ? (
+            <div className="text-center py-12 border-2 border-dashed rounded-lg">
+              <Wallet className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+              <h3 className="text-lg font-semibold mb-2">No public projects found</h3>
+              <p className="text-muted-foreground mb-6">
+                {searchQuery ? 'Try adjusting your search query' : 'Be the first to create a public project!'}
+              </p>
+              <ConnectWallet />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredProjects.map((project: any) => (
+                <ProjectCard key={project.id} project={project} readOnly />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     );
@@ -113,9 +175,6 @@ function DashboardContent() {
 }
 
 export default function Dashboard() {
-  return (
-    <WalletGuard>
-      <DashboardContent />
-    </WalletGuard>
-  );
+  // Remove WalletGuard to allow read-only access
+  return <DashboardContent />;
 }

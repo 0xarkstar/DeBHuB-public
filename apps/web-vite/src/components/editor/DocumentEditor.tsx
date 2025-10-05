@@ -1,11 +1,15 @@
 
 import { useState, useEffect } from 'react';
 import { useMutation, useSubscription } from '@apollo/client';
-import { Save, History, MessageSquare, Users, Eye, EyeOff } from 'lucide-react';
+import { Save, History, MessageSquare, Users, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { SyncIndicator, SyncStatus } from '@/components/shared/SyncIndicator';
+import { CostEstimator } from './CostEstimator';
+import { PublishConfirmationModal } from './PublishConfirmationModal';
+import { PublishingProgress } from './PublishingProgress';
+import { PermanentLinkSuccess } from './PermanentLinkSuccess';
 import { UPDATE_DOCUMENT, PUBLISH_DOCUMENT } from '@/lib/graphql/mutations';
 import { DOCUMENT_UPDATED } from '@/lib/graphql/subscriptions';
 import { cn } from '@/lib/utils';
@@ -23,14 +27,23 @@ interface DocumentEditorProps {
   onPublish?: () => void;
 }
 
+type PublishingStage = 'uploading' | 'broadcasting' | 'syncing' | 'completed';
+
 export function DocumentEditor({ document, onSave, onPublish }: DocumentEditorProps) {
   const [title, setTitle] = useState(document.title);
   const [content, setContent] = useState(document.content);
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('synced');
   const [hasChanges, setHasChanges] = useState(false);
 
+  // Publishing flow states
+  const [showPublishModal, setShowPublishModal] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [publishingStage, setPublishingStage] = useState<PublishingStage>('uploading');
+  const [publishedIrysId, setPublishedIrysId] = useState<string | null>(null);
+  const [estimatedCost, setEstimatedCost] = useState(0);
+
   const [updateDocument, { loading: saving }] = useMutation(UPDATE_DOCUMENT);
-  const [publishDocument, { loading: publishing }] = useMutation(PUBLISH_DOCUMENT);
+  const [publishDocument] = useMutation(PUBLISH_DOCUMENT);
 
   // Subscribe to document updates
   useSubscription(DOCUMENT_UPDATED, {
@@ -74,21 +87,52 @@ export function DocumentEditor({ document, onSave, onPublish }: DocumentEditorPr
     }
   };
 
-  const handlePublish = async () => {
+  const handlePublishClick = () => {
+    setShowPublishModal(true);
+  };
+
+  const handlePublishConfirm = async () => {
     try {
       // Save first if there are changes
       if (hasChanges) {
         await handleSave();
       }
 
-      await publishDocument({
+      setShowPublishModal(false);
+      setIsPublishing(true);
+
+      // Simulate publishing stages
+      setPublishingStage('uploading');
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      setPublishingStage('broadcasting');
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      setPublishingStage('syncing');
+      const { data } = await publishDocument({
         variables: { id: document.id },
       });
+
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      setPublishingStage('completed');
+
+      // Mock Irys ID (replace with real data from mutation)
+      const irysId = data?.publishDocument?.irysId || 'abc123def456ghi789jkl012mno345pqr678stu901vwx234yz';
+      setPublishedIrysId(irysId);
 
       onPublish?.();
     } catch (error) {
       console.error('Failed to publish document:', error);
+      setIsPublishing(false);
+      alert('Publishing failed. Please try again.');
     }
+  };
+
+  const handlePublishingClose = () => {
+    setIsPublishing(false);
+    setPublishedIrysId(null);
+    setPublishingStage('uploading');
   };
 
   // Auto-save
@@ -155,27 +199,59 @@ export function DocumentEditor({ document, onSave, onPublish }: DocumentEditorPr
 
             <Button
               size="sm"
-              onClick={handlePublish}
-              disabled={publishing}
+              onClick={handlePublishClick}
+              disabled={document.published || isPublishing}
               className={cn(
                 document.published && 'bg-green-600 hover:bg-green-700'
               )}
             >
               {document.published ? (
                 <>
-                  <Eye className="h-4 w-4 mr-2" />
-                  Published
+                  <Upload className="h-4 w-4 mr-2" />
+                  Published to Irys
                 </>
               ) : (
                 <>
-                  <EyeOff className="h-4 w-4 mr-2" />
-                  {publishing ? 'Publishing...' : 'Publish'}
+                  <Upload className="h-4 w-4 mr-2" />
+                  Publish to Irys
                 </>
               )}
             </Button>
           </div>
         </div>
       </div>
+
+      {/* Publishing Modals */}
+      <PublishConfirmationModal
+        open={showPublishModal}
+        onClose={() => setShowPublishModal(false)}
+        onConfirm={handlePublishConfirm}
+        documentTitle={title}
+        contentSize={new Blob([content]).size}
+        estimatedCost={estimatedCost}
+      />
+
+      {/* Publishing Progress Overlay */}
+      {isPublishing && !publishedIrysId && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="w-full max-w-md">
+            <PublishingProgress stage={publishingStage} />
+          </div>
+        </div>
+      )}
+
+      {/* Success Screen Overlay */}
+      {publishedIrysId && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="w-full max-w-md">
+            <PermanentLinkSuccess
+              irysId={publishedIrysId}
+              documentTitle={title}
+              onClose={handlePublishingClose}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Editor */}
       <div className="flex-1 overflow-auto p-8">
@@ -200,6 +276,14 @@ export function DocumentEditor({ document, onSave, onPublish }: DocumentEditorPr
             placeholder="Start writing your document..."
             className="min-h-[600px] border-none focus-visible:ring-0 px-0 resize-none text-base leading-relaxed"
           />
+
+          {/* Cost Estimator */}
+          {!document.published && (
+            <CostEstimator
+              contentSize={new Blob([content]).size}
+              onCostCalculated={setEstimatedCost}
+            />
+          )}
 
           {/* Metadata */}
           <div className="pt-8 border-t text-sm text-muted-foreground space-y-2">

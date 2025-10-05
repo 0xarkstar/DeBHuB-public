@@ -1,9 +1,11 @@
 
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount, useChainId, useSwitchChain } from 'wagmi';
+import { useMutation } from '@apollo/client';
 import { Button } from './ui/button';
 import { Shield, AlertTriangle } from 'lucide-react';
 import { irysVM } from '@/lib/wagmi';
+import { REQUEST_CHALLENGE, AUTHENTICATE } from '@/lib/graphql/mutations';
 import { useState, useEffect } from 'react';
 
 export function ConnectWallet() {
@@ -13,6 +15,9 @@ export function ConnectWallet() {
   const switchChainHook = useSwitchChain();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+
+  const [requestChallenge] = useMutation(REQUEST_CHALLENGE);
+  const [authenticate] = useMutation(AUTHENTICATE);
 
   useEffect(() => {
     setMounted(true);
@@ -39,22 +44,38 @@ export function ConnectWallet() {
 
     setIsAuthenticating(true);
     try {
-      const timestamp = Date.now();
-      const message = `Sign this message to authenticate with IrysBase.\n\nAddress: ${address}\nTimestamp: ${timestamp}`;
-
-      const signature = await window.ethereum.request({
-        method: 'personal_sign',
-        params: [message, address],
+      // Step 1: Request challenge from backend
+      const { data: challengeData } = await requestChallenge({
+        variables: { address },
       });
 
-      const authToken = Buffer.from(
-        JSON.stringify({ address, signature, message, timestamp })
-      ).toString('base64');
+      if (!challengeData?.requestChallenge?.challenge) {
+        throw new Error('Failed to get challenge from server');
+      }
 
-      localStorage.setItem('authToken', authToken);
+      const challenge = challengeData.requestChallenge.challenge;
+
+      // Step 2: Sign the challenge with MetaMask
+      const signature = await window.ethereum.request({
+        method: 'personal_sign',
+        params: [challenge, address],
+      });
+
+      // Step 3: Authenticate with backend
+      const { data: authData } = await authenticate({
+        variables: { address, signature },
+      });
+
+      if (!authData?.authenticate?.token) {
+        throw new Error('Failed to authenticate with server');
+      }
+
+      // Step 4: Store token
+      localStorage.setItem('authToken', authData.authenticate.token);
       setIsAuthenticated(true);
     } catch (error) {
       console.error('Failed to authenticate:', error);
+      alert('Authentication failed. Please try again.');
     } finally {
       setIsAuthenticating(false);
     }
