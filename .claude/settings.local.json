@@ -37,7 +37,9 @@
       "Bash(npm cache clean:*)",
       "Bash(if exist package-lock.json del package-lock.json)",
       "Bash(timeout:*)",
-      "Bash(git clean:*)"
+      "Bash(git clean:*)",
+      "Bash(grep:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []
