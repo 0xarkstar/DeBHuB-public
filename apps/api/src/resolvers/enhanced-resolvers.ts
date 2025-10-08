@@ -1,4 +1,4 @@
-import { PubSub } from 'graphql-subscriptions';
+import { PubSub, withFilter } from 'graphql-subscriptions';
 import { PrismaClient } from '@prisma/client';
 import { IrysService } from '../services/irys';
 import { BlockchainService } from '../services/blockchain';
@@ -403,6 +403,121 @@ export const enhancedResolvers = {
       });
     },
 
+    // Storage Metrics
+    projectStorage: async (
+      _: any,
+      { projectId }: { projectId: string },
+      { prisma }: EnhancedContext
+    ) => {
+      // 1. Get all confirmed Irys transactions for this project
+      const transactions = await prisma.irysTransaction.findMany({
+        where: {
+          document: {
+            projectId,
+          },
+          status: 'confirmed',
+        },
+      });
+
+      // 2. Calculate total usage
+      const totalBytes = transactions.reduce((sum, tx) => {
+        return sum + Number(tx.size);
+      }, 0);
+
+      const totalGB = totalBytes / (1024 * 1024 * 1024);
+
+      // 3. Calculate cost (Irys pricing)
+      // Actual cost should be fetched from Irys API
+      const costPerGB = 2.5; // USD per GB (approximate)
+      const monthlyCostUSD = totalGB * costPerGB;
+
+      // 4. Get per-document storage stats
+      const documentStats = await prisma.document.findMany({
+        where: { projectId },
+        include: {
+          transactions: {
+            where: { status: 'confirmed' },
+          },
+        },
+      });
+
+      const documents = documentStats.map((doc) => ({
+        documentId: doc.id,
+        title: doc.title,
+        sizeBytes: doc.transactions.reduce((sum, tx) => sum + Number(tx.size), 0),
+        transactionCount: doc.transactions.length,
+      }));
+
+      return {
+        projectId,
+        totalBytes,
+        totalGB: parseFloat(totalGB.toFixed(4)),
+        monthlyCostUSD: parseFloat(monthlyCostUSD.toFixed(2)),
+        transactionCount: transactions.length,
+        documents,
+        lastUpdated: new Date().toISOString(),
+      };
+    },
+
+    userStorage: async (
+      _: any,
+      __: any,
+      { auth, prisma }: EnhancedContext
+    ) => {
+      const userId = requireAuth(auth);
+
+      // Get user's internal user ID
+      const user = await prisma.user.findUnique({
+        where: { address: userId },
+      });
+
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      // Get all projects user owns or collaborates on
+      const projects = await prisma.project.findMany({
+        where: {
+          OR: [
+            { ownerId: user.id },
+            { collaborators: { some: { userId: user.id } } },
+          ],
+        },
+        include: {
+          documents: {
+            include: {
+              transactions: {
+                where: { status: 'confirmed' },
+              },
+            },
+          },
+        },
+      });
+
+      // Calculate total storage across all projects
+      let totalBytes = 0;
+      projects.forEach((project) => {
+        project.documents.forEach((doc) => {
+          doc.transactions.forEach((tx) => {
+            totalBytes += Number(tx.size);
+          });
+        });
+      });
+
+      const totalGB = totalBytes / (1024 * 1024 * 1024);
+      const costPerGB = 2.5;
+      const monthlyCostUSD = totalGB * costPerGB;
+
+      return {
+        userId: user.id,
+        totalBytes,
+        totalGB: parseFloat(totalGB.toFixed(4)),
+        monthlyCostUSD: parseFloat(monthlyCostUSD.toFixed(2)),
+        projectCount: projects.length,
+        lastUpdated: new Date().toISOString(),
+      };
+    },
+
     // Analytics
     projectMetrics: async (
       _: any,
@@ -482,6 +597,102 @@ export const enhancedResolvers = {
   },
 
   Mutation: {
+    // Authentication Mutations
+    requestChallenge: async (
+      _: any,
+      { address }: { address: string },
+      { prisma }: EnhancedContext
+    ) => {
+      // Generate challenge string (nonce)
+      const challenge = `Sign this message to authenticate with IrysBase: ${Date.now()}-${Math.random().toString(36).substring(7)}`;
+      const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes from now
+
+      // Store challenge in memory for simplicity (in production, use Redis)
+      // For now, we'll use a simple Map to store challenges temporarily
+      if (!global.authChallenges) {
+        global.authChallenges = new Map();
+      }
+
+      global.authChallenges.set(address.toLowerCase(), {
+        challenge,
+        expiresAt,
+      });
+
+      // Clean up expired challenges periodically
+      setTimeout(() => {
+        if (global.authChallenges) {
+          const now = Date.now();
+          for (const [addr, data] of global.authChallenges.entries()) {
+            if (data.expiresAt.getTime() < now) {
+              global.authChallenges.delete(addr);
+            }
+          }
+        }
+      }, 5 * 60 * 1000);
+
+      return {
+        challenge,
+        expiresAt: expiresAt.toISOString(),
+      };
+    },
+
+    authenticate: async (
+      _: any,
+      { address, signature }: { address: string; signature: string },
+      { prisma }: EnhancedContext
+    ) => {
+      // Retrieve stored challenge
+      if (!global.authChallenges) {
+        throw new Error('Challenge not found or expired');
+      }
+
+      const challengeData = global.authChallenges.get(address.toLowerCase());
+      if (!challengeData) {
+        throw new Error('Challenge not found or expired');
+      }
+
+      // Check if challenge is expired
+      if (new Date() > challengeData.expiresAt) {
+        global.authChallenges.delete(address.toLowerCase());
+        throw new Error('Challenge expired');
+      }
+
+      // Verify signature using ethers
+      try {
+        const { ethers } = await import('ethers');
+        const recoveredAddress = ethers.verifyMessage(challengeData.challenge, signature);
+
+        if (recoveredAddress.toLowerCase() !== address.toLowerCase()) {
+          throw new Error('Invalid signature');
+        }
+      } catch (error) {
+        throw new Error('Signature verification failed: ' + (error as Error).message);
+      }
+
+      // Delete used challenge
+      global.authChallenges.delete(address.toLowerCase());
+
+      // Create or update user
+      const user = await prisma.user.upsert({
+        where: { address: address.toLowerCase() },
+        update: { updatedAt: new Date() },
+        create: { address: address.toLowerCase() },
+      });
+
+      // Generate JWT token
+      const jwt = await import('jsonwebtoken');
+      const token = jwt.sign(
+        { userId: user.id, address: user.address },
+        process.env.JWT_SECRET || 'irysbase-dev-secret-change-in-production',
+        { expiresIn: '7d' }
+      );
+
+      return {
+        token,
+        user,
+      };
+    },
+
     // Project Mutations
     createProject: async (
       _: any,
@@ -1196,28 +1407,22 @@ export const enhancedResolvers = {
 
   Subscription: {
     documentChanged: {
-      subscribe: (_: any, { documentId }: { documentId: string }) => {
-        return pubsub.asyncIterator([DOCUMENT_CHANGED]);
-      },
-      resolve: (payload: any, { documentId }: { documentId: string }) => {
-        // Filter events for specific document
-        if (payload.documentChanged.documentId === documentId) {
-          return payload.documentChanged;
+      subscribe: withFilter(
+        () => pubsub.asyncIterator([DOCUMENT_CHANGED]),
+        (payload, variables) => {
+          // Filter events for specific document
+          return payload.documentChanged.documentId === variables.documentId;
         }
-        return null;
-      },
+      ),
     },
 
     projectUpdated: {
-      subscribe: (_: any, { projectId }: { projectId: string }) => {
-        return pubsub.asyncIterator([PROJECT_UPDATED]);
-      },
-      resolve: (payload: any, { projectId }: { projectId: string }) => {
-        if (payload.projectUpdated.projectId === projectId) {
-          return payload.projectUpdated;
+      subscribe: withFilter(
+        () => pubsub.asyncIterator([PROJECT_UPDATED]),
+        (payload, variables) => {
+          return payload.projectUpdated.projectId === variables.projectId;
         }
-        return null;
-      },
+      ),
     },
 
     collaborationUpdated: {
@@ -1253,30 +1458,98 @@ export const enhancedResolvers = {
 
   // Type Resolvers
   Project: {
+    documentsCount: async (parent: any, _: any, { prisma }: EnhancedContext) => {
+      if (parent._count?.documents !== undefined) {
+        return parent._count.documents;
+      }
+      return await prisma.document.count({
+        where: { projectId: parent.id },
+      });
+    },
+    collaboratorsCount: async (parent: any, _: any, { prisma }: EnhancedContext) => {
+      if (parent._count?.collaborators !== undefined) {
+        return parent._count.collaborators;
+      }
+      return await prisma.collaborator.count({
+        where: { projectId: parent.id },
+      });
+    },
+    storage: async (parent: any, _: any, { prisma }: EnhancedContext) => {
+      // Calculate storage from Irys transactions
+      const transactions = await prisma.irysTransaction.findMany({
+        where: {
+          document: {
+            projectId: parent.id,
+          },
+          status: 'confirmed',
+        },
+      });
+
+      const totalBytes = transactions.reduce((sum, tx) => sum + Number(tx.size), 0);
+      const irysGB = totalBytes / (1024 * 1024 * 1024);
+      const monthlyCostUSD = irysGB * 2.5; // Approximate cost
+
+      return {
+        irysGB: parseFloat(irysGB.toFixed(4)),
+        monthlyCostUSD: parseFloat(monthlyCostUSD.toFixed(2)),
+      };
+    },
+    syncStatus: async (parent: any, _: any, { prisma }: EnhancedContext) => {
+      // Check if all documents are synced to Irys
+      const documentsWithoutIrysId = await prisma.document.count({
+        where: {
+          projectId: parent.id,
+          irysId: null,
+        },
+      });
+
+      return documentsWithoutIrysId === 0 ? 'synced' : 'syncing';
+    },
     documents: async (parent: any, _: any, { databaseService }: EnhancedContext) => {
       return await databaseService.getProjectDocuments(parent.id);
     },
     collaborators: async (parent: any, _: any, { prisma }: EnhancedContext) => {
-      // Implementation would fetch collaborators
-      return [];
+      // Return already included collaborators if available
+      if (parent.collaborators) {
+        return parent.collaborators;
+      }
+      return await prisma.collaborator.findMany({
+        where: { projectId: parent.id },
+        include: {
+          user: true,
+        },
+      });
     },
   },
 
   Document: {
     project: async (parent: any, _: any, { prisma }: EnhancedContext) => {
-      // Implementation would fetch project
-      return null;
+      if (parent.project) return parent.project;
+      return await prisma.project.findUnique({
+        where: { id: parent.projectId }
+      });
     },
     author: async (parent: any, _: any, { prisma }: EnhancedContext) => {
-      // Implementation would fetch author
-      return null;
+      if (parent.author) return parent.author;
+      return await prisma.user.findUnique({
+        where: { id: parent.authorId }
+      });
     },
-    versions: async (parent: any, _: any, { databaseService }: EnhancedContext) => {
-      return await databaseService.getDocumentHistory(parent.id);
+    versions: async (parent: any, _: any, { prisma }: EnhancedContext) => {
+      if (parent.versions) return parent.versions;
+      return await prisma.version.findMany({
+        where: { documentId: parent.id },
+        orderBy: { versionNumber: 'desc' },
+        include: { author: true }
+      });
     },
     comments: async (parent: any, _: any, { prisma }: EnhancedContext) => {
-      // Implementation would fetch comments
-      return [];
+      if (parent.comments) return parent.comments;
+      return await prisma.comment.findMany({
+        where: { documentId: parent.id },
+        include: { author: true },
+        orderBy: { createdAt: 'desc' }
+      });
     },
   },
 

@@ -265,15 +265,32 @@ export class VectorDBService {
     text: string,
     options: EmbeddingOptions
   ): Promise<Float32Array> {
-    // Placeholder for actual embedding generation
-    // In production, integrate with OpenAI, Cohere, or run local models
-    
-    // Simple mock embedding for development
+    // Use OpenAI API for production embeddings
+    if (process.env.OPENAI_API_KEY) {
+      try {
+        // Dynamic import to avoid bundling if not used
+        const { OpenAI } = await import('openai');
+        const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+        const response = await openai.embeddings.create({
+          model: options.model || 'text-embedding-ada-002',
+          input: text,
+        });
+
+        return new Float32Array(response.data[0].embedding);
+      } catch (error) {
+        console.error('OpenAI embedding error:', error);
+        // Fall back to mock embedding
+      }
+    }
+
+    // Mock embedding for development/testing
+    console.warn('Using mock embeddings. Set OPENAI_API_KEY for production use.');
     const mockEmbedding = new Float32Array(1536); // OpenAI ada-002 dimension
     for (let i = 0; i < mockEmbedding.length; i++) {
       mockEmbedding[i] = Math.random() * 2 - 1; // Random values between -1 and 1
     }
-    
+
     return mockEmbedding;
   }
 
@@ -339,12 +356,44 @@ export class VectorDBService {
     context: string,
     options: QAOptions
   ): Promise<{ text: string; confidence: number }> {
-    // Placeholder for AI answer generation
-    // In production, integrate with GPT-4, Claude, or other language models
-    
+    // Use OpenAI API for production Q&A
+    if (process.env.OPENAI_API_KEY) {
+      try {
+        const { OpenAI } = await import('openai');
+        const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+        const response = await openai.chat.completions.create({
+          model: options.model || 'gpt-4o-mini',
+          messages: [
+            {
+              role: 'system',
+              content: 'You are a helpful assistant that answers questions based on the provided context. Be concise and accurate.',
+            },
+            {
+              role: 'user',
+              content: `Context:\n${context}\n\nQuestion: ${question}`,
+            },
+          ],
+          temperature: 0.7,
+          max_tokens: 500,
+        });
+
+        const answer = response.choices[0]?.message?.content || 'Unable to generate answer';
+
+        return {
+          text: answer,
+          confidence: 0.85,
+        };
+      } catch (error) {
+        console.error('OpenAI Q&A error:', error);
+        // Fall back to placeholder
+      }
+    }
+
+    // Placeholder response
     return {
-      text: `Based on the provided context, here's an answer to "${question}": [Generated answer would appear here]`,
-      confidence: 0.85,
+      text: `Based on the provided context, here's an answer to "${question}": [AI Q&A requires OPENAI_API_KEY]`,
+      confidence: 0.5,
     };
   }
 

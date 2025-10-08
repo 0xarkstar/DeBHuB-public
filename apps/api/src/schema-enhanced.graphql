@@ -11,17 +11,30 @@ type Project {
   organizationId: String
   visibility: ProjectVisibility!
   settings: ProjectSettings!
-  
+
   # Irys metadata
-  irysId: String!
-  permanentUrl: String!
-  
+  irysId: String
+  permanentUrl: String
+
+  # Computed fields
+  documentsCount: Int!
+  collaboratorsCount: Int!
+
+  # Storage info
+  storage: ProjectStorage
+  syncStatus: String
+
   # Relations
   documents: [Document!]!
   collaborators: [Collaborator!]!
-  
+
   createdAt: String!
   updatedAt: String!
+}
+
+type ProjectStorage {
+  irysGB: Float!
+  monthlyCostUSD: Float!
 }
 
 type Document {
@@ -335,6 +348,44 @@ enum SearchType {
   HYBRID
 }
 
+# Authentication types
+type AuthChallenge {
+  challenge: String!
+  expiresAt: String!
+}
+
+type AuthResult {
+  token: String!
+  user: User!
+}
+
+# Storage Metrics types
+type StorageMetrics {
+  projectId: String!
+  totalBytes: Float!
+  totalGB: Float!
+  monthlyCostUSD: Float!
+  transactionCount: Int!
+  documents: [DocumentStorage!]!
+  lastUpdated: String!
+}
+
+type DocumentStorage {
+  documentId: String!
+  title: String!
+  sizeBytes: Float!
+  transactionCount: Int!
+}
+
+type UserStorageMetrics {
+  userId: String!
+  totalBytes: Float!
+  totalGB: Float!
+  monthlyCostUSD: Float!
+  projectCount: Int!
+  lastUpdated: String!
+}
+
 # Scalars
 scalar JSON
 scalar DateTime
@@ -373,10 +424,18 @@ type Query {
 
   # Analytics
   projectMetrics(projectId: String!, timeframe: String): JSON
+
+  # Storage Metrics
+  projectStorage(projectId: String!): StorageMetrics!
+  userStorage: UserStorageMetrics!
 }
 
 # Main Mutation Type
 type Mutation {
+  # Authentication mutations
+  requestChallenge(address: String!): AuthChallenge!
+  authenticate(address: String!, signature: String!): AuthResult!
+
   # Legacy posts (keep for backward compatibility)
   createPost(content: String!): Post!
   updatePost(id: ID!, content: String!): Post!

@@ -20,7 +20,6 @@ export const DOCUMENT_BASIC = gql`
     id
     title
     path
-    published
     publishedAt
     updatedAt
     createdAt
@@ -37,13 +36,46 @@ export const USER_BASIC = gql`
   }
 `;
 
+// Storage Queries
+export const GET_PROJECT_STORAGE = gql`
+  query GetProjectStorage($projectId: String!) {
+    projectStorage(projectId: $projectId) {
+      projectId
+      totalBytes
+      totalGB
+      monthlyCostUSD
+      transactionCount
+      documents {
+        documentId
+        title
+        sizeBytes
+        transactionCount
+      }
+      lastUpdated
+    }
+  }
+`;
+
+export const GET_USER_STORAGE = gql`
+  query GetUserStorage {
+    userStorage {
+      userId
+      totalBytes
+      totalGB
+      monthlyCostUSD
+      projectCount
+      lastUpdated
+    }
+  }
+`;
+
 // User Queries
 export const GET_ME = gql`
   ${USER_BASIC}
   query GetMe {
     me {
       ...UserBasic
-      ownedProjects {
+      projects {
         id
         name
         slug

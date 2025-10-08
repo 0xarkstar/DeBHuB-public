@@ -26,6 +26,9 @@ import {
 import { resolvers } from './resolvers'; // Legacy resolvers
 import { enhancedResolvers } from './resolvers/enhanced-resolvers';
 
+// Import error handling
+import { AppError } from './utils/errors';
+
 // Import workers
 import { startSyncWorker } from './workers/sync-worker';
 import { startEventListener } from './workers/event-listener';
@@ -144,7 +147,7 @@ async function startEnhancedServer() {
 
   const serverCleanup = useServer({ schema }, wsServer);
 
-  // Create Apollo Server
+  // Create Apollo Server with error formatting
   const server = new ApolloServer({
     schema,
     plugins: [
@@ -159,6 +162,34 @@ async function startEnhancedServer() {
         },
       },
     ],
+    formatError: (formattedError, error) => {
+      // Check if it's our custom AppError
+      const originalError = error as any;
+
+      if (originalError?.originalError instanceof AppError) {
+        const appError = originalError.originalError as AppError;
+        return {
+          message: appError.message,
+          code: appError.code,
+          statusCode: appError.statusCode,
+          path: formattedError.path,
+          locations: formattedError.locations,
+        };
+      }
+
+      // For other errors, return formatted error with code
+      console.error('GraphQL Error:', formattedError);
+
+      return {
+        message: formattedError.message,
+        code: formattedError.extensions?.code || 'INTERNAL_SERVER_ERROR',
+        path: formattedError.path,
+        locations: formattedError.locations,
+        ...(process.env.NODE_ENV === 'development' && {
+          stack: formattedError.extensions?.exception?.stacktrace,
+        }),
+      };
+    },
   });
 
   await server.start();
