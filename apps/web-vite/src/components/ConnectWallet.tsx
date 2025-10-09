@@ -1,206 +1,41 @@
-
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useAccount, useChainId, useSwitchChain } from 'wagmi';
-import { useMutation } from '@apollo/client';
+import { useState } from 'react';
 import { Button } from './ui/button';
-import { Shield, AlertTriangle } from 'lucide-react';
-import { irysVM } from '@/lib/wagmi';
-import { REQUEST_CHALLENGE, AUTHENTICATE } from '@/lib/graphql/mutations';
-import { useState, useEffect } from 'react';
+import { useWallet } from '@/lib/irys-hooks';
 
 export function ConnectWallet() {
-  const [mounted, setMounted] = useState(false);
-  const account = useAccount();
-  const chainIdHook = useChainId();
-  const switchChainHook = useSwitchChain();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const { connected, address, loading, connect, disconnect } = useWallet();
+  const [error, setError] = useState<string | null>(null);
 
-  const [requestChallenge] = useMutation(REQUEST_CHALLENGE);
-  const [authenticate] = useMutation(AUTHENTICATE);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Safe access to wagmi hooks after mount
-  const address = mounted ? account.address : undefined;
-  const isConnected = mounted ? account.isConnected : false;
-  const chainId = mounted ? chainIdHook : undefined;
-  const switchChain = mounted ? switchChainHook.switchChain : undefined;
-
-  const isWrongNetwork = isConnected && chainId && chainId !== irysVM.id;
-
-  // Check auth status from localStorage
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const authToken = localStorage.getItem('authToken');
-      setIsAuthenticated(!!authToken);
-    }
-  }, []);
-
-  const handleAuthenticate = async () => {
-    if (!address || !window.ethereum) return;
-
-    setIsAuthenticating(true);
+  const handleConnect = async () => {
     try {
-      // Step 1: Request challenge from backend
-      const { data: challengeData } = await requestChallenge({
-        variables: { address },
-      });
-
-      if (!challengeData?.requestChallenge?.challenge) {
-        throw new Error('Failed to get challenge from server');
-      }
-
-      const challenge = challengeData.requestChallenge.challenge;
-
-      // Step 2: Sign the challenge with MetaMask
-      const signature = await window.ethereum.request({
-        method: 'personal_sign',
-        params: [challenge, address],
-      });
-
-      // Step 3: Authenticate with backend
-      const { data: authData } = await authenticate({
-        variables: { address, signature },
-      });
-
-      if (!authData?.authenticate?.token) {
-        throw new Error('Failed to authenticate with server');
-      }
-
-      // Step 4: Store token
-      localStorage.setItem('authToken', authData.authenticate.token);
-      setIsAuthenticated(true);
-    } catch (error) {
-      console.error('Failed to authenticate:', error);
-      alert('Authentication failed. Please try again.');
-    } finally {
-      setIsAuthenticating(false);
+      setError(null);
+      await connect();
+    } catch (err: any) {
+      setError(err.message || 'Failed to connect wallet');
     }
   };
 
-  const handleSwitchNetwork = () => {
-    if (switchChain) {
-      switchChain({ chainId: irysVM.id });
-    }
-  };
+  if (connected && address) {
+    return (
+      <div className="flex items-center gap-4">
+        <span className="text-sm text-gray-600">
+          {address.slice(0, 6)}...{address.slice(-4)}
+        </span>
+        <Button variant="outline" size="sm" onClick={disconnect}>
+          Disconnect
+        </Button>
+      </div>
+    );
+  }
 
   return (
-    <ConnectButton.Custom>
-      {({
-        account,
-        chain,
-        openAccountModal,
-        openChainModal,
-        openConnectModal,
-        mounted,
-      }) => {
-        const ready = mounted;
-        const connected = ready && account && chain;
-
-        return (
-          <div
-            {...(!ready && {
-              'aria-hidden': true,
-              'style': {
-                opacity: 0,
-                pointerEvents: 'none',
-                userSelect: 'none',
-              },
-            })}
-          >
-            {(() => {
-              if (!connected) {
-                return (
-                  <Button onClick={openConnectModal}>
-                    Connect Wallet
-                  </Button>
-                );
-              }
-
-              if (isWrongNetwork) {
-                return (
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleSwitchNetwork}
-                      className="text-orange-600 border-orange-600 hover:bg-orange-50"
-                    >
-                      <AlertTriangle className="h-4 w-4 mr-2" />
-                      Switch to IrysVM
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={openAccountModal}
-                    >
-                      {account.displayName}
-                    </Button>
-                  </div>
-                );
-              }
-
-              return (
-                <div className="flex items-center gap-2">
-                  {!isAuthenticated && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleAuthenticate}
-                      disabled={isAuthenticating}
-                    >
-                      <Shield className="h-4 w-4 mr-2" />
-                      {isAuthenticating ? 'Authenticating...' : 'Authenticate'}
-                    </Button>
-                  )}
-
-                  <Button
-                    variant={chain.unsupported ? 'destructive' : 'outline'}
-                    size="sm"
-                    onClick={openChainModal}
-                  >
-                    {chain.hasIcon && (
-                      <div
-                        style={{
-                          background: chain.iconBackground,
-                          width: 16,
-                          height: 16,
-                          borderRadius: 999,
-                          overflow: 'hidden',
-                          marginRight: 8,
-                        }}
-                      >
-                        {chain.iconUrl && (
-                          <img
-                            alt={chain.name ?? 'Chain icon'}
-                            src={chain.iconUrl}
-                            style={{ width: 16, height: 16 }}
-                          />
-                        )}
-                      </div>
-                    )}
-                    {chain.name}
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={openAccountModal}
-                  >
-                    {account.displayName}
-                    {account.displayBalance
-                      ? ` (${account.displayBalance})`
-                      : ''}
-                  </Button>
-                </div>
-              );
-            })()}
-          </div>
-        );
-      }}
-    </ConnectButton.Custom>
+    <div className="flex flex-col gap-2">
+      <Button onClick={handleConnect} disabled={loading}>
+        {loading ? 'Connecting...' : 'Connect Wallet'}
+      </Button>
+      {error && (
+        <p className="text-sm text-red-600">{error}</p>
+      )}
+    </div>
   );
 }

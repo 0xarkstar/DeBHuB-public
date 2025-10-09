@@ -47,7 +47,13 @@
       "Bash(git log:*)",
       "Bash(npx tsc:*)",
       "Bash(npx prisma generate:*)",
-      "Bash(pnpm prisma generate:*)"
+      "Bash(pnpm prisma generate:*)",
+      "WebFetch(domain:docs.irys.xyz)",
+      "Bash(pnpm benchmark:irys:*)",
+      "WebFetch(domain:arweave-tools.irys.xyz)",
+      "WebFetch(domain:cookbook.arweave.dev)",
+      "WebFetch(domain:cookbook.arweave.net)",
+      "WebFetch(domain:medium.com)"
     ],
     "deny": [],
     "ask": []

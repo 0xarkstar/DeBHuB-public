@@ -1,615 +1,599 @@
-# IrysBase Architecture
+# ?�키?�처 (Architecture)
 
-Complete architectural overview of the IrysBase platform.
+IrysBase ?�랫?�의 ?�전???�키?�처 개요?�니??
 
-## Table of Contents
+## 목차
 
-- [System Overview](#system-overview)
-- [Architecture Layers](#architecture-layers)
-- [Data Flow](#data-flow)
-- [Service Architecture](#service-architecture)
-- [Storage Architecture](#storage-architecture)
-- [Real-time Architecture](#real-time-architecture)
-- [Security Architecture](#security-architecture)
-- [Scalability & Performance](#scalability--performance)
-
----
-
-## System Overview
-
-IrysBase is a hybrid Web3 Backend-as-a-Service platform that combines:
-
-- **Decentralized Storage** - Irys DataChain for permanent, immutable data
-- **Centralized Querying** - PostgreSQL for fast, complex queries
-- **Real-time Collaboration** - WebSocket-based live updates
-- **Edge Computing** - Global function deployment and execution
-- **Smart Contracts** - EVM blockchain logic on IrysVM
-
-### Design Principles
-
-1. **Hybrid Architecture** - Best of both worlds (decentralized + centralized)
-2. **Event-Driven** - Asynchronous, scalable event processing
-3. **Service-Oriented** - Modular, independent services
-4. **Type-Safe** - Full TypeScript coverage
-5. **Real-time First** - Built for live collaboration
-6. **Performance-Focused** - Optimized for speed and scale
+- [?�스??개요](#?�스??개요)
+- [?�중 ?�키?�처](#?�중-?�키?�처)
+- [Pure Irys 모드](#pure-irys-모드)
+- [Full Stack 모드](#full-stack-모드)
+- [?�이???�름](#?�이???�름)
+- [?�토리�? ?�키?�처](#?�토리�?-?�키?�처)
+- [보안 ?�키?�처](#보안-?�키?�처)
+- [?�능 최적??(#?�능-최적??
 
 ---
 
-## Architecture Layers
+## ?�� ?�스??개요
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│                      Presentation Layer                         │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │  Next.js 14 Frontend                                     │  │
-│  │  - React Components                                      │  │
-│  │  - Apollo Client (GraphQL)                               │  │
-│  │  - WebSocket Client                                      │  │
-│  │  - Wallet Integration (MetaMask)                         │  │
-│  └──────────────────────────────────────────────────────────┘  │
-└────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌────────────────────────────────────────────────────────────────┐
-│                        API Gateway Layer                        │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │  Apollo Server 4                                         │  │
-│  │  - GraphQL Schema & Resolvers                            │  │
-│  │  - Authentication & Authorization                        │  │
-│  │  - Rate Limiting                                         │  │
-│  │  - Request Validation                                    │  │
-│  └──────────────────────────────────────────────────────────┘  │
-└────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌────────────────────────────────────────────────────────────────┐
-│                      Business Logic Layer                       │
-│  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐     │
-│  │    Search     │  │   Analytics   │  │   Realtime    │     │
-│  │   Service     │  │    Service    │  │   Service     │     │
-│  └───────────────┘  └───────────────┘  └───────────────┘     │
-│  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐     │
-│  │    Storage    │  │   Function    │  │     Edge      │     │
-│  │   Service     │  │    Service    │  │   Service     │     │
-│  └───────────────┘  └───────────────┘  └───────────────┘     │
-│  ┌───────────────┐  ┌───────────────┐                         │
-│  │ Programmable  │  │   Database    │                         │
-│  │     Data      │  │   Service     │                         │
-│  └───────────────┘  └───────────────┘                         │
-└────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌────────────────────────────────────────────────────────────────┐
-│                    Data & Storage Layer                         │
-│  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐     │
-│  │  PostgreSQL   │  │     Redis     │  │     Irys      │     │
-│  │  - Prisma ORM │  │  - Caching    │  │  DataChain    │     │
-│  │  - Migrations │  │  - Pub/Sub    │  │  - Permanent  │     │
-│  │  - Queries    │  │  - Sessions   │  │    Storage    │     │
-│  └───────────────┘  └───────────────┘  └───────────────┘     │
-└────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌────────────────────────────────────────────────────────────────┐
-│                      Blockchain Layer                           │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │  IrysVM (Chain ID: 1270)                                 │  │
-│  │  - Smart Contracts (Solidity)                            │  │
-│  │  - Role-Based Access Control                             │  │
-│  │  - Event Emission                                        │  │
-│  └──────────────────────────────────────────────────────────┘  │
-└────────────────────────────────────────────────────────────────┘
-```
+IrysBase??Irys DataChain??기반?�로 구축??**?�중 ?�키?�처** 문서???�랫?�입?�다:
+
+- **Irys DataChain** - ?�구?�이�?불�???블록체인 ?�토리�?
+- **IndexedDB 캐싱** - 빠른 ?�프?�인 ?�세??
+- **지�??�증** - MetaMask�??�한 ?�중?�화 ?�증
+- **?�택??백엔??* - GraphQL API�??�한 고급 기능 (AI, 분석)
+- **?�로그래머블 ?�이??* - ?�마??계약 기반 ?�이??로직
+
+### ?�계 ?�칙
+
+1. **?�연???�키?�처** - 백엔???�무??관계없???�동
+2. **?�프?�인 ?�선** - IndexedDB�?빠른 로컬 ?�세??
+3. **?�구 ?�?�소** - Irys??불�? ?�이???�??
+4. **?�???�전??* - ?�체 TypeScript 커버리�?
+5. **?�능 중심** - 코드 ?�플리팅, ?�이지 로딩, 캐싱
+6. **?�진???�상** - Pure Irys�??�작, ?�요??Full Stack?�로 ?�장
 
 ---
 
-## Data Flow
+## ?���??�중 ?�키?�처
 
-### Write Path (Document Creation)
+IrysBase????가지 ?�키?�처 모드�?지?�합?�다:
 
-```
-User → Frontend → GraphQL Mutation → Enhanced Resolver
-                                           │
-                                           ├─→ 1. Validate Input
-                                           │
-                                           ├─→ 2. Check Authorization
-                                           │
-                                           ├─→ 3. Create DB Record (PostgreSQL)
-                                           │
-                                           ├─→ 4. Background: Upload to Irys
-                                           │     │
-                                           │     ├─→ Storage Service
-                                           │     │
-                                           │     ├─→ Irys DataChain
-                                           │     │
-                                           │     └─→ Update DB with Irys ID
-                                           │
-                                           ├─→ 5. Execute Programmable Rules
-                                           │     │
-                                           │     └─→ Auto-notarize/backup
-                                           │
-                                           ├─→ 6. Broadcast via Realtime
-                                           │     │
-                                           │     └─→ WebSocket subscribers
-                                           │
-                                           └─→ 7. Return Response
-```
+### 비교??
 
-### Read Path (Document Query)
-
-```
-User → Frontend → GraphQL Query → Enhanced Resolver
-                                        │
-                                        ├─→ 1. Parse Query
-                                        │
-                                        ├─→ 2. Check Cache (Redis)
-                                        │     │
-                                        │     ├─→ Hit: Return cached
-                                        │     │
-                                        │     └─→ Miss: Continue
-                                        │
-                                        ├─→ 3. Query Database (PostgreSQL)
-                                        │     │
-                                        │     └─→ Prisma ORM
-                                        │
-                                        ├─→ 4. Enrich with Irys Data (if needed)
-                                        │
-                                        ├─→ 5. Cache Result (Redis)
-                                        │
-                                        └─→ 6. Return Response
-```
-
-### Search Path
-
-```
-User → Search Query → Search Service
-                           │
-                           ├─→ 1. Parse Search Query
-                           │
-                           ├─→ 2. Build WHERE Conditions
-                           │
-                           ├─→ 3. Execute PostgreSQL Query
-                           │     │
-                           │     └─→ Full-text search (LIKE)
-                           │
-                           ├─→ 4. Calculate Relevance Scores
-                           │
-                           ├─→ 5. Extract Highlights
-                           │
-                           └─→ 6. Return Ranked Results
-```
+| ?�징 | Pure Irys | Full Stack |
+|------|-----------|------------|
+| **백엔???�요** | ??불필??| ???�요 |
+| **?�이?�베?�스** | ??| PostgreSQL |
+| **로컬 캐싱** | IndexedDB | IndexedDB + Redis |
+| **?�구 ?�?�소** | Irys DataChain | Irys DataChain |
+| **?�시�??�업** | ??| WebSocket |
+| **AI 기능** | ??| ??OpenAI |
+| **분석 ?�?�보??* | ??| ??|
+| **벡터 검??* | ??| ??|
+| **번들 ?�기** | ?�음 | ??|
+| **배포 복잡??* | ??�� | ?�음 |
+| **?�영 비용** | ??�� | ?�음 |
 
 ---
 
-## Service Architecture
+## ?�� Pure Irys 모드
 
-### Service Communication Patterns
+### ?�키?�처 ?�이?�그??
 
-#### 1. Direct Service Calls
-Services communicate directly for synchronous operations:
+```
+?��??�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�??
+??                  React Frontend                      ??
+??                    (Vite 5)                          ??
+?? ?��??�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?? ??
+?? ?? Components                                     ?? ??
+?? ?? - Dashboard, Projects, Documents               ?? ??
+?? ?? - ConnectWallet, Editor                        ?? ??
+?? ?��??�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?? ??
+?? ?��??�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?? ??
+?? ?? Irys Hooks (irys-hooks.ts)                    ?? ??
+?? ?? - useProjects()                               ?? ??
+?? ?? - useDocuments()                              ?? ??
+?? ?? - useIrysQuery()                              ?? ??
+?? ?��??�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?? ??
+?? ?��??�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?? ??
+?? ?? IrysDatabase (irys-database.ts)               ?? ??
+?? ?? - ?�로?�트 CRUD                                ?? ??
+?? ?? - 문서 CRUD                                    ?? ??
+?? ?? - 버전 관�?                                    ?? ??
+?? ?��??�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?? ??
+?��??�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?��??�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�??
+                   ??
+                   ?��???IndexedDB (로컬 캐시, TTL: 5�?
+                   ??
+                   ?��???Irys Query SDK (@irys/query)
+                   ??    - GraphQL-like 쿼리
+                   ??    - ?�그 기반 검??
+                   ??
+                   ?��???Irys Upload SDK (@irys/upload)
+                         - 문서 ?�로??
+                         - 버전 추적
+                         - ?�구 ?�??
+```
 
+### ?�이???�름 (Pure Irys)
+
+#### 1. ?�로?�트 ?�성
+```
+User Click "New Project"
+  ??IrysDatabase.createProject()
+    ??Generate Project ID
+    ??Upload to Irys with tags:
+      - app-name: irysbase
+      - content-type: project
+      - project-id: <id>
+    ??Save to IndexedDB
+  ??Return Project
+```
+
+#### 2. 문서 ?�성
+```
+User Writes Document
+  ??IrysDatabase.createDocument()
+    ??Save Draft to IndexedDB (즉시)
+  ??User Clicks "Publish"
+    ??Upload to Irys with tags:
+      - app-name: irysbase
+      - content-type: document
+      - project-id: <project_id>
+      - document-id: <doc_id>
+    ??Update IndexedDB with Irys ID
+  ??Return Document with permanentUrl
+```
+
+#### 3. 문서 조회
+```
+User Opens Document
+  ??IrysDatabase.getDocumentById()
+    ??Check IndexedDB Cache
+      ?��???Cache Hit (< 5min): Return Cached
+      ?��???Cache Miss:
+          ??Query Irys with @irys/query
+          ??Parse Results
+          ??Cache in IndexedDB
+          ??Return Document
+```
+
+### 기술 ?�택 (Pure Irys)
+
+**?�론?�엔??**
+- React 18 + Vite 5
+- TypeScript 5
+- TailwindCSS
+- Radix UI
+
+**블록체인:**
+- @irys/upload - ?�이???�로??
+- @irys/query - ?�이??쿼리
+- ethers.js - 지�??�동
+
+**로컬 ?�토리�?:**
+- IndexedDB (Dexie.js)
+- 5�?TTL 캐싱
+
+---
+
+## ?�� Full Stack 모드
+
+### ?�키?�처 ?�이?�그??
+
+```
+?��??�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�??
+??                  React Frontend                      ??
+??                    (Vite 5)                          ??
+?? ?��??�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?? ??
+?? ?? Apollo Client (Conditional)                    ?? ??
+?? ?? - GraphQL Queries                              ?? ??
+?? ?? - Mutations                                    ?? ??
+?? ?? - Subscriptions (WebSocket)                    ?? ??
+?? ?��??�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?? ??
+?? ?��??�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?? ??
+?? ?? IrysDatabase (Fallback)                       ?? ??
+?? ?? - 백엔???�패???�용                            ?? ??
+?? ?��??�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?? ??
+?��??�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?��??�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�??
+                   ??
+                   ??HTTP/WebSocket
+?��??�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�??
+??             Apollo Server 4 (GraphQL)                ??
+?? ?��??�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?? ??
+?? ?? Resolvers (enhanced-resolvers.ts)             ?? ??
+?? ?? - Query/Mutation/Subscription                 ?? ??
+?? ?��??�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?? ??
+?��??�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?��??�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�??
+                   ??
+                   ?��???Services Layer
+                   ??  ?��???AnalyticsService
+                   ??  ?��???SearchService
+                   ??  ?��???StorageService
+                   ??  ?��???EdgeService
+                   ??  ?��???ProgrammableDataService
+                   ??
+                   ?��???PostgreSQL (Prisma)
+                   ??  ?��???Projects
+                   ??  ?��???Documents
+                   ??  ?��???Users
+                   ??  ?��???Analytics
+                   ??
+                   ?��???Redis (Optional)
+                   ??  ?��???Query Cache
+                   ??  ?��???Pub/Sub
+                   ??
+                   ?��???Irys DataChain
+                       ?��???Permanent Storage
+                       ?��???Verification
+```
+
+### ?�이???�름 (Full Stack)
+
+#### 1. 문서 ?�성 (GraphQL)
+```
+User Creates Document
+  ??GraphQL Mutation: createDocument
+    ??Enhanced Resolver
+      ?��???1. ?�력 검�?
+      ?��???2. PostgreSQL??메�??�이???�??
+      ?��???3. 백그?�운?? Irys ?�로??
+      ??    ?��???StorageService.uploadDocument()
+      ?��???4. ?�시�?브로?�캐?�트 (WebSocket)
+      ?��???5. ?�답 반환
+```
+
+#### 2. 문서 검??(Full-text)
+```
+User Searches "keyword"
+  ??GraphQL Query: searchDocuments
+    ??SearchService.search()
+      ?��???PostgreSQL Full-text Query
+      ?��????�수 계산
+      ?��????�이?�이??추출
+      ?��????�렬??결과 반환
+```
+
+#### 3. AI ?�안 (OpenAI)
+```
+User Types in Editor
+  ??GraphQL Query: getAISuggestions
+    ??AIService.suggest()
+      ?��???OpenAI API ?�출
+      ?��???컨텍?�트 분석
+      ?��????�안?�항 반환
+```
+
+### 기술 ?�택 (Full Stack)
+
+**백엔??**
+- Apollo Server 4
+- Prisma ORM
+- PostgreSQL 14+
+- Redis (optional)
+- OpenAI API
+
+**추�? 기능:**
+- ?�시�??�업 (WebSocket)
+- AI 기반 ?�안
+- 고급 분석
+- 벡터 검??
+- ?�로그래머블 ?�이??
+
+---
+
+## ?�� ?�토리�? ?�키?�처
+
+### 3-Tier ?�토리�? 모델
+
+IrysBase??3계층 ?�토리�?�??�용?�니??
+
+#### 1. IndexedDB (로컬 캐시)
+**목적:** 빠른 ?�프?�인 ?�세??
+
+**?�???�이??**
+- ?�로?�트 목록
+- 문서 메�??�이??
+- 최근 조회??문서
+- ?�용???�정
+
+**?�징:**
+- 5�?TTL
+- ?�동 만료
+- ?�프?�인 지??
+
+#### 2. Irys DataChain (?�구 ?�?�소)
+**목적:** 불�? ?�구 ?�??
+
+**?�???�이??**
+- ?�체 문서 ?�용
+- ?�로?�트 ?�보
+- 버전 ?�스?�리
+- ?�일 첨�?
+
+**?�징:**
+- 블록체인 검�?
+- ?�구 보�?
+- 무제???�??
+- ?�호??증명
+
+#### 3. PostgreSQL (Full Stack�?
+**목적:** 복잡??쿼리 �?관계형 ?�이??
+
+**?�???�이??**
+- ?�용???�로??
+- ?�업 관�?
+- 분석 ?�이??
+- 검???�덱??
+
+**?�징:**
+- 빠른 쿼리
+- 관계형 ?�이??
+- ACID ?�랜??��
+
+### ?�이???�기???�략
+
+#### Pure Irys 모드:
+```
+User Action ??IndexedDB (즉시) ??Irys (백그?�운??
+```
+
+#### Full Stack 모드:
+```
+User Action ??PostgreSQL (즉시) ??Irys (백그?�운??
+                                 ??IndexedDB (캐시)
+```
+
+**?��???모델:** Eventual Consistency (최종 ?��???
+
+---
+
+## ?�� 보안 ?�키?�처
+
+### 지�?기반 ?�증
+
+#### ?�증 ?�름:
+```
+1. ?�용?��? MetaMask ?�결 ?�릭
+2. ?�론?�엔?��? 챌린지 메시지 ?�성
+3. ?�용?��? 개인?�로 ?�명
+4. ?�명 검�?(ethers.js)
+5. ?�션 ?�성 (Pure Irys: 로컬, Full Stack: JWT)
+```
+
+### 권한 모델
+
+#### Pure Irys 모드:
+- 지�?주소 기반 ?�유�?
+- Irys ?�이?�의 ?�성??= ?�유??
+- 로컬 ?�션 관�?
+
+#### Full Stack 모드:
+- ??�� 기반 ?�세???�어 (RBAC)
+- ?�로?�트 ?��? 권한:
+  - `OWNER` - ?�체 ?�어
+  - `ADMIN` - 콘텐�?& ?�업??관�?
+  - `EDITOR` - 문서 ?�집
+  - `VIEWER` - ?�기 ?�용
+
+### ?�이??보안
+
+**?�송 �?**
+- HTTPS for API
+- WSS for WebSocket
+- 지�??�명 검�?
+
+**?�??�?**
+- Irys: 불�? & 검�?가??
+- ?�택???�호??(중요 문서)
+- IndexedDB: 브라?��? ?�드박스
+
+---
+
+## ???�능 최적??
+
+### ?�론?�엔??최적??
+
+#### 1. 코드 ?�플리팅
 ```typescript
-// GraphQL Resolver calls Service
-const results = await searchService.search(query, options);
+// Lazy loading pages
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const DocumentPage = lazy(() => import('./pages/DocumentPage'));
 ```
 
-#### 2. Event-Driven Communication
-Services emit events for asynchronous operations:
+**번들 ?�기:**
+- Initial: ~150KB (gzipped)
+- Per route: ~20-50KB
 
+#### 2. ?�이??캐싱
 ```typescript
-// Emit event
-realtimeService.publishDocumentUpdate(docId, 'updated', data);
+// IndexedDB with 5min TTL
+const cache = await db.cache.get(key);
+if (cache && Date.now() - cache.timestamp < 5 * 60 * 1000) {
+  return cache.data; // Cache hit
+}
+```
 
-// Subscribe to event
-realtimeService.subscribeToDocumentChanges(docId, (change) => {
-  // Handle change
+#### 3. ?��?지 최적??
+- Lazy loading
+- WebP format
+- Responsive images
+- CDN delivery (Irys Gateway)
+
+### 백엔??최적??(Full Stack)
+
+#### 1. ?�이?�베?�스
+```sql
+-- Proper indexing
+CREATE INDEX idx_documents_project ON documents(project_id);
+CREATE INDEX idx_documents_published ON documents(published_at);
+
+-- Connection pooling (Prisma)
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+```
+
+#### 2. Redis 캐싱
+```typescript
+// Query result caching
+const cached = await redis.get(`documents:${projectId}`);
+if (cached) return JSON.parse(cached);
+
+const documents = await prisma.document.findMany({ ... });
+await redis.setex(`documents:${projectId}`, 300, JSON.stringify(documents));
+```
+
+#### 3. GraphQL 최적??
+```typescript
+// DataLoader for batching
+const documentLoader = new DataLoader(async (ids) => {
+  const documents = await prisma.document.findMany({
+    where: { id: { in: ids } }
+  });
+  return ids.map(id => documents.find(d => d.id === id));
 });
 ```
 
-#### 3. Message Queue (Future)
-Background jobs through Bull Queue:
+### Irys 최적??
 
+#### 1. 배치 ?�로??
 ```typescript
-queue.add('sync-to-irys', { documentId, data });
+// ?�러 문서�???번에 ?�로??
+const receipts = await uploader.uploadFolder(documents);
 ```
 
-### Service Dependencies
+#### 2. 쿼리 최적??
+```typescript
+// ?�요???�드�?조회
+const query = new Query();
+query
+  .search('irysbase')
+  .tags([
+    { name: 'content-type', values: ['document'] },
+    { name: 'project-id', values: [projectId] }
+  ])
+  .limit(20);
+```
 
-```
-GraphQL Resolvers
-    ├─→ Database Service (core dependency)
-    ├─→ Search Service
-    │   └─→ Database Service
-    ├─→ Analytics Service
-    │   └─→ Database Service
-    ├─→ Storage Service
-    │   └─→ Irys Service
-    ├─→ Function Service
-    │   └─→ Irys Service
-    ├─→ Edge Service
-    │   ├─→ Irys Service
-    │   └─→ Redis
-    ├─→ Programmable Data Service
-    │   ├─→ Database Service
-    │   └─→ Irys Service
-    └─→ Realtime Service
-        ├─→ Redis (pub/sub)
-        └─→ WebSocket Server
-```
+### ?�능 메트�?
+
+| ?�업 | Pure Irys | Full Stack |
+|------|-----------|------------|
+| **초기 로드** | 1-2�?| 2-3�?|
+| **문서 조회** | 100-300ms | 50-150ms |
+| **문서 ?�??* | 즉시 (캐시) | 즉시 (DB) |
+| **문서 ?�블리시** | 2-5�?| 2-5�?|
+| **검??* | 1-2�?| 100-300ms |
 
 ---
 
-## Storage Architecture
+## ?�� 배포 ?�키?�처
 
-### Hybrid Storage Model
-
-IrysBase uses a hybrid storage approach:
-
-#### PostgreSQL (Mutable Query Layer)
-**Purpose:** Fast queries, relationships, indexing
-
-**Stores:**
-- Project metadata
-- Document metadata
-- User profiles
-- Comments & collaborations
-- Search indexes
-- Activity logs
-
-**Benefits:**
-- Fast complex queries
-- Relational data
-- ACID transactions
-- Real-time updates
-
-#### Irys DataChain (Immutable Permanent Layer)
-**Purpose:** Permanent, verifiable storage
-
-**Stores:**
-- Full document content
-- Document versions
-- File attachments
-- Backup data
-- Notarization proofs
-
-**Benefits:**
-- Immutable history
-- Blockchain verification
-- Permanent availability
-- No storage limits
-
-#### Redis (Ephemeral Cache Layer)
-**Purpose:** Performance optimization
-
-**Stores:**
-- Query results (TTL: 5 minutes)
-- User sessions
-- Pub/Sub channels
-- Edge function code
-- Presence data
-
-**Benefits:**
-- Ultra-fast reads
-- Pub/Sub messaging
-- Session management
-- Rate limiting
-
-### Data Synchronization
+### Pure Irys 모드 배포
 
 ```
-Document Update Flow:
-1. User edits document
-2. Save to PostgreSQL immediately (fast)
-3. Background job uploads to Irys
-4. Update PostgreSQL with Irys ID
-5. Cache invalidation
+Vercel / Netlify
+    ??
+    ?��???Static Build (React + Vite)
+    ??  ?��???apps/web-vite/dist/
+    ??
+    ?��???Environment Variables:
+        ?��???VITE_IRYS_NETWORK=mainnet
+        ?��???VITE_ENABLE_BACKEND=false
+        ?��???VITE_WALLET_CONNECT_PROJECT_ID=xxx
 ```
 
-**Consistency Model:** Eventual consistency between PostgreSQL and Irys
+**배포 ?�계:**
+1. `pnpm build` - ?�론?�엔??빌드
+2. Deploy to Vercel/Netlify
+3. ?�경 변???�정
+4. ?�료! (백엔??불필??
 
----
-
-## Real-time Architecture
-
-### WebSocket Architecture
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                      WebSocket Server                    │
-│                        (ws package)                      │
-└────────────────┬────────────────────────────────────────┘
-                 │
-                 ├─→ Connection Manager
-                 │   └─→ User presence tracking
-                 │
-                 ├─→ Session Manager
-                 │   ├─→ Collaboration sessions
-                 │   ├─→ Cursor tracking
-                 │   └─→ Selection tracking
-                 │
-                 ├─→ Message Router
-                 │   ├─→ Cursor updates
-                 │   ├─→ Selection updates
-                 │   ├─→ Document changes
-                 │   └─→ Heartbeats
-                 │
-                 └─→ Broadcast Engine
-                     ├─→ Room-based messaging
-                     └─→ Selective broadcasting
-```
-
-### GraphQL Subscriptions
-
-```
-Apollo Server Subscriptions (GraphQL-WS)
-    │
-    ├─→ documentUpdated(documentId)
-    │   └─→ PubSub: DOCUMENT_UPDATED
-    │
-    ├─→ commentAdded(documentId)
-    │   └─→ PubSub: NEW_COMMENT
-    │
-    └─→ reviewRequested(userId)
-        └─→ PubSub: REVIEW_REQUEST_{userId}
-```
-
-### Conflict Resolution
-
-IrysBase uses CRDT-like conflict resolution:
-
-1. **Timestamp-based ordering** - Changes sorted by timestamp
-2. **Operational transforms** - Apply changes in sequence
-3. **Conflict detection** - Identify concurrent edits
-4. **Automatic merge** - Resolve conflicts automatically
-5. **Manual review** - Flag complex conflicts for user review
-
----
-
-## Security Architecture
-
-### Authentication Flow
-
-```
-1. User connects wallet (MetaMask)
-2. Frontend requests challenge message
-3. User signs challenge with private key
-4. Backend verifies signature
-5. Generate JWT token
-6. Store session in Redis
-7. Return token to client
-```
-
-### Authorization Model
-
-#### Role-Based Access Control (RBAC)
-
-**Project Roles:**
-- `OWNER` - Full control
-- `ADMIN` - Manage content & collaborators
-- `EDITOR` - Edit documents
-- `VIEWER` - Read-only access
-
-**Permission Matrix:**
-
-| Action | Owner | Admin | Editor | Viewer |
-|--------|-------|-------|--------|--------|
-| Create Document | ✅ | ✅ | ✅ | ❌ |
-| Edit Document | ✅ | ✅ | ✅ | ❌ |
-| Delete Document | ✅ | ✅ | ❌ | ❌ |
-| Manage Collaborators | ✅ | ✅ | ❌ | ❌ |
-| Delete Project | ✅ | ❌ | ❌ | ❌ |
-| View Document | ✅ | ✅ | ✅ | ✅ |
-
-### Data Security
-
-1. **At Rest:**
-   - PostgreSQL encryption
-   - Redis encryption (optional)
-   - File encryption for sensitive attachments
-
-2. **In Transit:**
-   - TLS/SSL for all connections
-   - WSS for WebSockets
-   - HTTPS for API
-
-3. **Irys Storage:**
-   - Immutable by design
-   - Cryptographic verification
-   - Optional encryption before upload
-
----
-
-## Scalability & Performance
-
-### Horizontal Scaling
-
-```
-Load Balancer
-    │
-    ├─→ API Server 1 ──┐
-    ├─→ API Server 2 ──┼─→ PostgreSQL (Primary)
-    └─→ API Server N ──┘
-                        │
-                        ├─→ PostgreSQL (Replica 1)
-                        └─→ PostgreSQL (Replica 2)
-
-Redis Cluster
-    ├─→ Master
-    └─→ Replicas
-
-Edge Network
-    ├─→ US East
-    ├─→ US West
-    ├─→ EU West
-    └─→ Asia Pacific
-```
-
-### Caching Strategy
-
-**Multi-Level Cache:**
-
-1. **Browser Cache** - Static assets
-2. **CDN Cache** - Public content
-3. **Redis Cache** - API responses
-4. **Query Cache** - Database queries
-
-**Cache Invalidation:**
-
-- Time-based expiration (TTL)
-- Event-based invalidation
-- Manual invalidation
-
-### Performance Optimizations
-
-1. **Database:**
-   - Proper indexing
-   - Query optimization
-   - Connection pooling
-   - Read replicas
-
-2. **API:**
-   - GraphQL DataLoader
-   - Query batching
-   - Response compression
-   - Rate limiting
-
-3. **Storage:**
-   - Lazy loading
-   - Pagination
-   - Background uploads
-   - CDN integration
-
-4. **Real-time:**
-   - Message batching
-   - Selective broadcasting
-   - Presence debouncing
-   - Connection pooling
-
-### Monitoring & Observability
-
-**Metrics:**
-- API response times
-- Database query performance
-- Cache hit rates
-- WebSocket connections
-- Service health status
-
-**Logging:**
-- Structured logging (JSON)
-- Log levels (DEBUG, INFO, WARN, ERROR)
-- Request tracing
-- Error tracking
-
-**Alerting:**
-- Service downtime
-- High error rates
-- Performance degradation
-- Resource exhaustion
-
----
-
-## Deployment Architecture
-
-### Development Environment
-
-```
-Local Machine
-    ├─→ PostgreSQL (Docker)
-    ├─→ Redis (Docker)
-    ├─→ API Server (localhost:4000)
-    └─→ Frontend (localhost:3000)
-```
-
-### Production Environment
+### Full Stack 모드 배포
 
 ```
 Frontend (Vercel/Netlify)
-    ↓
-Load Balancer
-    ↓
-API Servers (Railway/Render)
-    ↓
-┌─────────────┬──────────────┬────────────┐
-│ PostgreSQL  │    Redis     │    Irys    │
-│  (Supabase) │   (Upstash)  │ DataChain  │
-└─────────────┴──────────────┴────────────┘
+    ??
+Backend (Railway/Render/DigitalOcean)
+    ?��???Apollo Server
+    ?��???Services
+    ?��???Prisma ORM
+            ??
+PostgreSQL (Supabase/Neon)
+Redis (Upstash) [Optional]
+Irys DataChain
 ```
 
-### Docker Deployment
-
-```yaml
-services:
-  api:
-    image: irysbase-api
-    ports: ["4000:4000"]
-    depends_on: [postgres, redis]
-
-  postgres:
-    image: postgres:15
-    ports: ["5432:5432"]
-
-  redis:
-    image: redis:7
-    ports: ["6379:6379"]
-
-  web:
-    image: irysbase-web
-    ports: ["3000:3000"]
-```
+**배포 ?�계:**
+1. PostgreSQL ?�이?�베?�스 ?�성
+2. 백엔??배포:
+   ```bash
+   cd apps/api
+   pnpm prisma migrate deploy
+   pnpm build
+   pnpm start
+   ```
+3. ?�론?�엔??배포:
+   ```bash
+   cd apps/web-vite
+   pnpm build
+   # Deploy to Vercel
+   ```
+4. ?�경 변???�정
 
 ---
 
-## Technology Decisions
+## ?�� ?�키?�처 결정
 
-### Why PostgreSQL?
+### ???�중 ?�키?�처?��??
 
-- **Pros:** Mature, reliable, excellent query capabilities, strong ecosystem
-- **Cons:** Not decentralized
-- **Tradeoff:** Use Irys for permanent storage, PostgreSQL for queries
+**Pure Irys 모드???�점:**
+- ??백엔??불필????배포 간단
+- ???�영 비용 최소
+- ???�전???�중?�화
+- ??빠른 ?�로?��??�핑
 
-### Why Irys?
+**Full Stack 모드???�점:**
+- ??고급 기능 (AI, 분석)
+- ??빠른 복잡??쿼리
+- ???�시�??�업
+- ??기업??기능
 
-- **Pros:** Permanent storage, blockchain verification, no storage limits
-- **Cons:** Slower queries, no complex query capabilities
-- **Tradeoff:** Use for immutable data, PostgreSQL for mutable queries
+### ??Irys?��??
 
-### Why GraphQL?
+**?�택 ?�유:**
+- Arweave보다 빠른 finality
+- GraphQL-like 쿼리 API
+- ??? 비용
+- TypeScript SDK
+- ?�로그래머블 ?�이??지??
 
-- **Pros:** Type-safe, flexible queries, strong tooling
-- **Cons:** More complex than REST
-- **Tradeoff:** Better developer experience worth the complexity
+### ??IndexedDB?��??
 
-### Why Monorepo (Turborepo)?
-
-- **Pros:** Code sharing, atomic changes, unified tooling
-- **Cons:** Larger repository, more complex setup
-- **Tradeoff:** Better for multi-package projects
-
----
-
-## Future Architecture Improvements
-
-### Planned Enhancements
-
-1. **Microservices** - Split services into independent deployments
-2. **Message Queue** - Bull Queue for background jobs
-3. **Service Mesh** - Istio for service communication
-4. **API Gateway** - Kong or Traefik for routing
-5. **Kubernetes** - Container orchestration
-6. **Observability** - Full tracing with OpenTelemetry
-
-### Scalability Roadmap
-
-1. **Phase 1** (Current) - Monolithic with service separation
-2. **Phase 2** - Independent service deployment
-3. **Phase 3** - Full microservices architecture
-4. **Phase 4** - Multi-region deployment
-5. **Phase 5** - Global edge network
+**?�택 ?�유:**
+- 브라?��? ?�장
+- ?�?�량 ?�??가??
+- 구조?�된 ?�이??
+- 비동�?API
+- ?�프?�인 지??
 
 ---
 
-For more details, see:
-- [Services Guide](./SERVICES.md)
-- [API Reference](./API.md)
-- [Deployment Guide](./DEPLOYMENT.md)
+## ?�� ?�후 개선 ?�항
+
+### 계획??기능
+
+1. **P2P ?�기??*
+   - WebRTC�??�한 직접 peer-to-peer ?�기??
+   - 중앙 ?�버 ?�이 ?�시�??�업
+
+2. **End-to-End ?�호??*
+   - ?�라?�언??�??�호??
+   - ?�라?�빗 문서 지??
+
+3. **?�프?�인 ?�집**
+   - Service Worker ?�합
+   - ?�프?�인 ???�동 ?�잉
+   - ?�라??복�? ???�동 ?�기??
+
+4. **모바????*
+   - React Native
+   - ?�일???�키?�처
+   - ?�로???�랫???�기??
+
+5. **?�러그인 ?�스??*
+   - 커스?� ?�디???�장
+   - ?�드?�티 ?�합
+   - ?�마 ?�스??
+
+---
+
+???�세???�용?� ?�음 문서�?참조?�세??
+- [?�작?�기](./GETTING_STARTED.md)
+- [API ?�퍼?�스](./API.md)
+- [배포 가?�드](./DEPLOYMENT_GUIDE.md)
+- [?�로그래머블 ?�이??(./PROGRAMMABLE_DATA_ARCHITECTURE.md)

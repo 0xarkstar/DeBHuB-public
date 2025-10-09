@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useMutation } from '@apollo/client';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 
@@ -7,45 +6,44 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { CREATE_PROJECT } from '@/lib/graphql/mutations';
-import { GET_MY_PROJECTS } from '@/lib/graphql/queries';
+import { useCreateProject, useWallet } from '@/lib/irys-hooks';
 
 export default function NewProjectPage() {
   const navigate = useNavigate();
+  const { address, connected } = useWallet();
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
     description: '',
-    visibility: 'PRIVATE' as 'PUBLIC' | 'PRIVATE' | 'UNLISTED',
+    visibility: 'private' as 'public' | 'private' | 'unlisted',
   });
 
-  const [createProject, { loading, error }] = useMutation(CREATE_PROJECT, {
-    refetchQueries: [{ query: GET_MY_PROJECTS, variables: { limit: 50, offset: 0 } }],
-  });
+  const { mutate: createProject, loading, error } = useCreateProject();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!connected || !address) {
+      alert('Please connect your wallet first');
+      return;
+    }
+
     try {
-      const { data } = await createProject({
-        variables: {
-          input: {
-            name: formData.name,
-            slug: formData.slug || formData.name.toLowerCase().replace(/\s+/g, '-'),
-            description: formData.description || undefined,
-            visibility: formData.visibility,
-            settings: {
-              defaultBranch: 'main',
-              allowPublicEdit: false,
-              enableComments: true,
-            },
-          },
+      const project = await createProject({
+        name: formData.name,
+        slug: formData.slug || formData.name.toLowerCase().replace(/\s+/g, '-'),
+        description: formData.description || undefined,
+        owner: address,
+        visibility: formData.visibility,
+        settings: {
+          defaultBranch: 'main',
+          allowPublicEdit: false,
+          enableComments: true,
         },
       });
 
-      if (data?.createProject) {
-        navigate(`/projects/${data.createProject.id}`);
-      }
+      // Navigate to the new project
+      navigate(`/projects/${project.slug}`);
     } catch (err) {
       console.error('Failed to create project:', err);
     }
@@ -147,17 +145,17 @@ export default function NewProjectPage() {
               <div className="space-y-2">
                 {[
                   {
-                    value: 'PRIVATE',
+                    value: 'private',
                     label: 'Private',
                     description: 'Only you and collaborators can access',
                   },
                   {
-                    value: 'UNLISTED',
+                    value: 'unlisted',
                     label: 'Unlisted',
                     description: 'Anyone with the link can access',
                   },
                   {
-                    value: 'PUBLIC',
+                    value: 'public',
                     label: 'Public',
                     description: 'Visible to everyone',
                   },
@@ -201,7 +199,7 @@ export default function NewProjectPage() {
 
             {/* Submit */}
             <div className="flex items-center gap-3">
-              <Button type="submit" disabled={loading || !formData.name || !formData.slug}>
+              <Button type="submit" disabled={loading || !connected || !formData.name || !formData.slug}>
                 {loading ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />

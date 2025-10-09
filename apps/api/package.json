@@ -14,7 +14,8 @@
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "benchmark:irys": "ts-node-dev src/benchmarks/irys-performance-test.ts"
   },
   "dependencies": {
     "@apollo/server": "^4.9.3",
@@ -34,6 +35,7 @@
     "graphql-ws": "^5.14.0",
     "ioredis": "^5.7.0",
     "jsonwebtoken": "^9.0.2",
+    "openai": "^4.104.0",
     "pg": "^8.11.3",
     "prisma": "^5.6.0",
     "redis": "^4.6.8",

@@ -1,448 +1,293 @@
 # IrysBase
 
-> **Decentralized Backend-as-a-Service (BaaS)** - Permanent storage meets fast querying with real-time collaboration
+> **Decentralized Documentation Platform with Permanent Storage**
+
+IrysBase는 Irys DataChain을 기반으로 구축된 차세대 문서화 플랫폼입니다. 블록체인의 영구성과 프로그래머블 데이터의 유연성을 결합하여 불변적이고, 검증 가능하며, 인터랙티브한 문서를 만듭니다.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
-[![pnpm](https://img.shields.io/badge/pnpm-8+-orange.svg)](https://pnpm.io/)
-[![Integration Status](https://img.shields.io/badge/Integration-100%25-brightgreen.svg)](#-integration-status)
-
-## 🎯 What is IrysBase?
-
-IrysBase combines the permanence of **Irys blockchain storage** with the speed of **PostgreSQL** to create a production-ready platform for building decentralized documentation and collaboration tools.
-
-### Key Features
-
-| Feature | Status | Description |
-|---------|--------|-------------|
-| 📚 **Document Management** | ✅ 100% | Git-like versioning, history, and rollback |
-| 🔐 **Wallet Authentication** | ✅ 100% | Challenge-response Web3 auth with JWT |
-| 🗄️ **Permanent Storage** | ✅ 95% | Irys DataChain integration with metrics |
-| 🔍 **Search** | ✅ 90% | Full-text + AI semantic search |
-| 💬 **Real-time Collaboration** | ✅ 95% | WebSocket subscriptions with filtering |
-| 📊 **Analytics** | ✅ 95% | Storage metrics and usage tracking |
-| 🤖 **AI Integration** | ✅ 85% | OpenAI embeddings & Q&A |
-| 🎨 **Programmable Data** | ✅ 90% | Rules for access, triggers, royalties |
-| 🎯 **Performance** | ✅ 95% | Query batching, code splitting, lazy loading |
-
-**Overall Platform Status**: ✅ **100% Complete** - All integration tasks finished!
-
-📖 **Documentation**:
-- [User Flows](./docs/USER_FLOWS.md) - Complete user journey diagrams
-- [Integration Tasks](./INTEGRATION_TASKS.md) - Detailed implementation guide
-- [Architecture](./docs/ARCHITECTURE.md) - Technical architecture
-- [Getting Started](./docs/GETTING_STARTED.md) - Quick start guide
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ---
 
-## 🚀 Quick Start
+## ✨ 주요 기능
 
-### Prerequisites
+### 🔐 핵심 기능
+- **영구 저장소** - Irys DataChain에 문서 영구 보관
+- **지갑 인증** - MetaMask 연결, 비밀번호 불필요
+- **버전 관리** - 암호화 증명이 포함된 전체 문서 히스토리
+- **협업** - 댓글, 스레드, 실시간 업데이트
+- **스마트 캐싱** - 즉각적인 오프라인 액세스를 위한 IndexedDB
+
+### 🚀 고급 기능 (선택사항)
+- **프로그래머블 데이터** - 규칙, 트리거, 자동화된 워크플로우
+- **AI 통합** - 스마트 제안 및 시맨틱 검색
+- **Edge Functions** - 엣지에서의 분산 컴퓨팅
+- **벡터 검색** - AI 기반 문서 검색
+- **분석 대시보드** - 사용량 메트릭 및 인사이트
+
+---
+
+## 🏗️ 아키텍처
+
+IrysBase는 **이중 아키텍처**를 지원합니다:
+
+### 옵션 1: Pure Irys (권장)
+```
+Frontend → Irys DataChain → IndexedDB Cache
+```
+- ✅ 백엔드 불필요
+- ✅ 완전한 탈중앙화
+- ✅ 최소 번들 크기
+
+### 옵션 2: Full Stack
+```
+Frontend → GraphQL API → PostgreSQL + Irys
+```
+- ✅ 고급 기능 (AI, 분석)
+- ✅ 실시간 구독
+- ✅ 기존 데이터베이스 레이어
+
+자세한 내용은 [아키텍처 문서](docs/ARCHITECTURE.md)를 참조하세요.
+
+---
+
+## 🚀 빠른 시작
+
+### 사전 요구사항
 
 - Node.js 18+
-- pnpm 8+
-- PostgreSQL 14+
-- Redis (optional, for production auth)
+- pnpm 9+
+- MetaMask 지갑
+- (선택사항) PostgreSQL for full stack
 
-### Installation
+### 설치
 
 ```bash
-# Clone repository
-git clone https://github.com/your-org/irysbase.git
+# 저장소 클론
+git clone <repository-url>
 cd irysbase
 
-# Install dependencies
+# 의존성 설치
 pnpm install
+```
 
-# Setup environment variables
-cp apps/api/.env.example apps/api/.env
-cp apps/web-vite/.env.example apps/web-vite/.env
+### Pure Irys 모드 실행 (백엔드 없이)
 
-# Configure your .env files (see below)
+```bash
+cd apps/web-vite
+cp .env.example .env
+# .env에서 VITE_ENABLE_BACKEND=false 설정
+pnpm dev
+```
 
-# Generate Prisma client
+`http://localhost:5173` 방문 후 지갑 연결!
+
+### Full Stack 모드 실행
+
+```bash
+# Terminal 1: 백엔드 시작
 cd apps/api
+cp .env.example .env
+# 환경변수 설정
 pnpm prisma generate
 pnpm prisma migrate dev
+pnpm dev
 
-# Start development servers
-cd ../..
-pnpm dev  # or run separately:
-# Terminal 1: cd apps/api && pnpm dev:enhanced
-# Terminal 2: cd apps/web-vite && pnpm dev
+# Terminal 2: 프론트엔드 시작
+cd apps/web-vite
+cp .env.example .env
+# .env에서 VITE_ENABLE_BACKEND=true 설정
+pnpm dev
 ```
 
-### Environment Variables
+자세한 내용은 [시작 가이드](docs/GETTING_STARTED.md)를 참조하세요.
 
-**Backend (.env)**:
-```bash
-# Database
-DATABASE_URL="postgresql://username:password@localhost:5432/irysbase"
+---
 
-# Redis (optional - uses in-memory for dev)
-REDIS_URL="redis://localhost:6379"
+## 📖 문서
 
-# JWT Secret
-JWT_SECRET="your-super-secret-key-change-in-production"
+### 필수 문서
+- **[시작하기](docs/GETTING_STARTED.md)** - 설치 및 기본 사용법
+- **[아키텍처](docs/ARCHITECTURE.md)** - 시스템 설계 및 구조
+- **[API 레퍼런스](docs/API.md)** - GraphQL API 문서
+- **[배포 가이드](docs/DEPLOYMENT_GUIDE.md)** - 프로덕션 배포
 
-# Irys Configuration
-IRYS_PRIVATE_KEY="your-irys-private-key"
-IRYS_NETWORK="mainnet"  # or "testnet"
-IRYS_TOKEN="ethereum"
+### 추가 문서
+- **[프론트엔드 개발](docs/FRONTEND_DEVELOPMENT.md)** - UI/UX 가이드라인
+- **[서비스 아키텍처](docs/SERVICES.md)** - 백엔드 서비스 설명
+- **[프로그래머블 데이터](docs/PROGRAMMABLE_DATA_ARCHITECTURE.md)** - 스마트 데이터 기능
 
-# Blockchain
-RPC_URL="https://rpc.irys.computer"
-CHAIN_ID="1270"
+---
 
-# OpenAI (optional - for AI features)
-OPENAI_API_KEY="sk-..."
+## 🔧 환경 설정
+
+### 프론트엔드 (.env)
+
+```env
+# Irys 설정
+VITE_IRYS_NETWORK=mainnet
+VITE_IRYS_TOKEN=ethereum
+
+# 지갑 연결
+VITE_WALLET_CONNECT_PROJECT_ID=your_project_id
+
+# 백엔드 모드 (true/false)
+VITE_ENABLE_BACKEND=false
+
+# 백엔드 API (VITE_ENABLE_BACKEND=true일 때만)
+VITE_GRAPHQL_URL=http://localhost:4000/graphql
+VITE_GRAPHQL_WS_URL=ws://localhost:4000/graphql
 ```
 
-**Frontend (.env)**:
-```bash
-# GraphQL API
-VITE_GRAPHQL_URL="http://localhost:4000/graphql"
-VITE_GRAPHQL_WS_URL="ws://localhost:4000/graphql"
+### 백엔드 (.env)
 
-# WalletConnect
-VITE_WALLETCONNECT_PROJECT_ID="your-project-id"
+```env
+# 데이터베이스
+DATABASE_URL=postgresql://user:password@localhost:5432/irysbase
 
-# Network
-VITE_CHAIN_ID="1270"
+# Irys
+IRYS_NETWORK=mainnet
+IRYS_WALLET_PRIVATE_KEY=your_private_key
+
+# AI (선택사항)
+OPENAI_API_KEY=your_openai_key
+
+# Redis (선택사항)
+REDIS_URL=redis://localhost:6379
 ```
 
 ---
 
-## 🏗️ Architecture
+## 💻 기술 스택
 
-IrysBase implements a **hybrid architecture** combining decentralized and traditional systems:
+### 프론트엔드
+- **React 18** - UI 프레임워크
+- **Vite 5** - 빌드 도구
+- **TypeScript** - 타입 안전성
+- **TailwindCSS** - 스타일링
+- **Radix UI** - 컴포넌트
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     Frontend (React + Vite)                  │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │   Dashboard  │  │   Document   │  │Programmable  │      │
-│  │              │  │    Editor    │  │    Data      │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
-│         │                  │                  │              │
-│         └──────────────────┴──────────────────┘              │
-│                            │                                 │
-│           Apollo Client + WebSocket + Query Batching         │
-└────────────────────────────┬────────────────────────────────┘
-                             │
-┌────────────────────────────┴────────────────────────────────┐
-│                   GraphQL API (Apollo Server)                │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │Authentication│Storage Metrics│Real-time Subscriptions│   │
-│  └──────────────────────────────────────────────────────┘   │
-└────────────────────────────┬────────────────────────────────┘
-                             │
-┌────────────────────────────┴────────────────────────────────┐
-│                        Service Layer                         │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │    Irys      │  │  PostgreSQL  │  │    Redis     │      │
-│  │   Service    │  │   Database   │  │    Cache     │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │Vector Search │  │   Realtime   │  │  Analytics   │      │
-│  │  (OpenAI)    │  │   Service    │  │   Service    │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
-└─────────────────────────────────────────────────────────────┘
-                             │
-┌────────────────────────────┴────────────────────────────────┐
-│                      Data Persistence                        │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │  PostgreSQL  │  │     Irys     │  │    Redis     │      │
-│  │  (Queries)   │  │ (Permanent)  │  │   (Cache)    │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
-└─────────────────────────────────────────────────────────────┘
-```
+### 블록체인
+- **Irys SDK** - 영구 저장소
+- **@irys/query** - 데이터 쿼리
+- **@irys/upload** - 파일 업로드
+- **ethers.js** - 지갑 상호작용
 
-### Data Flow Example
-
-**User creates a document** →
-
-1. Frontend sends `createDocument` mutation via Apollo Client
-2. GraphQL resolver validates + creates DB record (PostgreSQL)
-3. Background: Upload to Irys for permanent storage
-4. Return document with `irysId` and `permanentUrl`
-5. WebSocket broadcasts to collaborators via filtered subscription
-6. Storage metrics automatically updated
+### 백엔드 (선택사항)
+- **Apollo Server** - GraphQL
+- **Prisma** - ORM
+- **PostgreSQL** - 데이터베이스
+- **OpenAI** - AI 기능
 
 ---
 
-## 📚 User Flows
-
-IrysBase supports complete workflows for modern collaboration:
-
-### 1. Authentication Flow
-```
-Connect Wallet → Switch to IrysVM → Sign Challenge → Receive JWT → Access Dashboard
-```
-
-### 2. Document Creation
-```
-New Project → Create Document → Write Content → Auto-save Versions → Upload to Irys
-```
-
-### 3. Real-time Collaboration
-```
-Open Document → Join WebSocket → See Active Users → Edit Together → Live Sync
-```
-
-### 4. AI-Powered Search
-```
-Enter Query → Generate Embedding → Vector Search → Return Similar Docs
-```
-
-See [USER_FLOWS.md](./docs/USER_FLOWS.md) for detailed flowcharts and scenarios.
-
----
-
-## 🛠️ Tech Stack
-
-### Backend
-- **GraphQL**: Apollo Server 4 with subscriptions and query batching
-- **Database**: PostgreSQL + Prisma ORM
-- **Storage**: Irys DataChain (permanent blockchain storage)
-- **Cache**: Redis (optional, falls back to in-memory)
-- **Queue**: Bull (background jobs)
-- **Blockchain**: IrysVM (Chain ID: 1270) + ethers.js v6
-- **AI**: OpenAI (embeddings + GPT-4)
-
-### Frontend
-- **Framework**: React 18 + Vite
-- **State**: Apollo Client 3 with cache persistence
-- **Styling**: TailwindCSS + shadcn/ui
-- **Wallet**: RainbowKit + wagmi
-- **Real-time**: GraphQL Subscriptions via WebSocket
-- **Performance**: Code splitting, lazy loading, query batching
-
-### Infrastructure
-- **Authentication**: Challenge-response signature verification + JWT
-- **Error Handling**: Structured errors with codes, ErrorBoundary
-- **Type Safety**: Full TypeScript coverage
-- **Version Control**: Git-like document versioning with diffs
-
----
-
-## 📖 API Overview
-
-### GraphQL API
-
-**Queries** (15+ endpoints):
-- `me`, `user`, `project`, `document` - Core entities
-- `myProjects`, `projectDocuments` - Collections
-- `projectStorage`, `userStorage` - Metrics
-- `searchDocuments`, `askQuestion` - AI-powered
-- `documentHistory`, `collaborationSession` - Features
-
-**Mutations** (20+ endpoints):
-- Authentication: `requestChallenge`, `authenticate`
-- Projects: `createProject`, `updateProject`, `deleteProject`
-- Documents: `createDocument`, `updateDocument`, `publishDocument`
-- Versions: `createVersion`, `revertToVersion`
-- Collaboration: `addCollaborator`, `removeCollaborator`
-- Comments: `createComment`, `resolveComment`
-
-**Subscriptions** (5 real-time events):
-- `documentChanged` - Document updates
-- `projectUpdated` - Project changes
-- `collaborationUpdated` - User presence
-- `commentAdded` - New comments
-- `notifications` - User notifications
-
-Full API documentation: [docs/API.md](./docs/API.md)
-
----
-
-## 🎨 Features Implemented
-
-### ✅ Core Features (100% Complete)
-
-#### 1. Wallet Authentication
-- **Challenge-Response**: Secure signature-based login
-- **JWT Tokens**: 7-day expiration with auto-refresh
-- **Network Detection**: Auto-switch to IrysVM
-- **Session Management**: Persistent localStorage tokens
-
-#### 2. Document Management
-- **CRUD Operations**: Full create, read, update, delete
-- **Version Control**: Automatic versioning on every save
-- **Git-like History**: View diffs, compare, revert
-- **Metadata**: Tags, descriptions, reading time
-- **Permanent Storage**: Automatic Irys upload with proof
-
-#### 3. Real-time Collaboration
-- **WebSocket**: Live document updates
-- **Filtered Subscriptions**: Only receive relevant events
-- **Presence Awareness**: See active users (planned UI)
-- **Concurrent Editing**: Operational transformation (planned)
-- **Comments**: Threaded discussions with resolution
-
-#### 4. Storage Metrics
-- **User-level**: Total storage across all projects
-- **Project-level**: Per-project breakdown
-- **Document-level**: Individual file sizes
-- **Cost Tracking**: Real-time Irys pricing
-- **Sync Status**: Upload completion tracking
-
-#### 5. AI-Powered Features
-- **Semantic Search**: OpenAI embeddings (ada-002)
-- **Q&A System**: GPT-4 answers from your docs
-- **Keyword Extraction**: Automatic tagging
-- **Content Analysis**: Difficulty assessment, reading time
-- **Auto-complete**: Smart suggestions (planned)
-
-#### 6. Programmable Data
-- **Access Control**: Rule-based permissions
-- **Auto-Triggers**: Event-driven workflows
-- **Royalty Distribution**: Automatic payments
-- **JSON Configuration**: Flexible rule definitions
-- **Execution Tracking**: Logs and analytics
-
-#### 7. Performance Optimizations
-- **Query Batching**: Batch HTTP Link (10 queries, 20ms)
-- **Code Splitting**: Lazy-loaded routes
-- **Skeleton UI**: Consistent loading states
-- **Apollo Cache**: In-memory + persistence option
-- **Error Boundaries**: Graceful failure handling
-
-### 🚧 Planned Features
-
-- **Mobile App**: React Native client
-- **Offline Mode**: Full offline support with sync
-- **Advanced Search**: Filters, facets, sorting
-- **Team Workspaces**: Organization management
-- **API Keys**: Programmatic access
-- **Webhooks**: External integrations
-- **Custom Domains**: White-label support
-
----
-
-## 📊 Integration Status
-
-### ✅ Completed Tasks (All 10/10)
-
-1. **✅ Authentication System** - Challenge-response + JWT
-2. **✅ Storage Metrics API** - Real Irys usage tracking
-3. **✅ GraphQL Schema Sync** - Complete type alignment
-4. **✅ Error Handling** - Structured errors + boundaries
-5. **✅ Real-time Subscriptions** - Filtered WebSocket events
-6. **✅ Loading States** - Skeleton UI components
-7. **✅ Cache Persistence** - Implementation guide
-8. **✅ AI Search** - OpenAI vector embeddings
-9. **✅ Programmable Data UI** - Rule creation interface
-10. **✅ Performance** - Batching, splitting, lazy loading
-
-**Total Progress**: 100% ✅
-
-See [INTEGRATION_TASKS.md](./INTEGRATION_TASKS.md) for detailed implementation notes.
-
----
-
-## 🧪 Testing
-
-```bash
-# Run type checking
-pnpm typecheck
-
-# Run linting
-pnpm lint
-
-# Build for production
-pnpm build
-
-# Start production server
-pnpm start
-```
-
----
-
-## 📝 Development
-
-### Project Structure
+## 📦 프로젝트 구조
 
 ```
 irysbase/
 ├── apps/
-│   ├── api/                    # GraphQL API server
+│   ├── api/                    # GraphQL API (선택사항)
 │   │   ├── src/
 │   │   │   ├── resolvers/     # GraphQL resolvers
-│   │   │   ├── services/      # Business logic
-│   │   │   ├── utils/         # Utilities & errors
-│   │   │   ├── types/         # TypeScript types
-│   │   │   └── schema-enhanced.graphql
-│   │   └── prisma/            # Database schema
+│   │   │   ├── services/      # 비즈니스 로직
+│   │   │   └── schema.graphql
+│   │   └── prisma/
 │   │
-│   └── web-vite/              # React frontend
-│       ├── src/
-│       │   ├── components/    # React components
-│       │   ├── pages/         # Route pages
-│       │   ├── hooks/         # Custom hooks
-│       │   ├── lib/           # GraphQL client, utils
-│       │   └── App.tsx
-│       └── public/
+│   ├── web-vite/              # React + Vite (현재)
+│   │   ├── src/
+│   │   │   ├── lib/
+│   │   │   │   ├── irys-database.ts      # Pure Irys DB
+│   │   │   │   ├── irys-hooks.ts         # React hooks
+│   │   │   │   └── apollo.ts             # GraphQL client
+│   │   │   ├── pages/
+│   │   │   └── components/
+│   │   └── package.json
+│   │
+│   └── web/                   # Next.js (더 이상 사용 안 함)
 │
-├── docs/                      # Documentation
-│   ├── USER_FLOWS.md         # User journey flowcharts
-│   ├── API.md                # API reference
-│   ├── ARCHITECTURE.md       # Technical architecture
-│   └── GETTING_STARTED.md    # Setup guide
+├── packages/
+│   ├── shared/                # 공유 타입
+│   ├── core/                  # 핵심 유틸리티
+│   └── irys-integration/      # Irys SDK 래퍼
 │
-└── README.md                 # This file
+├── docs/                      # 문서
+│   ├── GETTING_STARTED.md
+│   ├── ARCHITECTURE.md
+│   ├── API.md
+│   └── DEPLOYMENT_GUIDE.md
+│
+└── README.md                  # 이 파일
 ```
 
-### Adding New Features
+---
 
-1. **Define GraphQL schema** in `schema-enhanced.graphql`
-2. **Implement resolver** in `enhanced-resolvers.ts`
-3. **Add service logic** in appropriate service file
-4. **Create frontend query/mutation** in `lib/graphql/`
-5. **Build UI components** in `components/` or `pages/`
-6. **Add to routing** in `App.tsx`
-7. **Update documentation** in `docs/`
+## 🎯 사용 사례
+
+1. **기술 문서** - API 문서, 개발자 가이드, 아키텍처 스펙
+2. **법률 문서** - 계약서, 이용약관, 타임스탬프 증명
+3. **연구 논문** - 학술 출판물, 버전 관리 연구, 불변 인용
+4. **지식 베이스** - 회사 위키, 제품 문서, 교육 자료
 
 ---
 
-## 🤝 Contributing
+## 🧪 개발
 
-We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+### 테스트 실행
 
-### Development Workflow
+```bash
+# 타입 검사
+pnpm typecheck
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Run tests and type checking
-5. Commit with descriptive messages
-6. Push and create a Pull Request
+# 린팅
+pnpm lint
 
----
+# 빌드
+pnpm build
+```
 
-## 📄 License
+### 빌드
 
-MIT License - see [LICENSE](./LICENSE) for details
+```bash
+# 프론트엔드 빌드
+cd apps/web-vite
+pnpm build
 
----
-
-## 🙏 Acknowledgments
-
-- **Irys** - Permanent data storage on blockchain
-- **Apollo GraphQL** - Flexible API layer
-- **Prisma** - Type-safe database access
-- **OpenAI** - AI-powered features
-- **shadcn/ui** - Beautiful UI components
-- **RainbowKit** - Wallet connection
+# API 빌드
+cd apps/api
+pnpm build
+```
 
 ---
 
-## 📞 Support
+## 🤝 기여
 
-- **Documentation**: [/docs](/docs)
-- **Issues**: [GitHub Issues](https://github.com/your-org/irysbase/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-org/irysbase/discussions)
+기여를 환영합니다! [CONTRIBUTING.md](CONTRIBUTING.md)를 참조하세요.
 
 ---
 
-**Built with ❤️ using Irys, GraphQL, and React**
+## 📄 라이선스
+
+이 프로젝트는 MIT 라이선스 하에 있습니다. 자세한 내용은 [LICENSE](LICENSE)를 참조하세요.
+
+---
+
+## 🙏 감사의 말
+
+- [Irys](https://irys.xyz) - 영구 데이터 저장소
+- [Arweave](https://arweave.org) - 탈중앙화 스토리지 네트워크
+- 오픈소스 커뮤니티
+
+---
+
+## 📞 지원
+
+- **문서**: [docs/](docs/)
+- **이슈**: [GitHub Issues](https://github.com/your-org/irysbase/issues)
+- **이메일**: support@irysbase.com
+
+---
+
+**IrysBase 팀이 ❤️로 만들었습니다**
+
+**상태**: 🟢 베타 | **버전**: 1.0.0-beta | **업데이트**: 2025-10-09

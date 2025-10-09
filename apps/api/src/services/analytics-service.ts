@@ -89,7 +89,7 @@ export class AnalyticsService {
       const publishedDocuments = await this.prisma.document.count({
         where: {
           projectId,
-          published: true
+          publishedAt: { not: null }
         }
       });
 

@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import { Code, Shield, Zap, DollarSign } from 'lucide-react';
 
 const CREATE_RULE = gql`

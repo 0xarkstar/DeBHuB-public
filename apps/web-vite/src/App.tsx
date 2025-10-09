@@ -1,9 +1,11 @@
 import { lazy, Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { Providers } from './providers'
+import { ApolloWrapper } from './lib/apollo-wrapper'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import DashboardLayout from './layouts/DashboardLayout'
 import { ProjectCardSkeletonGrid } from './components/ProjectCardSkeleton'
+import { useIrysInit } from './lib/irys-hooks'
 
 // Lazy load pages for better performance
 const Dashboard = lazy(() => import('./pages/Dashboard'))
@@ -25,10 +27,18 @@ const PageLoader = () => (
 )
 
 function App() {
+  // Initialize IrysDatabase on app mount
+  const { error } = useIrysInit();
+
+  if (error) {
+    console.error('Failed to initialize IrysDatabase:', error);
+  }
+
   return (
     <ErrorBoundary>
       <Providers>
-        <Routes>
+        <ApolloWrapper>
+          <Routes>
           <Route path="/" element={<DashboardLayout />}>
             <Route
               index
@@ -112,6 +122,7 @@ function App() {
             />
           </Route>
         </Routes>
+        </ApolloWrapper>
       </Providers>
     </ErrorBoundary>
   )

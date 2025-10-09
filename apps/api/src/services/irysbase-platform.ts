@@ -74,11 +74,11 @@ export class IrysBasePlatformImpl implements IrysBasePlatform {
 
     // Initialize advanced services for IrysBook
     this.advanced = {
-      vector: new VectorDBService(this.core.database),
-      search: new SearchService(this.core.database),
-      analytics: new AnalyticsService(this.core.database),
+      vector: new VectorDBService(this.core.database as any),
+      search: new SearchService(this.core.database as any),
+      analytics: new AnalyticsService(this.core.database as any),
       edge: new EdgeService(),
-      programmable: new ProgrammableDataService(this.irysService),
+      programmable: new ProgrammableDataService(this.core.database as any, this.irysService),
     };
 
     // Tools will be implemented in future iterations

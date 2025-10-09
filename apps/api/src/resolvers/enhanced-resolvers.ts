@@ -733,7 +733,7 @@ export const enhancedResolvers = {
           createdAt: project.createdAt,
         };
 
-        const uploadResult = await storageService.uploadFile('metadata', {
+        const uploadResult = await storageService.uploadFile('images', {
           name: `project-${project.id}.json`,
           data: Buffer.from(JSON.stringify(metadata)),
           type: 'application/json',
@@ -876,7 +876,7 @@ export const enhancedResolvers = {
             createdAt: document.createdAt,
           };
 
-          const uploadResult = await storageService.uploadFile('documents', {
+          const uploadResult = await storageService.uploadFile('images', {
             name: `document-${document.id}.json`,
             data: Buffer.from(JSON.stringify(docData)),
             type: 'application/json',

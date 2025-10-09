@@ -377,6 +377,7 @@ export interface UploadResult {
   type: string;
   bucket: string;
   metadata: Record<string, any>;
+  receipt?: any;
 }
 
 export interface FileData {

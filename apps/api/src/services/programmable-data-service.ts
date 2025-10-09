@@ -71,17 +71,17 @@ export class ProgrammableDataService {
 
     // Store rules in database
     await this.prisma.programmableDataRule.deleteMany({
-      where: { entityId }
+      where: { documentId: entityId }
     });
 
     for (const rule of rules) {
       await this.prisma.programmableDataRule.create({
         data: {
-          entityId,
-          ruleType: rule.type,
-          trigger: rule.trigger,
-          conditions: JSON.stringify(rule.conditions),
-          actions: JSON.stringify(rule.actions),
+          documentId: entityId,
+          name: rule.type,
+          type: rule.type,
+          condition: rule.conditions as any,
+          action: rule.actions as any,
           enabled: rule.enabled ?? true,
         }
       });
@@ -119,15 +119,15 @@ export class ProgrammableDataService {
 
     // Load from database
     const dbRules = await this.prisma.programmableDataRule.findMany({
-      where: { entityId }
+      where: { documentId: entityId }
     });
 
     const rules: ProgrammableRule[] = dbRules.map(r => ({
       id: r.id,
-      type: r.ruleType,
-      trigger: r.trigger,
-      conditions: JSON.parse(r.conditions as string),
-      actions: JSON.parse(r.actions as string),
+      type: r.type,
+      trigger: r.type,
+      conditions: r.condition ? JSON.parse(JSON.stringify(r.condition)) : [],
+      actions: r.action ? JSON.parse(JSON.stringify(r.action)) : [],
       enabled: r.enabled,
     }));
 
@@ -225,8 +225,7 @@ export class ProgrammableDataService {
     if (enableVersioning && entityId) {
       const existing = await this.prisma.irysTransaction.findFirst({
         where: {
-          entityId,
-          entityType: entityType || 'permanent',
+          type: entityType || 'permanent',
         },
         orderBy: { createdAt: 'desc' },
       });
@@ -270,8 +269,9 @@ export class ProgrammableDataService {
       await this.prisma.irysTransaction.create({
         data: {
           transactionId: irysResult.id,
-          entityId,
-          entityType: entityType || 'permanent',
+          type: entityType || 'permanent',
+          status: 'confirmed',
+          size: BigInt(JSON.stringify(data).length),
           metadata: {
             version,
             previousIrysId,
@@ -422,16 +422,16 @@ export class ProgrammableDataService {
     const rulesByEntity = new Map<string, ProgrammableRule[]>();
 
     for (const rule of allRules) {
-      const entityRules = rulesByEntity.get(rule.entityId) || [];
+      const entityRules = rulesByEntity.get(rule.documentId) || [];
       entityRules.push({
         id: rule.id,
-        type: rule.ruleType,
-        trigger: rule.trigger,
-        conditions: JSON.parse(rule.conditions as string),
-        actions: JSON.parse(rule.actions as string),
+        type: rule.type,
+        trigger: rule.type,
+        conditions: rule.condition ? JSON.parse(JSON.stringify(rule.condition)) : [],
+        actions: rule.action ? JSON.parse(JSON.stringify(rule.action)) : [],
         enabled: rule.enabled,
       });
-      rulesByEntity.set(rule.entityId, entityRules);
+      rulesByEntity.set(rule.documentId, entityRules);
     }
 
     this.rules = rulesByEntity;

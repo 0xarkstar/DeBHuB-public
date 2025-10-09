@@ -1,4 +1,3 @@
-import { useQuery } from '@apollo/client';
 import { useParams, Link } from 'react-router-dom';
 import {
   FileText,
@@ -14,30 +13,20 @@ import {
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { MetricsOverview } from '@/components/dashboard/MetricsOverview';
-import { RecentActivity } from '@/components/dashboard/RecentActivity';
-import { GET_PROJECT, GET_PROJECT_METRICS, GET_PROJECT_DOCUMENTS } from '@/lib/graphql/queries';
+import { useProject, useDocuments } from '@/lib/irys-hooks';
 import { cn } from '@/lib/utils';
 
 export default function ProjectPage() {
   const { id } = useParams<{ id: string }>();
-  const projectId = id!;
+  const projectSlug = id!; // Now using slug instead of ID
 
-  const { data: projectData, loading: projectLoading } = useQuery(GET_PROJECT, {
-    variables: { id: projectId },
-  });
+  // Fetch project by slug
+  const { data: project, loading: projectLoading } = useProject(projectSlug);
 
-  const { data: metricsData } = useQuery(GET_PROJECT_METRICS, {
-    variables: { projectId },
-  });
-
-  const { data: documentsData, loading: documentsLoading } = useQuery(GET_PROJECT_DOCUMENTS, {
-    variables: { projectId, limit: 10 },
-  });
-
-  const project = projectData?.project;
-  const metrics = metricsData?.projectMetrics;
-  const documents = documentsData?.projectDocuments || [];
+  // Fetch project documents
+  const { data: documents, loading: documentsLoading } = useDocuments(
+    project?.entityId || null
+  );
 
   if (projectLoading) {
     return (
@@ -67,12 +56,12 @@ export default function ProjectPage() {
   }
 
   const getVisibilityIcon = () => {
-    switch (project.visibility) {
-      case 'PUBLIC':
+    switch (project.visibility.toLowerCase()) {
+      case 'public':
         return Globe;
-      case 'PRIVATE':
+      case 'private':
         return Lock;
-      case 'UNLISTED':
+      case 'unlisted':
         return EyeOff;
       default:
         return Globe;
@@ -80,6 +69,10 @@ export default function ProjectPage() {
   };
 
   const VisibilityIcon = getVisibilityIcon();
+
+  // Calculate metrics from project data
+  const documentsCount = documents?.length || 0;
+  const collaboratorsCount = project.collaborators?.length || 0;
 
   return (
     <div className="space-y-6">
@@ -97,14 +90,14 @@ export default function ProjectPage() {
                 <span>•</span>
                 <div className={cn(
                   'flex items-center gap-1.5 px-2 py-1 rounded',
-                  project.visibility === 'PUBLIC'
+                  project.visibility.toLowerCase() === 'public'
                     ? 'bg-green-100 text-green-700'
-                    : project.visibility === 'PRIVATE'
+                    : project.visibility.toLowerCase() === 'private'
                     ? 'bg-gray-100 text-gray-700'
                     : 'bg-blue-100 text-blue-700'
                 )}>
                   <VisibilityIcon className="h-3.5 w-3.5" />
-                  <span>{project.visibility}</span>
+                  <span className="capitalize">{project.visibility}</span>
                 </div>
               </div>
             </div>
@@ -112,13 +105,13 @@ export default function ProjectPage() {
 
           <div className="flex items-center gap-2">
             <Button variant="outline" asChild>
-              <Link to={`/projects/${projectId}/settings`}>
+              <Link to={`/projects/${projectSlug}/settings`}>
                 <Settings className="h-4 w-4 mr-2" />
                 Settings
               </Link>
             </Button>
             <Button asChild>
-              <Link to={`/projects/${projectId}/documents/new`}>
+              <Link to={`/projects/${projectSlug}/documents/new`}>
                 <Plus className="h-4 w-4 mr-2" />
                 New Document
               </Link>
@@ -135,7 +128,7 @@ export default function ProjectPage() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Link to={`/projects/${projectId}/documents`}>
+        <Link to={`/projects/${projectSlug}/documents`}>
           <Card className="hover:shadow-md transition-shadow cursor-pointer">
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
@@ -145,7 +138,7 @@ export default function ProjectPage() {
                 <div>
                   <p className="font-semibold">Documents</p>
                   <p className="text-sm text-muted-foreground">
-                    {project.documentsCount} total
+                    {documentsCount} total
                   </p>
                 </div>
               </div>
@@ -153,7 +146,7 @@ export default function ProjectPage() {
           </Card>
         </Link>
 
-        <Link to={`/projects/${projectId}/collaborators`}>
+        <Link to={`/projects/${projectSlug}/collaborators`}>
           <Card className="hover:shadow-md transition-shadow cursor-pointer">
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
@@ -163,7 +156,7 @@ export default function ProjectPage() {
                 <div>
                   <p className="font-semibold">Team</p>
                   <p className="text-sm text-muted-foreground">
-                    {project.collaboratorsCount} members
+                    {collaboratorsCount} members
                   </p>
                 </div>
               </div>
@@ -171,7 +164,7 @@ export default function ProjectPage() {
           </Card>
         </Link>
 
-        <Link to={`/projects/${projectId}/analytics`}>
+        <Link to={`/projects/${projectSlug}/analytics`}>
           <Card className="hover:shadow-md transition-shadow cursor-pointer">
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
@@ -189,7 +182,7 @@ export default function ProjectPage() {
           </Card>
         </Link>
 
-        <Link to={`/projects/${projectId}/settings`}>
+        <Link to={`/projects/${projectSlug}/settings`}>
           <Card className="hover:shadow-md transition-shadow cursor-pointer">
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
@@ -208,14 +201,6 @@ export default function ProjectPage() {
         </Link>
       </div>
 
-      {/* Metrics */}
-      {metrics && (
-        <div>
-          <h2 className="text-xl font-semibold mb-4">Project Metrics</h2>
-          <MetricsOverview metrics={metrics} />
-        </div>
-      )}
-
       {/* Recent Documents & Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Documents */}
@@ -223,7 +208,7 @@ export default function ProjectPage() {
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-lg">Recent Documents</CardTitle>
             <Button variant="ghost" size="sm" asChild>
-              <Link to={`/projects/${projectId}/documents`}>View all</Link>
+              <Link to={`/projects/${projectSlug}/documents`}>View all</Link>
             </Button>
           </CardHeader>
           <CardContent>
@@ -233,24 +218,24 @@ export default function ProjectPage() {
                   <div key={i} className="h-16 bg-muted animate-pulse rounded" />
                 ))}
               </div>
-            ) : documents.length === 0 ? (
+            ) : !documents || documents.length === 0 ? (
               <div className="text-center py-8">
                 <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-3 opacity-50" />
                 <p className="text-sm text-muted-foreground mb-4">
                   No documents yet
                 </p>
                 <Button size="sm" asChild>
-                  <Link to={`/projects/${projectId}/documents/new`}>
+                  <Link to={`/projects/${projectSlug}/documents/new`}>
                     Create Document
                   </Link>
                 </Button>
               </div>
             ) : (
               <div className="space-y-2">
-                {documents.map((doc: any) => (
+                {documents.slice(0, 10).map((doc: any) => (
                   <Link
-                    key={doc.id}
-                    to={`/documents/${doc.id}`}
+                    key={doc.entityId}
+                    to={`/documents/${doc.entityId}`}
                     className="flex items-center justify-between p-3 rounded-lg hover:bg-muted transition-colors"
                   >
                     <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -260,13 +245,8 @@ export default function ProjectPage() {
                         <p className="text-xs text-muted-foreground">{doc.path}</p>
                       </div>
                     </div>
-                    <div className={cn(
-                      'px-2 py-1 rounded text-xs',
-                      doc.published
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-gray-100 text-gray-700'
-                    )}>
-                      {doc.published ? 'Published' : 'Draft'}
+                    <div className="px-2 py-1 rounded text-xs bg-green-100 text-green-700">
+                      v{doc.version}
                     </div>
                   </Link>
                 ))}
@@ -275,10 +255,44 @@ export default function ProjectPage() {
           </CardContent>
         </Card>
 
-        {/* Recent Activity */}
-        {metrics?.recentActivity && (
-          <RecentActivity activities={metrics.recentActivity} limit={5} />
-        )}
+        {/* Irys Info */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Permanent Storage</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
+                <div>
+                  <p className="font-semibold text-green-900">Irys Network</p>
+                  <p className="text-sm text-green-700">All data permanently stored</p>
+                </div>
+                <div className="h-3 w-3 bg-green-500 rounded-full animate-pulse" />
+              </div>
+
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Documents</span>
+                  <span className="font-medium">{documentsCount}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Storage Cost</span>
+                  <span className="font-medium">$0.00/month</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Status</span>
+                  <span className="font-medium text-green-600">Synced</span>
+                </div>
+              </div>
+
+              <Button variant="outline" size="sm" className="w-full" asChild>
+                <Link to="/blockchain">
+                  View on Irys
+                </Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

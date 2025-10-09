@@ -18,9 +18,11 @@ export class EdgeService {
   ];
 
   constructor(
-    private prisma: PrismaClient = prisma,
-    private irysService: IrysService
+    private prisma?: PrismaClient,
+    private irysService?: IrysService
   ) {
+    this.prisma = prisma || undefined;
+    this.irysService = irysService || undefined;
     this.redis = createClient({
       url: process.env.REDIS_URL || 'redis://localhost:6379'
     });
@@ -52,7 +54,7 @@ export class EdgeService {
     this.validateFunctionCode(code);
 
     // Upload function code to Irys for permanent storage
-    const irysResult = await this.irysService.uploadData(code, [
+    const irysResult = await this.irysService!.uploadData(code, [
       { name: 'Content-Type', value: 'application/javascript' },
       { name: 'Entity-Type', value: 'edge-function' },
       { name: 'Function-Name', value: functionName },
@@ -214,7 +216,7 @@ export class EdgeService {
     }
 
     // Fetch from Irys if not cached
-    const content = await this.irysService.getData(contentId);
+    const content = await this.irysService!.getData(contentId);
 
     // Cache for future requests
     await this.setEdgeCache(cacheKey, {
@@ -377,11 +379,11 @@ export class EdgeService {
 
         // Execute with timeout protection
         func(payload, { region: context.region, functionName: context.functionName })
-          .then(result => {
+          .then((result: any) => {
             clearTimeout(timeout);
             resolve(result);
           })
-          .catch(error => {
+          .catch((error: any) => {
             clearTimeout(timeout);
             reject(error);
           });
@@ -420,7 +422,7 @@ export class EdgeService {
       await this.redis.setEx(logKey, 3600, JSON.stringify(log));
 
       // Also upload to Irys for permanent audit trail
-      await this.irysService.uploadData(JSON.stringify(log), [
+      await this.irysService!.uploadData(JSON.stringify(log), [
         { name: 'Content-Type', value: 'application/json' },
         { name: 'Entity-Type', value: 'edge-execution-log' },
         { name: 'Function-Name', value: log.functionName },

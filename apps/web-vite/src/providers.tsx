@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ApolloWrapper } from './apollo-wrapper';
 
 const queryClient = new QueryClient();
 
@@ -56,9 +55,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             borderRadius: 'medium',
           })}
         >
-          <ApolloWrapper>
-            {children}
-          </ApolloWrapper>
+          {children}
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>

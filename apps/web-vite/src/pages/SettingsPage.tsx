@@ -1,18 +1,16 @@
 import { useState } from 'react';
-import { useAccount } from 'wagmi';
-import { useQuery } from '@apollo/client';
 import { User, Key, Bell, Palette, Shield, Copy, Check } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { WalletGuard } from '@/components/WalletGuard';
-import { GET_ME } from '@/lib/graphql/queries';
+import { useWallet, useUser, useProjects } from '@/lib/irys-hooks';
 import { cn } from '@/lib/utils';
 
 type SettingsTab = 'profile' | 'api-keys' | 'notifications' | 'appearance' | 'security';
 
 function SettingsContent() {
-  const { address } = useAccount();
+  const { address } = useWallet();
   const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
   const [copied, setCopied] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
@@ -23,8 +21,8 @@ function SettingsContent() {
     weeklyDigest: false,
   });
 
-  const { data, loading } = useQuery(GET_ME);
-  const user = data?.me;
+  const { data: user, loading } = useUser(address);
+  const { data: projects } = useProjects(address);
 
   const tabs = [
     { id: 'profile', label: 'Profile', icon: User },
@@ -120,7 +118,7 @@ function SettingsContent() {
                   <>
                     <div className="space-y-2">
                       <label className="text-sm font-medium">User ID</label>
-                      <Input value={user.id} readOnly />
+                      <Input value={user.entityId} readOnly />
                     </div>
 
                     <div className="space-y-2">
@@ -131,7 +129,15 @@ function SettingsContent() {
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Owned Projects</label>
                       <Input
-                        value={`${user.ownedProjects?.length || 0} projects`}
+                        value={`${projects?.length || 0} projects`}
+                        readOnly
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Display Name</label>
+                      <Input
+                        value={user.profile?.displayName || 'Not set'}
                         readOnly
                       />
                     </div>
@@ -161,9 +167,12 @@ function SettingsContent() {
                     API key management will be available in a future update.
                   </p>
                   <div className="bg-muted/50 rounded-lg p-4 text-left">
-                    <p className="text-sm font-medium mb-2">GraphQL Endpoint:</p>
-                    <code className="text-xs bg-background px-2 py-1 rounded">
-                      {import.meta.env.VITE_GRAPHQL_URL || 'http://localhost:4000/graphql'}
+                    <p className="text-sm font-medium mb-2">Irys Network:</p>
+                    <code className="text-xs bg-background px-2 py-1 rounded block mb-2">
+                      Query: @irys/query
+                    </code>
+                    <code className="text-xs bg-background px-2 py-1 rounded block">
+                      Upload: @irys/upload
                     </code>
                   </div>
                 </div>

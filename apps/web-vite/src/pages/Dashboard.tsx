@@ -1,59 +1,62 @@
-import { useQuery } from '@apollo/client';
 import { Plus, Search, Wallet } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { useAccount } from 'wagmi';
 
 import { ProjectCard } from '@/components/dashboard/ProjectCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { GET_MY_PROJECTS, GET_PUBLIC_PROJECTS } from '@/lib/graphql/queries';
 import { ConnectWallet } from '@/components/ConnectWallet';
+import { useProjects, useWallet, useSearch } from '@/lib/irys-hooks';
 
 function DashboardContent() {
-  const { isConnected } = useAccount();
+  const { address, connected } = useWallet();
   const [searchQuery, setSearchQuery] = useState('');
 
   // Fetch user's projects if connected, otherwise fetch public projects
-  const { data, loading, error } = useQuery(
-    isConnected ? GET_MY_PROJECTS : GET_PUBLIC_PROJECTS,
-    {
-      variables: { limit: 50, offset: 0 },
-    }
+  const { data: userProjects, loading: userLoading, error: userError } = useProjects(
+    connected ? address : null
   );
 
-  const projects = data?.myProjects || data?.publicProjects || [];
-
-  // Add mock storage data for projects (until backend implements storage metrics)
-  const projectsWithStorage = projects.map((project: any, index: number) => {
-    // Only add storage data if not already present from backend
-    if (project.storage && project.syncStatus !== undefined) {
-      return project;
-    }
-
-    // Mock storage metrics based on document count
-    const baseGB = Math.max(0.01, project.documentsCount * 0.15); // ~150MB per doc
-    const variation = (index % 5) * 0.1; // Add some variation
-    const irysGB = parseFloat((baseGB + variation).toFixed(2));
-    const monthlyCostUSD = parseFloat((irysGB * 2.5).toFixed(2)); // ~$2.50/GB
-
-    const syncStatuses = ['synced', 'pending', 'conflict'] as const;
-    const syncStatus = syncStatuses[index % 3];
-
-    return {
-      ...project,
-      storage: { irysGB, monthlyCostUSD },
-      syncStatus,
-    };
+  const { data: publicProjectsResult, loading: publicLoading, error: publicError } = useSearch({
+    entityType: ['project'],
+    visibility: 'public',
+    limit: 50
   });
 
-  const filteredProjects = projectsWithStorage.filter((project: any) =>
+  const loading = connected ? userLoading : publicLoading;
+  const error = connected ? userError : publicError;
+  const rawProjects = connected
+    ? (userProjects || [])
+    : (publicProjectsResult?.items || []);
+
+  // Map Irys projects to UI format
+  const projects = rawProjects.map((project: any) => ({
+    id: project.entityId,
+    name: project.name,
+    slug: project.slug,
+    description: project.description,
+    visibility: project.visibility.toUpperCase(), // 'public' -> 'PUBLIC'
+    documentsCount: project.collaborators?.length || 0, // TODO: get actual count
+    collaboratorsCount: project.collaborators?.length || 0,
+    updatedAt: project.updatedAt || project.createdAt,
+    owner: {
+      address: project.owner
+    },
+    // Irys is cheap - calculate cost based on permanence
+    storage: {
+      irysGB: 0.01, // Minimal for now
+      monthlyCostUSD: 0.0 // One-time payment model
+    },
+    syncStatus: 'synced' as const // Irys is always synced (permanent)
+  }));
+
+  const filteredProjects = projects.filter((project: any) =>
     project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     project.slug.toLowerCase().includes(searchQuery.toLowerCase()) ||
     project.description?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (!isConnected) {
+  if (!connected) {
     return (
       <div className="space-y-6">
         {/* Welcome Banner */}

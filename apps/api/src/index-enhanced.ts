@@ -186,7 +186,7 @@ async function startEnhancedServer() {
         path: formattedError.path,
         locations: formattedError.locations,
         ...(process.env.NODE_ENV === 'development' && {
-          stack: formattedError.extensions?.exception?.stacktrace,
+          stack: (formattedError.extensions?.exception as any)?.stacktrace,
         }),
       };
     },

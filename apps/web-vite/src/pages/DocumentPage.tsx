@@ -1,18 +1,18 @@
-import { useQuery } from '@apollo/client';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 
 import { DocumentEditor } from '@/components/editor/DocumentEditor';
 import { Button } from '@/components/ui/button';
-import { GET_DOCUMENT } from '@/lib/graphql/queries';
+import { useDocument, useProjectById } from '@/lib/irys-hooks';
 
 export default function DocumentPage() {
   const { id } = useParams<{ id: string }>();
   const documentId = id!;
 
-  const { data, loading, error, refetch } = useQuery(GET_DOCUMENT, {
-    variables: { id: documentId },
-  });
+  const { data: document, loading, error, refetch } = useDocument(documentId);
+
+  // Fetch project info for back link (using projectId which is the entityId)
+  const { data: project } = useProjectById(document?.projectId || null);
 
   if (loading) {
     return (
@@ -25,7 +25,7 @@ export default function DocumentPage() {
     );
   }
 
-  if (error || !data?.document) {
+  if (error || !document) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center max-w-md">
@@ -41,17 +41,15 @@ export default function DocumentPage() {
     );
   }
 
-  const document = data.document;
-
   return (
     <div className="min-h-screen">
       {/* Header */}
       <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-20">
         <div className="flex items-center gap-4 p-4">
           <Button variant="ghost" size="sm" asChild>
-            <Link to={`/projects/${document.project.id}`}>
+            <Link to={project ? `/projects/${project.slug}` : '/'}>
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to {document.project.name}
+              {project ? `Back to ${project.name}` : 'Back to Dashboard'}
             </Link>
           </Button>
         </div>
@@ -59,7 +57,14 @@ export default function DocumentPage() {
 
       {/* Editor */}
       <DocumentEditor
-        document={document}
+        document={{
+          id: document.entityId,
+          title: document.title,
+          content: document.content,
+          path: document.path,
+          published: !document.deleted,
+          irysId: document.irysId
+        }}
         onSave={() => refetch()}
         onPublish={() => refetch()}
       />
