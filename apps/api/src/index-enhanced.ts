@@ -1,14 +1,14 @@
 import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@apollo/server/express4';
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-import { createServer } from 'http';
-import express from 'express';
+import fastifyApollo, { fastifyApolloDrainPlugin } from '@as-integrations/fastify';
+import Fastify from 'fastify';
+import fastifyCors from '@fastify/cors';
+import fastifyCompress from '@fastify/compress';
+import fastifyRateLimit from '@fastify/rate-limit';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { WebSocketServer } from 'ws';
 import { useServer } from 'graphql-ws/lib/use/ws';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import cors from 'cors';
 
 // Import services
 import { connectDatabase, prisma } from './services/database';
@@ -112,13 +112,35 @@ async function startEnhancedServer() {
   startSyncWorker();
   await startEventListener();
 
-  // Setup Express app
-  const app = express();
-  const httpServer = createServer(app);
+  // Setup Fastify app with performance optimizations
+  const app = Fastify({
+    logger: {
+      level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+    },
+    requestIdLogLabel: 'reqId',
+    disableRequestLogging: process.env.NODE_ENV === 'production',
+    bodyLimit: 52428800, // 50MB for document uploads
+  });
 
-  // Setup WebSocket server for GraphQL subscriptions and real-time collaboration
+  // Register plugins for performance
+  await app.register(fastifyCors, {
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    credentials: true,
+  });
+
+  await app.register(fastifyCompress, {
+    encodings: ['gzip', 'deflate'],
+    threshold: 1024, // Compress responses > 1KB
+  });
+
+  await app.register(fastifyRateLimit, {
+    max: 100,
+    timeWindow: '1 minute',
+  });
+
+  // Setup WebSocket server for GraphQL subscriptions
   const wsServer = new WebSocketServer({
-    server: httpServer,
+    server: app.server,
     path: '/graphql',
   });
 
@@ -147,11 +169,28 @@ async function startEnhancedServer() {
 
   const serverCleanup = useServer({ schema }, wsServer);
 
+  // Define context type
+  interface GraphQLContext {
+    prisma: typeof prisma;
+    irysService: IrysService;
+    blockchainService: BlockchainService;
+    databaseService: any;
+    storageService: any;
+    realtimeService: any;
+    vectorDBService: any;
+    functionService: any;
+    searchService: any;
+    analyticsService: any;
+    programmableDataService: any;
+    auth: AuthContext;
+    platform: IrysBasePlatformImpl;
+  }
+
   // Create Apollo Server with error formatting
-  const server = new ApolloServer({
+  const server = new ApolloServer<GraphQLContext>({
     schema,
     plugins: [
-      ApolloServerPluginDrainHttpServer({ httpServer }),
+      fastifyApolloDrainPlugin(app),
       {
         async serverWillStart() {
           return {
@@ -194,58 +233,36 @@ async function startEnhancedServer() {
 
   await server.start();
 
-  // Setup middleware
-  app.use(
-    '/graphql',
-    cors<cors.CorsRequest>({
-      origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-      credentials: true,
+  // Register Apollo Server with Fastify, providing context function
+  await app.register(fastifyApollo(server), {
+    context: async (request: any, reply: any): Promise<GraphQLContext> => ({
+      // Legacy services
+      prisma,
+      irysService,
+      blockchainService,
+
+      // Enhanced platform services
+      databaseService: platform.core.database,
+      storageService: platform.core.storage,
+      realtimeService: platform.core.realtime,
+      vectorDBService: platform.advanced.vector,
+      functionService: platform.core.functions,
+      searchService: platform.advanced.search,
+      analyticsService: platform.advanced.analytics,
+      programmableDataService: platform.advanced.programmable,
+
+      // Auth context
+      auth: extractAuthFromHeaders(request.headers),
+
+      // Full platform access
+      platform,
     }),
-    express.json({ limit: '50mb' }), // Increased limit for document uploads
-    expressMiddleware(server, {
-      context: async ({ req }): Promise<{
-        prisma: typeof prisma;
-        irysService: IrysService;
-        blockchainService: BlockchainService;
-        databaseService: any;
-        storageService: any;
-        realtimeService: any;
-        vectorDBService: any;
-        functionService: any;
-        searchService: any;
-        analyticsService: any;
-        programmableDataService: any;
-        auth: AuthContext;
-        platform: IrysBasePlatformImpl;
-      }> => ({
-        // Legacy services
-        prisma,
-        irysService,
-        blockchainService,
-        
-        // Enhanced platform services
-        databaseService: platform.core.database,
-        storageService: platform.core.storage,
-        realtimeService: platform.core.realtime,
-        vectorDBService: platform.advanced.vector,
-        functionService: platform.core.functions,
-        searchService: platform.advanced.search,
-        analyticsService: platform.advanced.analytics,
-        programmableDataService: platform.advanced.programmable,
-        
-        // Auth context
-        auth: extractAuthFromHeaders(req.headers),
-        
-        // Full platform access
-        platform,
-      }),
-    }),
-  );
+  });
 
   // Health check endpoint
-  app.get('/health', async (req, res) => {
+  app.get('/health', async (request, reply) => {
     const healthStatus = await platform.healthCheck();
-    res.json({
+    return reply.send({
       status: healthStatus.healthy ? 'healthy' : 'degraded',
       timestamp: healthStatus.timestamp,
       services: healthStatus.services,
@@ -254,9 +271,9 @@ async function startEnhancedServer() {
   });
 
   // Metrics endpoint
-  app.get('/metrics', async (req, res) => {
+  app.get('/metrics', async (request, reply) => {
     // Basic metrics - could integrate with Prometheus
-    res.json({
+    return reply.send({
       uptime: process.uptime(),
       memory: process.memoryUsage(),
       timestamp: new Date().toISOString(),
@@ -264,8 +281,8 @@ async function startEnhancedServer() {
   });
 
   // Documentation endpoint
-  app.get('/docs', (req, res) => {
-    res.json({
+  app.get('/docs', async (request, reply) => {
+    return reply.send({
       platform: 'IrysBase',
       version: '2.0.0',
       description: 'Web3 Backend-as-a-Service Platform',
@@ -283,10 +300,10 @@ async function startEnhancedServer() {
   });
 
   // API status endpoint
-  app.get('/api/status', async (req, res) => {
+  app.get('/api/status', async (request, reply) => {
     const healthStatus = await platform.healthCheck();
-    
-    res.json({
+
+    return reply.send({
       api: 'IrysBase Platform API',
       status: 'operational',
       services: {
@@ -312,10 +329,11 @@ async function startEnhancedServer() {
     });
   });
 
-  const PORT = process.env.PORT || 4000;
+  const PORT = Number(process.env.PORT) || 4000;
 
-  httpServer.listen(PORT, () => {
-    console.log(`
+  await app.listen({ port: PORT, host: '0.0.0.0' });
+
+  console.log(`
 🎉 IrysBase Enhanced Server Ready!
 
 📊 Server Details:
@@ -336,8 +354,7 @@ async function startEnhancedServer() {
    • Programmable: ${healthStatus.services.programmable ? '✅' : '❌'}
 
 🚀 Ready for IrysBook integration!
-    `);
-  });
+  `);
 }
 
 // Error handling
