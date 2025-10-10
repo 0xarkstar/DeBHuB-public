@@ -88,13 +88,17 @@ EOF
 DATABASE_URL="postgresql://irysbase:password@localhost:5432/irysbase?schema=public"
 EOF
 
-    # apps/web/.env.local
-    mkdir -p apps/web
-    cat > apps/web/.env.local << 'EOF'
-NEXT_PUBLIC_GRAPHQL_URL=http://localhost:4000/graphql
-NEXT_PUBLIC_WS_URL=ws://localhost:4000/graphql
-NEXT_PUBLIC_IRYS_GATEWAY=https://testnet-gateway.irys.xyz
-NEXT_PUBLIC_CHAIN_ID=1270
+    # apps/web-vite/.env
+    mkdir -p apps/web-vite
+    cat > apps/web-vite/.env << 'EOF'
+VITE_ENABLE_BACKEND=true
+VITE_GRAPHQL_URL=http://localhost:4000/graphql
+VITE_GRAPHQL_WS_URL=ws://localhost:4000/graphql
+VITE_IRYS_NETWORK=testnet
+VITE_IRYS_TOKEN=ethereum
+VITE_CHAIN_ID=1270
+VITE_RPC_URL=https://testnet-rpc.irys.xyz/v1/execution-rpc
+VITE_WALLET_CONNECT_PROJECT_ID=your_project_id_here
 EOF
 
     # apps/api/.env

@@ -53,7 +53,9 @@
       "WebFetch(domain:arweave-tools.irys.xyz)",
       "WebFetch(domain:cookbook.arweave.dev)",
       "WebFetch(domain:cookbook.arweave.net)",
-      "WebFetch(domain:medium.com)"
+      "WebFetch(domain:medium.com)",
+      "Bash(rm:*)",
+      "Bash(git config:*)"
     ],
     "deny": [],
     "ask": []

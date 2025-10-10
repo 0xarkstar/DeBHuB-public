@@ -142,19 +142,19 @@ export const DEPLOYMENT_INFO = ${JSON.stringify(deployment, null, 2)} as const
     
     // 7. 프론트엔드 설정 업데이트
     const frontendConfig = {
-      NEXT_PUBLIC_AUTH_ROLES_ADDRESS: deployment.contracts.AuthRoles.address,
-      NEXT_PUBLIC_IRYS_BASE_CORE_ADDRESS: deployment.contracts.IrysBaseCore.address,
-      NEXT_PUBLIC_POSTS_ADDRESS: deployment.contracts.Posts.address,
-      NEXT_PUBLIC_CHAIN_ID: deployment.chainId.toString()
+      VITE_AUTH_ROLES_ADDRESS: deployment.contracts.AuthRoles.address,
+      VITE_IRYS_BASE_CORE_ADDRESS: deployment.contracts.IrysBaseCore.address,
+      VITE_POSTS_ADDRESS: deployment.contracts.Posts.address,
+      VITE_CHAIN_ID: deployment.chainId.toString()
     }
-    
-    const frontendEnvPath = path.join(process.cwd(), 'apps/web/.env.local')
+
+    const frontendEnvPath = path.join(process.cwd(), 'apps/web-vite/.env.local')
     let updatedEnv = ''
-    
+
     if (fs.existsSync(frontendEnvPath)) {
       updatedEnv = fs.readFileSync(frontendEnvPath, 'utf-8')
     }
-    
+
     Object.entries(frontendConfig).forEach(([key, value]) => {
       const regex = new RegExp(`^${key}=.*$`, 'm')
       if (regex.test(updatedEnv)) {
@@ -163,9 +163,9 @@ export const DEPLOYMENT_INFO = ${JSON.stringify(deployment, null, 2)} as const
         updatedEnv += `\n${key}=${value}`
       }
     })
-    
+
     fs.writeFileSync(frontendEnvPath, updatedEnv.trim())
-    
+
     console.log(chalk.green('✅ Frontend configuration updated'))
     
     // 성공 메시지

@@ -16,6 +16,7 @@
     "dev:api": "turbo run dev --filter=@irysbase/api",
     "dev:web": "turbo run dev --filter=@irysbase/web-vite",
     "dev:enhanced": "concurrently \"pnpm run api:dev:enhanced\" \"pnpm run web:dev\"",
+    "dev:frontend": "cd apps/web-vite && pnpm run dev",
     
     "build": "turbo run build",
     "build:docker": "docker build -t irysbase:latest .",

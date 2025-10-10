@@ -89,13 +89,15 @@ services:
     container_name: irysbase-web-prod
     environment:
       NODE_ENV: production
-      NEXT_PUBLIC_GRAPHQL_URL: ${NEXT_PUBLIC_GRAPHQL_URL:-http://localhost:4000/graphql}
+      VITE_GRAPHQL_URL: ${VITE_GRAPHQL_URL:-http://localhost:4000/graphql}
+      VITE_GRAPHQL_WS_URL: ${VITE_GRAPHQL_WS_URL:-ws://localhost:4000/graphql}
+      VITE_ENABLE_BACKEND: ${VITE_ENABLE_BACKEND:-true}
     ports:
       - "3000:3000"
     depends_on:
       - irysbase-api
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
       interval: 30s
       timeout: 10s
       retries: 3
