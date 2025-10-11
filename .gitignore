@@ -32,6 +32,7 @@ build/
 tsconfig.tsbuildinfo
 
 # -------------------- Environment Variables --------------------
+# IMPORTANT: NEVER commit actual .env files with real secrets
 .env
 .env.local
 .env.development
@@ -41,8 +42,12 @@ tsconfig.tsbuildinfo
 .env.production
 .env.production.local
 
-# Claude Code settings
-.claude/settings.local.json
+# BUT allow .env.example template files
+!.env.example
+!**/.env.example
+
+# Claude Code settings (local only - ignore entire folder)
+.claude/
 
 # -------------------- Logs --------------------
 logs/
@@ -97,10 +102,18 @@ cache/
 typechain-types/
 deployments/localhost/
 
-# Private keys (NEVER commit!)
+# Private keys (⚠️ NEVER EVER COMMIT!)
 *.key
 *.pem
 .secret
+**/private-keys/
+**/wallets/
+mnemonic.txt
+seed.txt
+
+# Blockchain sensitive data
+**/deployed-contracts.json
+**/contract-addresses.local.json
 
 # -------------------- IDEs & Editors --------------------
 # VSCode
@@ -177,3 +190,30 @@ docs/api-generated/
 
 # -------------------- Misc --------------------
 .tern-port
+
+# -------------------- Security & Secrets --------------------
+# Additional security files that should never be committed
+secrets/
+.secrets/
+credentials/
+*.credentials
+*.secret
+config.local.*
+*-secret.json
+*-secrets.json
+
+# API keys and tokens
+**/api-keys.json
+**/tokens.json
+**/.auth
+
+# Backup files that might contain sensitive data
+*.backup
+*.bak
+*.old
+*~
+
+# Local development overrides
+*.local.json
+*.local.yaml
+*.local.yml

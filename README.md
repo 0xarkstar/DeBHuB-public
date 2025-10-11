@@ -131,34 +131,73 @@ Both versions permanently stored ✅
 
 ```bash
 # 1. 저장소 클론
-git clone <repository-url>
+git clone https://github.com/your-org/irysbase.git
 cd irysbase
 
 # 2. 의존성 설치
 pnpm install
 
-# 3. 프론트엔드 실행
+# 3. 환경 변수 설정
 cd apps/web-vite
 cp .env.example .env
+# .env 파일을 열어서 필수 값 입력 (아래 참조)
+
+# 4. 프론트엔드 실행
 pnpm dev
 ```
 
 `http://localhost:3000` 방문 후 MetaMask 연결!
 
-### 환경 변수 (.env)
+### 환경 변수 설정
+
+#### Frontend (apps/web-vite/.env)
 
 ```env
-# Irys 네트워크 설정
-VITE_IRYS_NETWORK=mainnet              # mainnet or devnet
-VITE_IRYS_TOKEN=ethereum               # ethereum, matic, etc.
+# -------------------- Backend Mode (Optional) --------------------
+# 백엔드 없이 사용하려면 false로 설정
+VITE_ENABLE_BACKEND=false
 
-# 지갑 연결 (WalletConnect)
-VITE_WALLET_CONNECT_PROJECT_ID=your_project_id
+# -------------------- Wallet Connect Configuration --------------------
+# WalletConnect Project ID (필수)
+# 가입: https://cloud.walletconnect.com/
+VITE_WALLETCONNECT_PROJECT_ID=your_walletconnect_project_id
 
-# RPC 설정
-VITE_CHAIN_ID=1                        # Ethereum mainnet
-VITE_RPC_URL=https://eth.llamarpc.com
+# -------------------- Blockchain Configuration --------------------
+VITE_CHAIN_ID=1270
+VITE_RPC_URL=https://rpc.irys.computer
+
+# -------------------- Irys Configuration --------------------
+VITE_IRYS_NETWORK=mainnet              # mainnet or testnet
+VITE_IRYS_TOKEN=ethereum               # ethereum, matic, bnb, etc.
 ```
+
+#### Backend (apps/api/.env) - 선택사항
+
+백엔드 기능을 사용하려면 설정:
+
+```env
+# ⚠️ IMPORTANT: NEVER commit real private keys!
+# Use separate wallets for development and production
+
+# Database
+DATABASE_URL=postgresql://username:password@localhost:5432/irysbase
+
+# Redis (Caching)
+REDIS_URL=redis://localhost:6379
+
+# Blockchain Private Keys (⚠️ KEEP SECRET!)
+SIGNER_PRIVATE_KEY=0x...  # For blockchain transactions
+IRYS_PRIVATE_KEY=0x...    # For Irys uploads
+
+# Contract Addresses
+AUTH_ROLES_CONTRACT_ADDRESS=
+POSTS_CONTRACT_ADDRESS=
+```
+
+**⚠️ 보안 주의사항:**
+- `.env` 파일은 절대 Git에 커밋하지 마세요
+- Private Key는 테스트용 지갑만 사용하세요
+- 프로덕션에서는 별도의 안전한 Key Management 사용 권장
 
 ### 첫 프로젝트 생성
 
