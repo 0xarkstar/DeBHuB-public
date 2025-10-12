@@ -56,7 +56,7 @@ export default function DashboardLayout() {
                 <span className="text-primary-foreground font-bold text-sm">IB</span>
               </div>
               <div>
-                <h1 className="text-lg font-bold">IrysBase</h1>
+                <h1 className="text-lg font-bold">DeBHuB</h1>
                 <p className="text-xs text-muted-foreground">Decentralized BaaS</p>
               </div>
             </Link>
@@ -126,7 +126,7 @@ export default function DashboardLayout() {
               <div className="h-7 w-7 bg-primary rounded-md flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-xs">IB</span>
               </div>
-              <span className="font-bold">IrysBase</span>
+              <span className="font-bold">DeBHuB</span>
             </Link>
 
             <ConnectWallet />

@@ -201,7 +201,7 @@ class IrysPerformanceBenchmark {
         await this.query
           .search('irys:transactions')
           .tags([
-            { name: 'App-Name', values: ['IrysBase'] },
+            { name: 'App-Name', values: ['DeBHuB'] },
             { name: 'Entity-Type', values: ['document', 'project'] },
             { name: 'Content-Type', values: ['application/json'] }
           ])
@@ -305,7 +305,7 @@ class IrysPerformanceBenchmark {
         const projects = await this.query
           .search('irys:transactions')
           .tags([
-            { name: 'App-Name', values: ['IrysBase'] },
+            { name: 'App-Name', values: ['DeBHuB'] },
             { name: 'Entity-Type', values: ['project'] }
           ])
           .limit(10);
@@ -319,7 +319,7 @@ class IrysPerformanceBenchmark {
                 await this.query
                   .search('irys:transactions')
                   .tags([
-                    { name: 'App-Name', values: ['IrysBase'] },
+                    { name: 'App-Name', values: ['DeBHuB'] },
                     { name: 'Entity-Type', values: ['document'] },
                     { name: 'Project-ID', values: [projectIdTag.value] }
                   ])

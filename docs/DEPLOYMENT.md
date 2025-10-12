@@ -1,6 +1,6 @@
 # Deployment Guide
 
-Complete guide for deploying IrysBase to production.
+Complete guide for deploying DeBHuB to production.
 
 ## Table of Contents
 
@@ -124,7 +124,7 @@ services:
     image: postgres:15
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: irysbase
+      POSTGRES_DB: debhub
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -191,7 +191,7 @@ railway domain
 # render.yaml
 services:
   - type: web
-    name: irysbase-api
+    name: debhub-api
     env: node
     buildCommand: pnpm install && pnpm run build:enhanced
     startCommand: node dist/index-enhanced.js
@@ -249,13 +249,13 @@ CMD ["node", "dist/index-enhanced.js"]
 
 ```bash
 # Build
-docker build -t irysbase-api .
+docker build -t debhub-api .
 
 # Tag
-docker tag irysbase-api:latest your-registry/irysbase-api:latest
+docker tag debhub-api:latest your-registry/debhub-api:latest
 
 # Push
-docker push your-registry/irysbase-api:latest
+docker push your-registry/debhub-api:latest
 ```
 
 #### 3. Deploy to AWS ECS/GCP Cloud Run
@@ -349,7 +349,7 @@ pnpm start
 npm install -g pm2
 
 # Start
-pm2 start npm --name "irysbase-web" -- start
+pm2 start npm --name "debhub-web" -- start
 
 # Save
 pm2 save
@@ -371,7 +371,7 @@ services:
   postgres:
     image: postgres:15
     environment:
-      POSTGRES_DB: irysbase
+      POSTGRES_DB: debhub
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
@@ -405,7 +405,7 @@ services:
     ports:
       - "4000:4000"
     environment:
-      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/irysbase
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/debhub
       REDIS_URL: redis://redis:6379
       JWT_SECRET: ${JWT_SECRET}
       NODE_ENV: production
@@ -462,7 +462,7 @@ docker-compose down
 
 ```env
 # Database
-DATABASE_URL="postgresql://user:pass@host:5432/irysbase"
+DATABASE_URL="postgresql://user:pass@host:5432/debhub"
 
 # Redis
 REDIS_URL="redis://host:6379"
@@ -519,7 +519,7 @@ vercel env add JWT_SECRET production
 
 ```bash
 aws secretsmanager create-secret \
-  --name irysbase/jwt-secret \
+  --name debhub/jwt-secret \
   --secret-string "your-secret"
 ```
 

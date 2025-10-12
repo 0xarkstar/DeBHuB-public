@@ -2,7 +2,7 @@ import Uploader from '@irys/upload';
 import Query from '@irys/query';
 import { createClient } from 'redis';
 import { Post, IrysTag } from '../types';
-import { createPostTags, createMutableReference } from '@irysbase/shared';
+import { createPostTags, createMutableReference } from '@debhub/shared';
 
 const IRYS_GATEWAY_URL = 'https://gateway.irys.xyz';
 

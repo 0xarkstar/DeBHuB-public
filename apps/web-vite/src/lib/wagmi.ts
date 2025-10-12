@@ -22,7 +22,7 @@ export const irysVM = {
 } as const;
 
 export const config = getDefaultConfig({
-  appName: 'IrysBase',
+  appName: 'DeBHuB',
   projectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || 'YOUR_PROJECT_ID',
   chains: [irysVM, mainnet, sepolia],
   transports: {

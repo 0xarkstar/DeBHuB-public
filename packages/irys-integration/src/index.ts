@@ -1,4 +1,4 @@
-// Main exports for @irysbase/irys-integration package
+// Main exports for @debhub/irys-integration package
 
 // Configuration
 export { IRYS_TESTNET_CONFIG, getIrysConfig } from './config/testnet.config'

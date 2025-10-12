@@ -1,5 +1,5 @@
 {
-  "name": "@irysbase/shared",
+  "name": "@debhub/shared",
   "version": "1.0.0",
   "description": "Shared types and utilities for IrysBase",
   "main": "dist/index.js",

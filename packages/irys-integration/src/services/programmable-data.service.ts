@@ -62,7 +62,7 @@ export class ProgrammableDataService {
     try {
       // 1. Irys에 콘텐츠 업로드
       const tags = [
-        { name: 'App-Name', value: 'IrysBase' },
+        { name: 'App-Name', value: 'DeBHuB' },
         { name: 'Content-Type', value: 'application/json' },
         { name: 'Document-Id', value: metadata.id },
         { name: 'Version', value: metadata.version.toString() }
@@ -113,7 +113,7 @@ export class ProgrammableDataService {
     try {
       // 1. 새 버전을 Irys에 업로드
       const tags = [
-        { name: 'App-Name', value: 'IrysBase' },
+        { name: 'App-Name', value: 'DeBHuB' },
         { name: 'Content-Type', value: 'application/json' },
         { name: 'Document-Id', value: documentId },
         { name: 'Version', value: (metadata.version + 1).toString() },

@@ -3,7 +3,7 @@ import { prisma } from './database';
 import { PrismaClient, Post, User } from '@prisma/client';
 
 /**
- * Enhanced Database Service for IrysBase post management
+ * Enhanced Database Service for DeBHuB post management
  * Adapted to work with the existing Prisma schema
  */
 export class DatabaseService {

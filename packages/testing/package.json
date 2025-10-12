@@ -1,5 +1,5 @@
 {
-  "name": "@irysbase/testing",
+  "name": "@debhub/testing",
   "version": "1.0.0",
   "description": "IrysBase Testing Suite - Integration and E2E tests",
   "main": "dist/index.js",
@@ -13,8 +13,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@irysbase/core": "workspace:*",
-    "@irysbase/shared": "workspace:*",
+    "@debhub/core": "workspace:*",
+    "@debhub/shared": "workspace:*",
     "@faker-js/faker": "^8.4.1",
     "@prisma/client": "^5.22.0",
     "vitest": "^1.6.0",

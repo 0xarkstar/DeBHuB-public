@@ -10,10 +10,10 @@ import { EdgeService } from './edge-service';
 import { ProgrammableDataService } from './programmable-data-service';
 
 /**
- * IrysBase Platform - Core service architecture as defined in the plan
+ * DeBHuB Platform - Core service architecture as defined in the plan
  * Implements the complete Supabase-like BaaS functionality
  */
-export interface IrysBasePlatform {
+export interface DeBHuBPlatform {
   // Core services
   core: {
     auth: any; // Will use existing AuthService
@@ -43,21 +43,21 @@ export interface IrysBasePlatform {
 }
 
 /**
- * Main IrysBase Platform implementation
+ * Main DeBHuB Platform implementation
  */
-export class IrysBasePlatformImpl implements IrysBasePlatform {
-  public core: IrysBasePlatform['core'];
-  public advanced: IrysBasePlatform['advanced'];
-  public tools: IrysBasePlatform['tools'];
+export class DeBHuBPlatformImpl implements DeBHuBPlatform {
+  public core: DeBHuBPlatform['core'];
+  public advanced: DeBHuBPlatform['advanced'];
+  public tools: DeBHuBPlatform['tools'];
 
   constructor(
     private irysService: IrysService,
     private config: PlatformConfig = {}
   ) {
     // Initialize services in constructor
-    this.core = {} as IrysBasePlatform['core'];
-    this.advanced = {} as IrysBasePlatform['advanced'];
-    this.tools = {} as IrysBasePlatform['tools'];
+    this.core = {} as DeBHuBPlatform['core'];
+    this.advanced = {} as DeBHuBPlatform['advanced'];
+    this.tools = {} as DeBHuBPlatform['tools'];
     
     this.initializeServices();
   }
@@ -173,19 +173,19 @@ export interface ServiceHealthStatus {
 }
 
 // Export singleton instance factory
-let platformInstance: IrysBasePlatformImpl | null = null;
+let platformInstance: DeBHuBPlatformImpl | null = null;
 
 export function createPlatform(
   irysService: IrysService,
   config?: PlatformConfig
-): IrysBasePlatformImpl {
+): DeBHuBPlatformImpl {
   if (!platformInstance) {
-    platformInstance = new IrysBasePlatformImpl(irysService, config);
+    platformInstance = new DeBHuBPlatformImpl(irysService, config);
   }
   return platformInstance;
 }
 
-export function getPlatform(): IrysBasePlatformImpl {
+export function getPlatform(): DeBHuBPlatformImpl {
   if (!platformInstance) {
     throw new Error('Platform not initialized. Call createPlatform() first.');
   }

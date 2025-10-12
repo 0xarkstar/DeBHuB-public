@@ -1,5 +1,5 @@
 {
-  "name": "@irysbase/api",
+  "name": "@debhub/api",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -26,7 +26,7 @@
     "@graphql-tools/schema": "^10.0.0",
     "@irys/query": "^0.0.13",
     "@irys/upload": "^0.0.15",
-    "@irysbase/shared": "workspace:*",
+    "@debhub/shared": "workspace:*",
     "@prisma/client": "^5.6.0",
     "bull": "^4.12.0",
     "bull-board": "^2.1.3",

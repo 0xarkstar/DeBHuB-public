@@ -1,2 +1,2 @@
 export * from './orchestrator'
-export { IrysBaseOrchestrator } from './orchestrator'
+export { DeBHuBOrchestrator } from './orchestrator'

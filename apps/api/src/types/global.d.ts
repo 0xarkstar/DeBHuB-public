@@ -1,5 +1,5 @@
 /**
- * Global type declarations for IrysBase API
+ * Global type declarations for DeBHuB API
  */
 
 declare global {

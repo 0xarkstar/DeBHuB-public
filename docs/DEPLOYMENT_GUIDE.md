@@ -1,6 +1,6 @@
-# 🚀 IrysBase Deployment Guide
+# 🚀 DeBHuB Deployment Guide
 
-Complete guide to deploying IrysBase with Programmable Data features.
+Complete guide to deploying DeBHuB with Programmable Data features.
 
 ---
 
@@ -81,7 +81,7 @@ pnpm deploy
 
 Expected output:
 ```
-🚀 Deploying IrysBase Programmable Data Contracts...
+🚀 Deploying DeBHuB Programmable Data Contracts...
 
 📝 Deploying contracts with account: 0x...
 💰 Account balance: 10.0 ETH
@@ -212,7 +212,7 @@ vercel
 # - Setup and deploy? Yes
 # - Scope? Your account
 # - Link to existing project? No
-# - Project name? irysbase
+# - Project name? debhub
 # - Directory? ./
 # - Override settings? No
 ```
@@ -433,7 +433,7 @@ cat .env | grep CONTRACT
 
 ## 🎉 Success!
 
-Your IrysBase deployment is complete!
+Your DeBHuB deployment is complete!
 
 **Live URLs:**
 - Frontend: `https://your-domain.com`

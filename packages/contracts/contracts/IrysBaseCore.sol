@@ -6,10 +6,10 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 /**
- * @title IrysBaseCore
+ * @title DeBHuBCore
  * @dev Smart contract for programmable data management with Irys integration
  */
-contract IrysBaseCore is Ownable, ReentrancyGuard {
+contract DeBHuBCore is Ownable, ReentrancyGuard {
     using Counters for Counters.Counter;
     
     // Document metadata structure

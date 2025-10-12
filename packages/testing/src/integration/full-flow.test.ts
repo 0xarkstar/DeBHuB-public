@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest'
-import { IrysBaseOrchestrator } from '@irysbase/core'
+import { DeBHuBOrchestrator } from '@debhub/core'
 import { TestDataFactory, type TestDataSet } from '../factories/test-data.factory'
 import { cleanupTestData, setupTestDatabase, teardownTestDatabase, createTestEnvironment } from '../utils/cleanup'
 
@@ -94,8 +94,8 @@ class MockRealtimeService {
   }
 }
 
-describe('IrysBase Full Integration Test', () => {
-  let orchestrator: IrysBaseOrchestrator
+describe('DeBHuB Full Integration Test', () => {
+  let orchestrator: DeBHuBOrchestrator
   let testData: TestDataSet
   let mockServices: {
     irys: MockIrysService
@@ -120,7 +120,7 @@ describe('IrysBase Full Integration Test', () => {
     }
     
     // Orchestrator 초기화
-    orchestrator = IrysBaseOrchestrator.getInstance()
+    orchestrator = DeBHuBOrchestrator.getInstance()
     await orchestrator.initialize(mockServices)
     
     // 테스트 데이터 생성
@@ -141,13 +141,13 @@ describe('IrysBase Full Integration Test', () => {
     it('should create post and process through entire pipeline', async () => {
       // 1. 포스트 생성
       const post = await orchestrator.createPost({
-        content: 'This is a comprehensive integration test post for the IrysBase platform.',
+        content: 'This is a comprehensive integration test post for the DeBHuB platform.',
         authorAddress: testData.user.address
       })
       
       expect(post).toBeDefined()
       expect(post.id).toBeTruthy()
-      expect(post.content).toBe('This is a comprehensive integration test post for the IrysBase platform.')
+      expect(post.content).toBe('This is a comprehensive integration test post for the DeBHuB platform.')
       
       // 2. 처리 완료 대기 (이벤트 기반)
       const processingResult = await new Promise((resolve, reject) => {
@@ -170,7 +170,7 @@ describe('IrysBase Full Integration Test', () => {
       // 실제 데이터베이스에서는 Irys ID와 AI 메타데이터가 업데이트되어야 함
       // Mock 서비스를 사용하므로 여기서는 포스트가 존재함을 확인
       expect(processed!.id).toBe(post.id)
-      expect(processed!.content).toBe('This is a comprehensive integration test post for the IrysBase platform.')
+      expect(processed!.content).toBe('This is a comprehensive integration test post for the DeBHuB platform.')
     }, 15000)
   })
   

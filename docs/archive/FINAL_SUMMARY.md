@@ -1,4 +1,4 @@
-# 🎯 IrysBase Programmable BaaS - 최종 요약
+# 🎯 DeBHuB Programmable BaaS - 최종 요약
 
 ## 📅 완료 일자
 **2025년 10월 9일**
@@ -620,7 +620,7 @@ irys upload-dir dist --network mainnet
 
 ### 💎 핵심 가치
 
-**IrysBase는 이제:**
+**DeBHuB는 이제:**
 - ✅ 데이터에 로직이 내장됨
 - ✅ 스마트 컨트랙트로 검증
 - ✅ 완전한 감사 추적
@@ -630,7 +630,7 @@ irys upload-dir dist --network mainnet
 ### 🚀 최종 평가
 
 ```
-IrysBase = The Programmable Database
+DeBHuB = The Programmable Database
 
 = Irys Storage (영구 보존)
 + Programmable Data (로직 내장)
@@ -657,7 +657,7 @@ IrysBase = The Programmable Database
 
 **개발 완료일:** 2025년 10월 9일
 **구현자:** Claude Code (Anthropic)
-**프로젝트:** IrysBase - The Programmable Database
+**프로젝트:** DeBHuB - The Programmable Database
 **상태:** ✅ Production Ready
 **점수:** 95/100 🎉
 

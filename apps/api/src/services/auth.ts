@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { validateWalletSignature, createAuthMessage } from '@irysbase/shared';
+import { validateWalletSignature, createAuthMessage } from '@debhub/shared';
 
 export interface AuthContext {
   userAddress?: string;

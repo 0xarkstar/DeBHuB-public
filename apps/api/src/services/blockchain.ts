@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { CONTRACT_ADDRESSES, IRYS_VM_CHAIN_ID } from '@irysbase/shared';
+import { CONTRACT_ADDRESSES, IRYS_VM_CHAIN_ID } from '@debhub/shared';
 
 export class BlockchainService {
   private provider: ethers.JsonRpcProvider;

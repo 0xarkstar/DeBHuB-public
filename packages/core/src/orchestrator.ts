@@ -70,8 +70,8 @@ export interface HealthStatus {
   timestamp: string
 }
 
-export class IrysBaseOrchestrator extends EventEmitter {
-  private static instance: IrysBaseOrchestrator
+export class DeBHuBOrchestrator extends EventEmitter {
+  private static instance: DeBHuBOrchestrator
   
   private prisma: PrismaClient
   private redis: RedisClientType
@@ -89,9 +89,9 @@ export class IrysBaseOrchestrator extends EventEmitter {
     })
   }
   
-  static getInstance(): IrysBaseOrchestrator {
+  static getInstance(): DeBHuBOrchestrator {
     if (!this.instance) {
-      this.instance = new IrysBaseOrchestrator()
+      this.instance = new DeBHuBOrchestrator()
     }
     return this.instance
   }
@@ -104,7 +104,7 @@ export class IrysBaseOrchestrator extends EventEmitter {
   }) {
     if (this.initialized) return
     
-    console.log('🚀 Initializing IrysBase Orchestrator...')
+    console.log('🚀 Initializing DeBHuB Orchestrator...')
     
     try {
       // 1. 데이터베이스 연결
@@ -140,7 +140,7 @@ export class IrysBaseOrchestrator extends EventEmitter {
       this.setupEventListeners()
       
       this.initialized = true
-      console.log('🎉 IrysBase Orchestrator ready!')
+      console.log('🎉 DeBHuB Orchestrator ready!')
       
     } catch (error) {
       console.error('❌ Orchestrator initialization failed:', error)

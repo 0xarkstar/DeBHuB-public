@@ -18,7 +18,7 @@ interface DeploymentInfo {
 }
 
 async function main() {
-  console.log(chalk.blue('🚀 Starting IrysBase contracts deployment...'))
+  console.log(chalk.blue('🚀 Starting DeBHuB contracts deployment...'))
   
   // 네트워크 정보 확인
   const network = await ethers.provider.getNetwork()
@@ -55,21 +55,21 @@ async function main() {
       abi: JSON.parse(AuthRoles.interface.formatJson())
     }
     
-    // 2. IrysBaseCore 컨트랙트 배포 (프로그래머블 데이터 지원)
-    console.log(chalk.blue('\n📝 Deploying IrysBaseCore...'))
+    // 2. DeBHuBCore 컨트랙트 배포 (프로그래머블 데이터 지원)
+    console.log(chalk.blue('\n📝 Deploying DeBHuBCore...'))
     
-    const IrysBaseCore = await ethers.getContractFactory('IrysBaseCore')
-    const irysBaseCore = await IrysBaseCore.deploy(authRolesAddress)
+    const DeBHuBCore = await ethers.getContractFactory('DeBHuBCore')
+    const irysBaseCore = await DeBHuBCore.deploy(authRolesAddress)
     await irysBaseCore.waitForDeployment()
     const irysCoreAddress = await irysBaseCore.getAddress()
     
-    console.log(chalk.green(`✅ IrysBaseCore deployed at: ${irysCoreAddress}`))
+    console.log(chalk.green(`✅ DeBHuBCore deployed at: ${irysCoreAddress}`))
     
-    deployment.contracts.IrysBaseCore = {
+    deployment.contracts.DeBHuBCore = {
       address: irysCoreAddress,
       transactionHash: irysBaseCore.deploymentTransaction()?.hash || '',
       blockNumber: irysBaseCore.deploymentTransaction()?.blockNumber || 0,
-      abi: JSON.parse(IrysBaseCore.interface.formatJson())
+      abi: JSON.parse(DeBHuBCore.interface.formatJson())
     }
     
     // 3. Posts 컨트랙트 배포
@@ -99,12 +99,12 @@ async function main() {
     )
     console.log(chalk.green('✅ Admin role granted'))
     
-    // IrysBaseCore 초기화 (if initialize function exists)
+    // DeBHuBCore 초기화 (if initialize function exists)
     try {
       await irysBaseCore.initialize()
-      console.log(chalk.green('✅ IrysBaseCore initialized'))
+      console.log(chalk.green('✅ DeBHuBCore initialized'))
     } catch (error) {
-      console.log(chalk.yellow('ℹ️ IrysBaseCore initialize function not found or already initialized'))
+      console.log(chalk.yellow('ℹ️ DeBHuBCore initialize function not found or already initialized'))
     }
     
     // 5. 배포 정보 저장
@@ -123,7 +123,7 @@ async function main() {
 // Auto-generated contract types
 export const CONTRACT_ADDRESSES = {
   AuthRoles: '${deployment.contracts.AuthRoles.address}',
-  IrysBaseCore: '${deployment.contracts.IrysBaseCore.address}',
+  DeBHuBCore: '${deployment.contracts.DeBHuBCore.address}',
   Posts: '${deployment.contracts.Posts.address}'
 } as const
 
@@ -143,7 +143,7 @@ export const DEPLOYMENT_INFO = ${JSON.stringify(deployment, null, 2)} as const
     // 7. 프론트엔드 설정 업데이트
     const frontendConfig = {
       VITE_AUTH_ROLES_ADDRESS: deployment.contracts.AuthRoles.address,
-      VITE_IRYS_BASE_CORE_ADDRESS: deployment.contracts.IrysBaseCore.address,
+      VITE_IRYS_BASE_CORE_ADDRESS: deployment.contracts.DeBHuBCore.address,
       VITE_POSTS_ADDRESS: deployment.contracts.Posts.address,
       VITE_CHAIN_ID: deployment.chainId.toString()
     }
@@ -172,7 +172,7 @@ export const DEPLOYMENT_INFO = ${JSON.stringify(deployment, null, 2)} as const
     console.log(chalk.green.bold('\n🎉 Deployment successful!'))
     console.log(chalk.cyan('\n📋 Contract Addresses:'))
     console.log(chalk.white(`   AuthRoles: ${deployment.contracts.AuthRoles.address}`))
-    console.log(chalk.white(`   IrysBaseCore: ${deployment.contracts.IrysBaseCore.address}`))
+    console.log(chalk.white(`   DeBHuBCore: ${deployment.contracts.DeBHuBCore.address}`))
     console.log(chalk.white(`   Posts: ${deployment.contracts.Posts.address}`))
     
   } catch (error) {

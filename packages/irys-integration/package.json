@@ -1,5 +1,5 @@
 {
-  "name": "@irysbase/irys-integration",
+  "name": "@debhub/irys-integration",
   "version": "1.0.0",
   "description": "Irys Testnet integration for IrysBase",
   "main": "dist/index.js",

@@ -5,7 +5,7 @@ const axios = require('axios')
 // 화면 생성
 const screen = blessed.screen({
   smartCSR: true,
-  title: 'IrysBase System Monitor'
+  title: 'DeBHuB System Monitor'
 })
 
 const grid = new contrib.grid({ rows: 12, cols: 12, screen })
@@ -210,7 +210,7 @@ async function updateMetrics() {
 
 // 상태바 업데이트
 function updateStatusBar() {
-  const statusText = ` IrysBase Monitor | Press 'q' to quit | Press 'r' to refresh | Last update: ${new Date().toLocaleTimeString()} `
+  const statusText = ` DeBHuB Monitor | Press 'q' to quit | Press 'r' to refresh | Last update: ${new Date().toLocaleTimeString()} `
   screen.title = statusText
 }
 
@@ -230,7 +230,7 @@ screen.key(['c'], () => {
 })
 
 // 초기 로그
-logsBox.log('{cyan-fg}🚀 IrysBase System Monitor Started{/cyan-fg}')
+logsBox.log('{cyan-fg}🚀 DeBHuB System Monitor Started{/cyan-fg}')
 logsBox.log('{yellow-fg}📊 Monitoring health and performance metrics{/yellow-fg}')
 logsBox.log('{gray-fg}Press "r" to refresh, "c" to clear logs, "q" to quit{/gray-fg}')
 
@@ -248,7 +248,7 @@ screen.render()
 
 // 종료 시 정리
 process.on('exit', () => {
-  console.log('\n👋 IrysBase Monitor stopped')
+  console.log('\n👋 DeBHuB Monitor stopped')
 })
 
 process.on('SIGINT', () => {

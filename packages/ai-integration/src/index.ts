@@ -1,4 +1,4 @@
-// Main exports for @irysbase/ai-integration package
+// Main exports for @debhub/ai-integration package
 
 // Services
 export { AIService } from './services/ai.service'

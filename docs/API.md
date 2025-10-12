@@ -1,6 +1,6 @@
-# IrysBase API Reference
+# DeBHuB API Reference
 
-Complete GraphQL API documentation for IrysBase.
+Complete GraphQL API documentation for DeBHuB.
 
 ## Table of Contents
 
@@ -16,7 +16,7 @@ Complete GraphQL API documentation for IrysBase.
 
 ## Schema Overview
 
-IrysBase exposes a comprehensive GraphQL API with:
+DeBHuB exposes a comprehensive GraphQL API with:
 
 - **44 Queries** - Data retrieval operations
 - **19 Mutations** - Data modification operations
@@ -884,7 +884,7 @@ All errors follow a consistent format:
 
 ### Wallet-Based Authentication
 
-IrysBase uses cryptographic signature-based authentication:
+DeBHuB uses cryptographic signature-based authentication:
 
 1. **Request Challenge:**
 ```graphql

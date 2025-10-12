@@ -19,7 +19,7 @@ import { extractAuthFromHeaders, AuthContext } from './services/auth';
 // Import enhanced platform
 import { 
   createPlatform, 
-  IrysBasePlatformImpl 
+  DeBHuBPlatformImpl 
 } from './services/irysbase-platform';
 
 // Import resolvers
@@ -34,7 +34,7 @@ import { startSyncWorker } from './workers/sync-worker';
 import { startEventListener } from './workers/event-listener';
 
 /**
- * Enhanced IrysBase Server with Full Platform Integration
+ * Enhanced DeBHuB Server with Full Platform Integration
  * Implements the complete Supabase-like BaaS functionality
  */
 
@@ -66,7 +66,7 @@ const schema = makeExecutableSchema({
 });
 
 async function startEnhancedServer() {
-  console.log('🚀 Starting IrysBase Enhanced Server...');
+  console.log('🚀 Starting DeBHuB Enhanced Server...');
 
   // Initialize database
   await connectDatabase();
@@ -75,7 +75,7 @@ async function startEnhancedServer() {
   const irysService = new IrysService();
   const blockchainService = new BlockchainService();
 
-  // Initialize the complete IrysBase platform
+  // Initialize the complete DeBHuB platform
   const platform = createPlatform(irysService, {
     services: {
       enableVector: true,
@@ -183,7 +183,7 @@ async function startEnhancedServer() {
     analyticsService: any;
     programmableDataService: any;
     auth: AuthContext;
-    platform: IrysBasePlatformImpl;
+    platform: DeBHuBPlatformImpl;
   }
 
   // Create Apollo Server with error formatting
@@ -283,7 +283,7 @@ async function startEnhancedServer() {
   // Documentation endpoint
   app.get('/docs', async (request, reply) => {
     return reply.send({
-      platform: 'IrysBase',
+      platform: 'DeBHuB',
       version: '2.0.0',
       description: 'Web3 Backend-as-a-Service Platform',
       documentation: 'https://docs.irysbase.io',
@@ -304,7 +304,7 @@ async function startEnhancedServer() {
     const healthStatus = await platform.healthCheck();
 
     return reply.send({
-      api: 'IrysBase Platform API',
+      api: 'DeBHuB Platform API',
       status: 'operational',
       services: {
         database: healthStatus.services.database ? 'online' : 'offline',
@@ -334,7 +334,7 @@ async function startEnhancedServer() {
   await app.listen({ port: PORT, host: '0.0.0.0' });
 
   console.log(`
-🎉 IrysBase Enhanced Server Ready!
+🎉 DeBHuB Enhanced Server Ready!
 
 📊 Server Details:
    • GraphQL API: http://localhost:${PORT}/graphql

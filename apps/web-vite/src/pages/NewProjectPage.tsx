@@ -75,7 +75,7 @@ export default function NewProjectPage() {
 
         <h1 className="text-3xl font-bold mb-2">Create New Project</h1>
         <p className="text-muted-foreground">
-          Set up a new documentation project on IrysBase
+          Set up a new documentation project on DeBHuB
         </p>
       </div>
 

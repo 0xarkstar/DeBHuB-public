@@ -62,7 +62,7 @@ function DashboardContent() {
         {/* Welcome Banner */}
         <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg p-8 text-white">
           <div className="max-w-2xl">
-            <h2 className="text-3xl font-bold mb-3">Welcome to IrysBase</h2>
+            <h2 className="text-3xl font-bold mb-3">Welcome to DeBHuB</h2>
             <p className="text-lg mb-6 text-indigo-100">
               Explore decentralized documentation projects powered by Irys permanent storage
             </p>
@@ -134,7 +134,7 @@ function DashboardContent() {
       <div>
         <h1 className="text-3xl font-bold mb-2">My Projects</h1>
         <p className="text-muted-foreground">
-          Manage your documentation projects on IrysBase
+          Manage your documentation projects on DeBHuB
         </p>
       </div>
 

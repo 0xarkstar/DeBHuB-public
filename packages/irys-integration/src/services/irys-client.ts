@@ -112,7 +112,7 @@ export class IrysTestnetClient {
       
       // 기본 태그 설정
       const tags = [
-        { name: 'App-Name', value: 'IrysBase' },
+        { name: 'App-Name', value: 'DeBHuB' },
         { name: 'Version', value: '2.0.0' },
         { name: 'Content-Type', value: 'application/json' },
         ...(options.tags || [])

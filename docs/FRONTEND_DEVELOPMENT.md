@@ -1,6 +1,6 @@
 # Frontend Development Guide
 
-Complete guide for developing the IrysBase frontend application.
+Complete guide for developing the DeBHuB frontend application.
 
 ## 📊 Current Status
 

@@ -13,7 +13,7 @@ import { ProgrammableDataService } from '../services/programmable-data-service';
 import { requireAuth, AuthContext } from '../services/auth';
 
 /**
- * Enhanced GraphQL Resolvers for IrysBase Platform
+ * Enhanced GraphQL Resolvers for DeBHuB Platform
  * Implements the complete document management system from the plan
  */
 
@@ -604,7 +604,7 @@ export const enhancedResolvers = {
       { prisma }: EnhancedContext
     ) => {
       // Generate challenge string (nonce)
-      const challenge = `Sign this message to authenticate with IrysBase: ${Date.now()}-${Math.random().toString(36).substring(7)}`;
+      const challenge = `Sign this message to authenticate with DeBHuB: ${Date.now()}-${Math.random().toString(36).substring(7)}`;
       const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes from now
 
       // Store challenge in memory for simplicity (in production, use Redis)

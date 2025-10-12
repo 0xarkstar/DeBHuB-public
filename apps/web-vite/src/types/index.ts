@@ -1,4 +1,4 @@
-export * from '@irysbase/shared';
+export * from '@debhub/shared';
 
 export interface WalletState {
   address: string | null;

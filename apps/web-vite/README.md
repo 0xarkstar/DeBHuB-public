@@ -1,6 +1,6 @@
-# IrysBase Frontend (React + Vite)
+# DeBHuB Frontend (React + Vite)
 
-Modern, high-performance frontend for the IrysBase decentralized documentation platform.
+Modern, high-performance frontend for the DeBHuB decentralized documentation platform.
 
 ## 🚀 Tech Stack
 

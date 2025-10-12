@@ -1,6 +1,6 @@
 # 시작하기 (Getting Started)
 
-IrysBase를 시작하는 방법을 안내합니다. 이 가이드는 두 가지 모드(Pure Irys와 Full Stack)를 모두 다룹니다.
+DeBHuB를 시작하는 방법을 안내합니다. 이 가이드는 두 가지 모드(Pure Irys와 Full Stack)를 모두 다룹니다.
 
 ## 목차
 
@@ -36,7 +36,7 @@ IrysBase를 시작하는 방법을 안내합니다. 이 가이드는 두 가지 
 
 ```bash
 git clone <repository-url>
-cd irysbase
+cd debhub
 ```
 
 ### 2. 의존성 설치
@@ -118,7 +118,7 @@ cp .env.example .env
 
 ```env
 # 데이터베이스
-DATABASE_URL=postgresql://user:password@localhost:5432/irysbase
+DATABASE_URL=postgresql://user:password@localhost:5432/debhub
 
 # Irys
 IRYS_NETWORK=mainnet
@@ -261,7 +261,7 @@ mutation {
 ### 프로젝트 구조
 
 ```
-irysbase/
+debhub/
 ├── apps/
 │   ├── api/                    # GraphQL API (선택사항)
 │   │   ├── src/
@@ -362,7 +362,7 @@ pnpm prisma generate        # 클라이언트 생성
 2. `DATABASE_URL`이 올바른지 확인
 3. 데이터베이스가 존재하는지 확인:
    ```bash
-   psql -U postgres -c "CREATE DATABASE irysbase;"
+   psql -U postgres -c "CREATE DATABASE debhub;"
    ```
 4. 연결 권한 확인
 
@@ -464,4 +464,4 @@ LOG_LEVEL=debug
 
 ---
 
-**문제가 계속되면 [GitHub Issues](https://github.com/your-org/irysbase/issues)에 보고해주세요!**
+**문제가 계속되면 [GitHub Issues](https://github.com/your-org/debhub/issues)에 보고해주세요!**

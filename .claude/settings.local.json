@@ -55,7 +55,10 @@
       "WebFetch(domain:cookbook.arweave.net)",
       "WebFetch(domain:medium.com)",
       "Bash(rm:*)",
-      "Bash(git config:*)"
+      "Bash(git config:*)",
+      "Bash(git reflog:*)",
+      "Bash(git gc:*)",
+      "Bash(test:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,5 +1,5 @@
 {
-  "name": "@irysbase/core",
+  "name": "@debhub/core",
   "version": "1.0.0",
   "description": "IrysBase Core Orchestrator - Central coordination for all services",
   "main": "dist/index.js",
@@ -11,9 +11,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@irysbase/shared": "workspace:*",
-    "@irysbase/irys-integration": "workspace:*",
-    "@irysbase/ai-integration": "workspace:*",
+    "@debhub/shared": "workspace:*",
+    "@debhub/irys-integration": "workspace:*",
+    "@debhub/ai-integration": "workspace:*",
     "@prisma/client": "^5.22.0",
     "events": "^3.3.0",
     "redis": "^4.6.0"

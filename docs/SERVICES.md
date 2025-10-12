@@ -1,6 +1,6 @@
-# IrysBase Services Guide
+# DeBHuB Services Guide
 
-Complete documentation for all IrysBase platform services.
+Complete documentation for all DeBHuB platform services.
 
 ## Table of Contents
 

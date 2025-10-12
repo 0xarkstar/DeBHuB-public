@@ -1,5 +1,5 @@
 {
-  "name": "@irysbase/ai-integration",
+  "name": "@debhub/ai-integration",
   "version": "1.0.0",
   "description": "AI services integration for IrysBase",
   "main": "dist/index.js",

@@ -3,7 +3,7 @@ import { Post as DatabasePost, PrismaClient } from '@prisma/client';
 import { IrysService } from '../services/irys';
 import { BlockchainService } from '../services/blockchain';
 import { requireAuth, AuthContext } from '../services/auth';
-import { Post, UpdateType, PAGINATION, VALIDATION } from '@irysbase/shared';
+import { Post, UpdateType, PAGINATION, VALIDATION } from '@debhub/shared';
 
 const pubsub = new PubSub();
 

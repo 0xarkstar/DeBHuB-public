@@ -28,7 +28,7 @@ import {
   WithIrysId
 } from './irys-types';
 
-const APP_NAME = 'IrysBase';
+const APP_NAME = 'DeBHuB';
 const SCHEMA_VERSION = '1.0';
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
@@ -49,7 +49,7 @@ export class IrysDatabase {
     if (this.initialized) return;
 
     try {
-      this.cache = await openDB('IrysBase', 1, {
+      this.cache = await openDB('DeBHuB', 1, {
         upgrade(db) {
           // Create object stores
           if (!db.objectStoreNames.contains('projects')) {

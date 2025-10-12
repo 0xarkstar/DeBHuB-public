@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 
 async function main() {
-  console.log("🚀 Deploying IrysBaseCore to Irys Testnet...");
+  console.log("🚀 Deploying DeBHuBCore to Irys Testnet...");
 
   const [deployer] = await ethers.getSigners();
   console.log("Deploying with account:", deployer.address);
@@ -12,15 +12,15 @@ async function main() {
   const balance = await ethers.provider.getBalance(deployer.address);
   console.log("Account balance:", ethers.formatEther(balance), "ETH");
 
-  // Deploy IrysBaseCore
-  console.log("Deploying IrysBaseCore...");
-  const IrysBaseCore = await ethers.getContractFactory("IrysBaseCore");
+  // Deploy DeBHuBCore
+  console.log("Deploying DeBHuBCore...");
+  const DeBHuBCore = await ethers.getContractFactory("DeBHuBCore");
   
-  const irysBaseCore = await IrysBaseCore.deploy();
+  const irysBaseCore = await DeBHuBCore.deploy();
   await irysBaseCore.waitForDeployment();
   
   const contractAddress = await irysBaseCore.getAddress();
-  console.log("✅ IrysBaseCore deployed to:", contractAddress);
+  console.log("✅ DeBHuBCore deployed to:", contractAddress);
 
   // Verify deployment by calling a read function
   try {

@@ -1,8 +1,8 @@
-# IrysBase
+# DeBHuB
 
 > **Serverless Documentation Platform with Permanent Blockchain Storage**
 
-IrysBase는 Irys DataChain을 사용한 **완전히 탈중앙화된 문서 플랫폼**입니다. 백엔드 서버 없이 브라우저에서 직접 블록체인에 연결하여 영구적이고 검증 가능한 문서를 생성합니다.
+DeBHuB는 Irys DataChain을 사용한 **완전히 탈중앙화된 문서 플랫폼**입니다. 백엔드 서버 없이 브라우저에서 직접 블록체인에 연결하여 영구적이고 검증 가능한 문서를 생성합니다.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
@@ -35,7 +35,7 @@ IrysBase는 Irys DataChain을 사용한 **완전히 탈중앙화된 문서 플�
 
 ## 🏗️ 아키텍처
 
-IrysBase는 **Pure Irys 아키텍처**를 사용합니다:
+DeBHuB는 **Pure Irys 아키텍처**를 사용합니다:
 
 ```
 ┌─────────────────────────────────────┐
@@ -131,8 +131,8 @@ Both versions permanently stored ✅
 
 ```bash
 # 1. 저장소 클론
-git clone https://github.com/your-org/irysbase.git
-cd irysbase
+git clone https://github.com/0xarkstar/DeBHuB.git
+cd debhub
 
 # 2. 의존성 설치
 pnpm install
@@ -180,7 +180,7 @@ VITE_IRYS_TOKEN=ethereum               # ethereum, matic, bnb, etc.
 # Use separate wallets for development and production
 
 # Database
-DATABASE_URL=postgresql://username:password@localhost:5432/irysbase
+DATABASE_URL=postgresql://username:password@localhost:5432/debhub
 
 # Redis (Caching)
 REDIS_URL=redis://localhost:6379
@@ -235,7 +235,7 @@ POSTS_CONTRACT_ADDRESS=
 ## 📦 프로젝트 구조
 
 ```
-irysbase/
+debhub/
 ├── apps/
 │   ├── web-vite/              # Frontend (유일한 사용자 인터페이스)
 │   │   ├── src/
@@ -305,7 +305,7 @@ Irys는 **태그**로 데이터를 검색합니다:
 const projects = await irysDb.query
   .search('irys:transactions')
   .tags([
-    { name: 'App-Name', values: ['IrysBase'] },
+    { name: 'App-Name', values: ['DeBHuB'] },
     { name: 'Entity-Type', values: ['project'] },
     { name: 'Owner', values: [userAddress] }
   ])
@@ -430,10 +430,10 @@ MIT License - 자세한 내용은 [LICENSE](LICENSE) 참조
 ## 📞 지원
 
 - **문서**: [docs/](docs/)
-- **이슈**: [GitHub Issues](https://github.com/your-org/irysbase/issues)
+- **이슈**: [GitHub Issues](https://github.com/0xarkstar/DeBHuB/issues)
 
 ---
 
-**Made with ❤️ by IrysBase Team**
+**Made with ❤️ by DeBHuB Team**
 
 **Status**: 🟢 Beta | **Version**: 1.0.0-beta | **Updated**: 2025-01-10

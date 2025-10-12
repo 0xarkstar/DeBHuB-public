@@ -1,6 +1,6 @@
-# Contributing to IrysBase
+# Contributing to DeBHuB
 
-Thank you for your interest in contributing to IrysBase! This document provides guidelines and instructions for contributing.
+Thank you for your interest in contributing to DeBHuB! This document provides guidelines and instructions for contributing.
 
 ## 🤝 Code of Conduct
 
@@ -20,8 +20,8 @@ We are committed to providing a welcoming and inclusive environment. Please be r
 
 1. **Fork and Clone**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/irysbase.git
-   cd irysbase
+   git clone https://github.com/YOUR_USERNAME/debhub.git
+   cd debhub
    ```
 
 2. **Install Dependencies**
@@ -202,7 +202,7 @@ Brief description of changes
 ## 🏗️ Project Structure
 
 ```
-irysbase/
+debhub/
 ├── apps/
 │   ├── api/           # Backend API
 │   └── web/           # Frontend
@@ -318,8 +318,8 @@ Mockups, examples, etc.
 ## 🤔 Questions?
 
 - **Documentation**: Check [docs/](./docs/)
-- **Issues**: [GitHub Issues](https://github.com/yourusername/irysbase/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/irysbase/discussions)
+- **Issues**: [GitHub Issues](https://github.com/yourusername/debhub/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/yourusername/debhub/discussions)
 
 ## 📜 License
 
@@ -327,4 +327,4 @@ By contributing, you agree that your contributions will be licensed under the MI
 
 ---
 
-Thank you for contributing to IrysBase! 🎉
+Thank you for contributing to DeBHuB! 🎉

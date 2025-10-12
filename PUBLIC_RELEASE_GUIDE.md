@@ -1,6 +1,6 @@
 # 🚀 Public Release Guide
 
-IrysBase 프로젝트를 퍼블릭 레포지토리로 안전하게 전환하는 가이드입니다.
+DeBHuB 프로젝트를 퍼블릭 레포지토리로 안전하게 전환하는 가이드입니다.
 
 ---
 
@@ -99,7 +99,7 @@ git push origin master
 
 1. **GitHub 레포지토리 설정으로 이동**
    ```
-   https://github.com/your-org/irysbase/settings
+   https://github.com/your-org/debhub/settings
    ```
 
 2. **Danger Zone으로 스크롤**
@@ -136,7 +136,7 @@ git push origin master
 
 **현재 구조:**
 ```
-irysbase/
+debhub/
 ├── apps/
 │   ├── api/           # Backend (GraphQL API)
 │   └── web-vite/      # Frontend (React + Vite)
@@ -148,11 +148,11 @@ irysbase/
 
 ### 옵션 B: Frontend + Backend 분리
 
-**Frontend Repository: `irysbase-frontend`**
+**Frontend Repository: `debhub-frontend`**
 ```bash
 # 새 레포지토리 생성
-git clone --no-hardlinks irysbase irysbase-frontend
-cd irysbase-frontend
+git clone --no-hardlinks debhub debhub-frontend
+cd debhub-frontend
 
 # Frontend만 유지
 git filter-repo --path apps/web-vite --path packages/contracts --path packages/shared
@@ -162,15 +162,15 @@ mv apps/web-vite/* .
 rm -rf apps packages
 
 # 새 원격 추가
-git remote add origin https://github.com/your-org/irysbase-frontend.git
+git remote add origin https://github.com/your-org/debhub-frontend.git
 git push -u origin master
 ```
 
-**Backend Repository: `irysbase-backend`**
+**Backend Repository: `debhub-backend`**
 ```bash
 # 새 레포지토리 생성
-git clone --no-hardlinks irysbase irysbase-backend
-cd irysbase-backend
+git clone --no-hardlinks debhub debhub-backend
+cd debhub-backend
 
 # Backend만 유지
 git filter-repo --path apps/api --path packages/shared
@@ -180,7 +180,7 @@ mv apps/api/* .
 rm -rf apps packages
 
 # 새 원격 추가
-git remote add origin https://github.com/your-org/irysbase-backend.git
+git remote add origin https://github.com/your-org/debhub-backend.git
 git push -u origin master
 ```
 
@@ -188,7 +188,7 @@ git push -u origin master
 
 ## 🎯 추천 전략: 모노레포 유지
 
-IrysBase는 다음 이유로 **모노레포 공개**를 권장합니다:
+DeBHuB는 다음 이유로 **모노레포 공개**를 권장합니다:
 
 1. **듀얼 아키텍처 지원**
    - Frontend-only (Serverless)

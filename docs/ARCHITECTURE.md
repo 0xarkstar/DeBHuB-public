@@ -1,6 +1,6 @@
 # ?„í‚¤?ì²˜ (Architecture)
 
-IrysBase ?Œë«?¼ì˜ ?„ì „???„í‚¤?ì²˜ ê°œìš”?…ë‹ˆ??
+DeBHuB ?Œë«?¼ì˜ ?„ì „???„í‚¤?ì²˜ ê°œìš”?…ë‹ˆ??
 
 ## ëª©ì°¨
 
@@ -17,7 +17,7 @@ IrysBase ?Œë«?¼ì˜ ?„ì „???„í‚¤?ì²˜ ê°œìš”?…ë‹ˆ??
 
 ## ?Œ ?œìŠ¤??ê°œìš”
 
-IrysBase??Irys DataChain??ê¸°ë°˜?¼ë¡œ êµ¬ì¶•??**?´ì¤‘ ?„í‚¤?ì²˜** ë¬¸ì„œ???Œë«?¼ì…?ˆë‹¤:
+DeBHuB??Irys DataChain??ê¸°ë°˜?¼ë¡œ êµ¬ì¶•??**?´ì¤‘ ?„í‚¤?ì²˜** ë¬¸ì„œ???Œë«?¼ì…?ˆë‹¤:
 
 - **Irys DataChain** - ?êµ¬?ì´ê³?ë¶ˆë???ë¸”ë¡ì²´ì¸ ?¤í† ë¦¬ì?
 - **IndexedDB ìºì‹±** - ë¹ ë¥¸ ?¤í”„?¼ì¸ ?¡ì„¸??
@@ -38,7 +38,7 @@ IrysBase??Irys DataChain??ê¸°ë°˜?¼ë¡œ êµ¬ì¶•??**?´ì¤‘ ?„í‚¤?ì²˜** ë¬¸ì„œ???Œë«
 
 ## ?—ï¸??´ì¤‘ ?„í‚¤?ì²˜
 
-IrysBase????ê°€ì§€ ?„í‚¤?ì²˜ ëª¨ë“œë¥?ì§€?í•©?ˆë‹¤:
+DeBHuB????ê°€ì§€ ?„í‚¤?ì²˜ ëª¨ë“œë¥?ì§€?í•©?ˆë‹¤:
 
 ### ë¹„êµ??
 
@@ -105,7 +105,7 @@ User Click "New Project"
   ??IrysDatabase.createProject()
     ??Generate Project ID
     ??Upload to Irys with tags:
-      - app-name: irysbase
+      - app-name: debhub
       - content-type: project
       - project-id: <id>
     ??Save to IndexedDB
@@ -119,7 +119,7 @@ User Writes Document
     ??Save Draft to IndexedDB (ì¦‰ì‹œ)
   ??User Clicks "Publish"
     ??Upload to Irys with tags:
-      - app-name: irysbase
+      - app-name: debhub
       - content-type: document
       - project-id: <project_id>
       - document-id: <doc_id>
@@ -268,7 +268,7 @@ User Types in Editor
 
 ### 3-Tier ?¤í† ë¦¬ì? ëª¨ë¸
 
-IrysBase??3ê³„ì¸µ ?¤í† ë¦¬ì?ë¥??¬ìš©?©ë‹ˆ??
+DeBHuB??3ê³„ì¸µ ?¤í† ë¦¬ì?ë¥??¬ìš©?©ë‹ˆ??
 
 #### 1. IndexedDB (ë¡œì»¬ ìºì‹œ)
 **ëª©ì :** ë¹ ë¥¸ ?¤í”„?¼ì¸ ?¡ì„¸??
@@ -451,7 +451,7 @@ const receipts = await uploader.uploadFolder(documents);
 // ?„ìš”???„ë“œë§?ì¡°íšŒ
 const query = new Query();
 query
-  .search('irysbase')
+  .search('debhub')
   .tags([
     { name: 'content-type', values: ['document'] },
     { name: 'project-id', values: [projectId] }

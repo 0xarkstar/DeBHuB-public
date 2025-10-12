@@ -1,5 +1,5 @@
 {
-  "name": "irysbase",
+  "name": "debhub",
   "private": true,
   "workspaces": [
     "apps/*",
@@ -13,13 +13,13 @@
     "deploy:local": "tsx scripts/deploy-contracts.ts --network localhost",
     
     "dev": "turbo run dev --parallel",
-    "dev:api": "turbo run dev --filter=@irysbase/api",
-    "dev:web": "turbo run dev --filter=@irysbase/web-vite",
+    "dev:api": "turbo run dev --filter=@debhub/api",
+    "dev:web": "turbo run dev --filter=@debhub/web-vite",
     "dev:enhanced": "concurrently \"pnpm run api:dev:enhanced\" \"pnpm run web:dev\"",
     "dev:frontend": "cd apps/web-vite && pnpm run dev",
     
     "build": "turbo run build",
-    "build:docker": "docker build -t irysbase:latest .",
+    "build:docker": "docker build -t debhub:latest .",
     
     "test": "turbo run test",
     "test:integration": "vitest run --config packages/testing/vitest.integration.config.ts",

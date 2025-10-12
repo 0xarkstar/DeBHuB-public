@@ -38,7 +38,7 @@ export function createPostTags(
 ) {
   const tags = [
     { name: IRYS_TAGS.CONTENT_TYPE, value: 'application/json' },
-    { name: IRYS_TAGS.APP_NAME, value: 'IrysBase' },
+    { name: IRYS_TAGS.APP_NAME, value: 'DeBHuB' },
     { name: IRYS_TAGS.TABLE, value: 'posts' },
     { name: IRYS_TAGS.AUTHOR_ADDRESS, value: authorAddress },
     { name: IRYS_TAGS.TIMESTAMP, value: new Date().toISOString() },
@@ -82,7 +82,7 @@ export function validateWalletSignature(
 }
 
 export function createAuthMessage(address: string, timestamp: number): string {
-  return `IrysBase Authentication\nAddress: ${address}\nTimestamp: ${timestamp}`;
+  return `DeBHuB Authentication\nAddress: ${address}\nTimestamp: ${timestamp}`;
 }
 
 export function createAuthToken(address: string, signature: string, message: string): string {

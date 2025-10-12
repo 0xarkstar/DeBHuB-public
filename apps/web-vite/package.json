@@ -1,5 +1,5 @@
 {
-  "name": "@irysbase/web-vite",
+  "name": "@debhub/web-vite",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -14,7 +14,7 @@
     "@apollo/client": "^3.14.0",
     "@irys/query": "^0.0.10",
     "@irys/upload": "^0.0.3",
-    "@irysbase/shared": "workspace:*",
+    "@debhub/shared": "workspace:*",
     "@radix-ui/react-dialog": "^1.0.4",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-select": "^2.2.6",

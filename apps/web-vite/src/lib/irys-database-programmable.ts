@@ -363,7 +363,7 @@ export class ProgrammableIrysDatabase extends IrysDatabase {
 
   private createProjectTags(project: any): Array<{ name: string; value: string }> {
     return [
-      { name: 'App-Name', value: 'IrysBase' },
+      { name: 'App-Name', value: 'DeBHuB' },
       { name: 'Entity-Type', value: 'project' },
       { name: 'Entity-ID', value: project.entityId },
       { name: 'Owner', value: project.owner }
@@ -372,7 +372,7 @@ export class ProgrammableIrysDatabase extends IrysDatabase {
 
   private createDocumentTags(document: any): Array<{ name: string; value: string }> {
     return [
-      { name: 'App-Name', value: 'IrysBase' },
+      { name: 'App-Name', value: 'DeBHuB' },
       { name: 'Entity-Type', value: 'document' },
       { name: 'Entity-ID', value: document.entityId },
       { name: 'Project-ID', value: document.projectId },

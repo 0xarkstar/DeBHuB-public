@@ -52,7 +52,7 @@ export function ContractList() {
           Deployed Smart Contracts
         </CardTitle>
         <CardDescription>
-          Core contracts deployed on IrysVM for the IrysBase platform
+          Core contracts deployed on IrysVM for the DeBHuB platform
         </CardDescription>
       </CardHeader>
       <CardContent>

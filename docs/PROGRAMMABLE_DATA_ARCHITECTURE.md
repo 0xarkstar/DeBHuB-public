@@ -1,4 +1,4 @@
-# Irys Programmable Data Architecture for IrysBase
+# Irys Programmable Data Architecture for DeBHuB
 
 ## 📚 Research Summary
 
@@ -23,7 +23,7 @@
 
 ---
 
-## 🏗️ IrysBase Architecture Design
+## 🏗️ DeBHuB Architecture Design
 
 ### Phase 1: Programmable Data Layer
 
@@ -584,7 +584,7 @@ PROVENANCE_TRACKER_CONTRACT=0x...
 
 ## 🎉 Conclusion
 
-This architecture transforms IrysBase from:
+This architecture transforms DeBHuB from:
 - **"Irys Storage Service"** → **"True Irys BaaS"**
 - **Storage-only** → **Storage + Compute + Logic**
 - **60/100 score** → **95/100 score**

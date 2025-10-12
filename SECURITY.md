@@ -2,7 +2,7 @@
 
 ## 🔒 보안 정책
 
-IrysBase는 오픈소스 프로젝트로서 보안을 최우선으로 생각합니다.
+DeBHuB는 오픈소스 프로젝트로서 보안을 최우선으로 생각합니다.
 
 ---
 
@@ -14,7 +14,7 @@ IrysBase는 오픈소스 프로젝트로서 보안을 최우선으로 생각합�
 
 1. **GitHub Security Advisories** (권장)
    - Repository → Security → Advisories → "Report a vulnerability"
-   - 또는 직접 링크: `https://github.com/your-org/irysbase/security/advisories/new`
+   - 또는 직접 링크: `https://github.com/your-org/debhub/security/advisories/new`
 
 2. **이메일**
    - 이메일: security@your-domain.com

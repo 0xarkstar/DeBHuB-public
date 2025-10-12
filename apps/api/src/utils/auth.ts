@@ -3,7 +3,7 @@ import {
   validateWalletSignature, 
   createAuthMessage, 
   createAuthToken 
-} from '@irysbase/shared';
+} from '@debhub/shared';
 import { GraphQLContext } from '../types';
 
 export function requireAuth(context: GraphQLContext): string {
@@ -23,7 +23,7 @@ export function requireAuth(context: GraphQLContext): string {
   }
 
   // Check message format and timestamp
-  const messageMatch = context.message.match(/IrysBase Authentication\nAddress: (.+)\nTimestamp: (\d+)/);
+  const messageMatch = context.message.match(/DeBHuB Authentication\nAddress: (.+)\nTimestamp: (\d+)/);
   if (!messageMatch) {
     throw new Error('Invalid authentication message format');
   }
