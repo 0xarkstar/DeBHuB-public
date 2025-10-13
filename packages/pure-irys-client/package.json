@@ -1,0 +1,37 @@
+{
+  "name": "@debhub/pure-irys-client",
+  "version": "1.0.0",
+  "description": "Pure Irys BaaS client library - World's first serverless blockchain-native BaaS",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "irys",
+    "blockchain",
+    "baas",
+    "decentralized",
+    "web3",
+    "storage"
+  ],
+  "author": "DeBHuB",
+  "license": "MIT",
+  "dependencies": {
+    "@irys/upload": "^0.0.15",
+    "@irys/query": "^0.0.13",
+    "ethers": "^6.15.0",
+    "idb": "^8.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2",
+    "@types/node": "^22.0.0",
+    "@types/react": "^18.0.0",
+    "react": "^18.0.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0"
+  }
+}

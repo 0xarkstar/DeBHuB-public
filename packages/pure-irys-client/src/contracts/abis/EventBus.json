@@ -1,0 +1,593 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "EventBus",
+  "sourceName": "contracts/EventBus.sol",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "resourceId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "collaborator",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "addedBy",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "permission",
+          "type": "uint8"
+        }
+      ],
+      "name": "CollaboratorAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "resourceId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "collaborator",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "removedBy",
+          "type": "address"
+        }
+      ],
+      "name": "CollaboratorRemoved",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "docId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "commentId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "author",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "CommentAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "commentId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "author",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "CommentDeleted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "commentId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "author",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "CommentUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "docId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "projectId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "author",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "DocumentCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "docId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "author",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "DocumentDeleted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "docId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "author",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "DocumentPublished",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "docId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "author",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "DocumentUnpublished",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "docId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "author",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "newVersionId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "DocumentUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "resourceId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "LikeAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "resourceId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "LikeRemoved",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "projectId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "ProjectCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "projectId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "ProjectDeleted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "projectId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "updater",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "ProjectUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "UserProfileUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "UserRegistered",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "resourceId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "viewer",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "ViewRecorded",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "resourceId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "collaborator",
+          "type": "address"
+        },
+        {
+          "internalType": "uint8",
+          "name": "permission",
+          "type": "uint8"
+        }
+      ],
+      "name": "emitCollaboratorAdded",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "docId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "commentId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "emitCommentAdded",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "docId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "projectId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "string",
+          "name": "title",
+          "type": "string"
+        }
+      ],
+      "name": "emitDocumentCreated",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "docId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "emitDocumentPublished",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "docId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "newVersionId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "emitDocumentUpdated",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "resourceId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "emitViewRecorded",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b50610453806100206000396000f3fe608060405234801561001057600080fd5b50600436106100625760003560e01c80631a0cef6714610067578063556b4f1e1461007c578063a25c2e141461008f578063acbb944d146100a2578063d035e6ea146100b5578063da3687fe146100c8575b600080fd5b61007a61007536600461025f565b6100db565b005b61007a61008a36600461025f565b610116565b61007a61009d36600461028e565b61014a565b61007a6100b0366004610352565b610194565b61007a6100c33660046103a6565b6101d6565b61007a6100d63660046103a6565b610216565b604051428152339082907f3c67670adad070db2dee9d8b0e1fb12d709b7ee18ebdbc17f823b6322837638a906020015b60405180910390a350565b604051428152339082907fc2982212945859b5c0bbfd67554d5fb89c758f5a78e1cfc7514a42b8b86a42df9060200161010b565b336001600160a01b031682847fe2e12433c4f8086de8b5d705a528aa727a7522d78f3d43ccb6431e02ff5bace784426040516101879291906103c8565b60405180910390a4505050565b60405160ff8216815233906001600160a01b0384169085907ff6379ba396e2d013544db389dafe5924f00a7a18d303b197f11426549670534090602001610187565b60408051828152426020820152339184917f07ca5be2b31e0b43f074200da8645eeb0053d58b8239d51de7b89118e5ddf91b910160405180910390a35050565b336001600160a01b031681837f9ab24425d5c96b9abba28fb60dcbddf80c3ad2f54ee5e22dfd65db0ee9e9064c4260405161025391815260200190565b60405180910390a45050565b60006020828403121561027157600080fd5b5035919050565b634e487b7160e01b600052604160045260246000fd5b6000806000606084860312156102a357600080fd5b8335925060208401359150604084013567ffffffffffffffff808211156102c957600080fd5b818601915086601f8301126102dd57600080fd5b8135818111156102ef576102ef610278565b604051601f8201601f19908116603f0116810190838211818310171561031757610317610278565b8160405282815289602084870101111561033057600080fd5b8260208601602083013760006020848301015280955050505050509250925092565b60008060006060848603121561036757600080fd5b8335925060208401356001600160a01b038116811461038557600080fd5b9150604084013560ff8116811461039b57600080fd5b809150509250925092565b600080604083850312156103b957600080fd5b50508035926020909101359150565b604081526000835180604084015260005b818110156103f657602081870181015160608684010152016103d9565b506000606082850101526060601f19601f830116840101915050826020830152939250505056fea2646970667358221220434c9a0c368789b7cd2e2eb1336ff296265b3205b24df6ca759030a06b433cb164736f6c63430008140033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100625760003560e01c80631a0cef6714610067578063556b4f1e1461007c578063a25c2e141461008f578063acbb944d146100a2578063d035e6ea146100b5578063da3687fe146100c8575b600080fd5b61007a61007536600461025f565b6100db565b005b61007a61008a36600461025f565b610116565b61007a61009d36600461028e565b61014a565b61007a6100b0366004610352565b610194565b61007a6100c33660046103a6565b6101d6565b61007a6100d63660046103a6565b610216565b604051428152339082907f3c67670adad070db2dee9d8b0e1fb12d709b7ee18ebdbc17f823b6322837638a906020015b60405180910390a350565b604051428152339082907fc2982212945859b5c0bbfd67554d5fb89c758f5a78e1cfc7514a42b8b86a42df9060200161010b565b336001600160a01b031682847fe2e12433c4f8086de8b5d705a528aa727a7522d78f3d43ccb6431e02ff5bace784426040516101879291906103c8565b60405180910390a4505050565b60405160ff8216815233906001600160a01b0384169085907ff6379ba396e2d013544db389dafe5924f00a7a18d303b197f11426549670534090602001610187565b60408051828152426020820152339184917f07ca5be2b31e0b43f074200da8645eeb0053d58b8239d51de7b89118e5ddf91b910160405180910390a35050565b336001600160a01b031681837f9ab24425d5c96b9abba28fb60dcbddf80c3ad2f54ee5e22dfd65db0ee9e9064c4260405161025391815260200190565b60405180910390a45050565b60006020828403121561027157600080fd5b5035919050565b634e487b7160e01b600052604160045260246000fd5b6000806000606084860312156102a357600080fd5b8335925060208401359150604084013567ffffffffffffffff808211156102c957600080fd5b818601915086601f8301126102dd57600080fd5b8135818111156102ef576102ef610278565b604051601f8201601f19908116603f0116810190838211818310171561031757610317610278565b8160405282815289602084870101111561033057600080fd5b8260208601602083013760006020848301015280955050505050509250925092565b60008060006060848603121561036757600080fd5b8335925060208401356001600160a01b038116811461038557600080fd5b9150604084013560ff8116811461039b57600080fd5b809150509250925092565b600080604083850312156103b957600080fd5b50508035926020909101359150565b604081526000835180604084015260005b818110156103f657602081870181015160608684010152016103d9565b506000606082850101526060601f19601f830116840101915050826020830152939250505056fea2646970667358221220434c9a0c368789b7cd2e2eb1336ff296265b3205b24df6ca759030a06b433cb164736f6c63430008140033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
