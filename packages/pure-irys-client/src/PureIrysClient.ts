@@ -1,5 +1,6 @@
 import { ethers, Contract, Signer } from "ethers";
-import Irys from "@irys/upload";
+import { WebUploader } from "@irys/web-upload";
+import { WebEthereum } from "@irys/web-upload-ethereum";
 import Query from "@irys/query";
 import { IndexedDBCache } from "./cache/IndexedDBCache";
 import {
@@ -28,8 +29,8 @@ import SearchIndexABI from "./contracts/abis/SearchIndex.json";
  */
 export class PureIrysClient {
   private signer: Signer;
-  private irys!: any; // Irys type
-  private query!: any; // Query type
+  private irysUploader!: any; // WebUploader type
+  private query: Query;
   private cache: IndexedDBCache;
   private config: PureIrysClientConfig;
 
@@ -66,6 +67,7 @@ export class PureIrysClient {
     };
 
     this.cache = new IndexedDBCache(this.config.cache?.ttl);
+    this.query = new Query();
   }
 
   /**
@@ -81,24 +83,17 @@ export class PureIrysClient {
       await this.cache.init();
     }
 
-    // Initialize Irys uploader (will be initialized when needed)
+    // Initialize Irys L1 WebUploader for browser
     try {
-      // @ts-ignore - Irys types are incomplete
-      this.irys = new (Irys as any)({
-        network: this.config.irys.network,
-        token: this.config.irys.token,
-        key: this.signer,
-      });
-    } catch (err) {
-      console.warn("Irys uploader initialization deferred:", err);
-    }
+      const provider = this.signer.provider;
 
-    // Initialize Irys query (will be initialized when needed)
-    try {
-      // @ts-ignore - Irys query types are incomplete
-      this.query = new (Query as any)({ network: this.config.irys.network });
+      this.irysUploader = await WebUploader(WebEthereum)
+        .withProvider(provider)
+        .withRpc(this.config.irys.providerUrl);
+
+      console.log("✅ Irys uploader initialized");
     } catch (err) {
-      console.warn("Irys query initialization deferred:", err);
+      console.warn("⚠️ Irys uploader initialization deferred:", err);
     }
 
     // Initialize smart contracts
@@ -192,7 +187,7 @@ export class PureIrysClient {
       ...(options.tags || []).map((tag) => ({ name: "Tag", value: tag })),
     ];
 
-    const receipt = await this.irys.upload(options.content, { tags });
+    const receipt = await this.irysUploader.upload(options.content, { tags });
     console.log(`✅ Uploaded to Irys: ${receipt.id}`);
 
     // 2. Register in smart contract
@@ -323,7 +318,7 @@ export class PureIrysClient {
         ...(options.tags || []).map((tag) => ({ name: "Tag", value: tag })),
       ];
 
-      const receipt = await this.irys.upload(options.content, { tags });
+      const receipt = await this.irysUploader.upload(options.content, { tags });
       const newIrysId = ethers.id(receipt.id);
 
       // 2. Update smart contract

@@ -6,7 +6,8 @@
  */
 
 import Query from '@irys/query';
-import Uploader from '@irys/upload';
+import { WebUploader } from '@irys/web-upload';
+import { WebEthereum } from '@irys/web-upload-ethereum';
 import { openDB, IDBPDatabase } from 'idb';
 import { v4 as uuidv4 } from 'uuid';
 import {
@@ -83,13 +84,14 @@ export class IrysDatabase {
   }
 
   /**
-   * Connect wallet and initialize uploader
+   * Connect wallet and initialize uploader (Irys L1 WebUploader)
    */
   async connectWallet(provider: any): Promise<void> {
     try {
-      // @ts-ignore - Irys Uploader API
-      this.uploader = await Uploader({ wallet: { provider } });
-      console.log('✅ Wallet connected');
+      this.uploader = await WebUploader(WebEthereum)
+        .withProvider(provider)
+        .withRpc('https://testnet-rpc.irys.xyz/v1/execution-rpc');
+      console.log('✅ Wallet connected to Irys L1');
     } catch (error) {
       console.error('Failed to connect wallet:', error);
       throw new IrysError(

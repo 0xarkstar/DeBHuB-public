@@ -180,9 +180,12 @@ importers:
       '@irys/query':
         specifier: ^0.0.10
         version: 0.0.10
-      '@irys/upload':
-        specifier: ^0.0.3
-        version: 0.0.3(@types/node@20.19.12)(arweave@1.15.7)(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      '@irys/web-upload':
+        specifier: ^0.0.15
+        version: 0.0.15(arweave@1.15.7)(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      '@irys/web-upload-ethereum':
+        specifier: ^0.0.16
+        version: 0.0.16(arweave@1.15.7)(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       '@radix-ui/react-dialog':
         specifier: ^1.0.4
         version: 1.1.15(@types/react-dom@18.3.7(@types/react@18.3.24))(@types/react@18.3.24)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -298,15 +301,6 @@ importers:
       eslint-plugin-react-refresh:
         specifier: ^0.4.7
         version: 0.4.22(eslint@8.57.1)
-      memfs:
-        specifier: ^4.49.0
-        version: 4.49.0
-      os-browserify:
-        specifier: ^0.3.0
-        version: 0.3.0
-      path-browserify:
-        specifier: ^1.0.1
-        version: 1.0.1
       postcss:
         specifier: ^8.4.29
         version: 8.5.6
@@ -449,9 +443,12 @@ importers:
       '@irys/query':
         specifier: ^0.0.13
         version: 0.0.13
-      '@irys/upload':
+      '@irys/web-upload':
         specifier: ^0.0.15
-        version: 0.0.15(@types/node@22.7.5)(arweave@1.15.7)(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+        version: 0.0.15(arweave@1.15.7)(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      '@irys/web-upload-ethereum':
+        specifier: ^0.0.16
+        version: 0.0.16(arweave@1.15.7)(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       ethers:
         specifier: ^6.15.0
         version: 6.15.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -1507,9 +1504,6 @@ packages:
   '@irys/arweave@0.0.2':
     resolution: {integrity: sha512-ddE5h4qXbl0xfGlxrtBIwzflaxZUDlDs43TuT0u1OMfyobHul4AA1VEX72Rpzw2bOh4vzoytSqA1jCM7x9YtHg==}
 
-  '@irys/bundles@0.0.1':
-    resolution: {integrity: sha512-yeQNzElERksFbfbNxJQsMkhtkI3+tNqIMZ/Wwxh76NVBmCnCP5huefOv7ET0MOO7TEQL+TqvKSqmFklYSvTyHw==}
-
   '@irys/bundles@0.0.3':
     resolution: {integrity: sha512-zSorcWJO0W7WHBPaTF6C3FNig1ZrCSKIDqnkk91SLl9jcybz5bWmthUFL2D7ywzh1XV5tZQC09bkNJRcXeeGOA==}
 
@@ -1538,14 +1532,8 @@ packages:
   '@irys/upload-core@0.0.10':
     resolution: {integrity: sha512-E7kCNSOTPqwBbnd2wnnklPrR0HtLnENmu5NVhgs+B9cUeyN9AcvzRDOJLKNmYS6q514bDwb/PUgB+vP/070now==}
 
-  '@irys/upload-core@0.0.2':
-    resolution: {integrity: sha512-gLHJyNQoYuNOqEmjKUFdOPtoFWfJUWEaMHHOV4aIiUpc7FE7xVMVXjR+B1ZD+Ma4hZLTVfl5hoS7T86OfvLC2g==}
-
   '@irys/upload@0.0.15':
     resolution: {integrity: sha512-VS1ieI8Hipv7F/odL2rDfn0S9VCwj3GFhROI8el0RjzpcaXCobezP0V4yuvppyB+E4Oiu6xQTXooaIBh/S7xPA==}
-
-  '@irys/upload@0.0.3':
-    resolution: {integrity: sha512-BCQBHn/29eI+iPYP9ffhUNOnemm0Hs6OoPhZC3NT2Vhp2BweHvZ3eHLmhsXsZQJ5vDido4KbXtLY9kURsFGwdQ==}
 
   '@irys/web-upload-ethereum@0.0.16':
     resolution: {integrity: sha512-LfR6DXeRoYrAyT8D2+i4sYlqfB4apxkP5RwPVumL3lYQaFdTxvQm4Xk9AhXJLkp94Un04drX2DNLfWULr9jpwg==}
@@ -1584,42 +1572,6 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
-
-  '@jsonjoy.com/base64@1.1.2':
-    resolution: {integrity: sha512-q6XAnWQDIMA3+FTiOYajoYqySkO+JSat0ytXGSuRdq9uXE7o92gzuQwQM14xaCRlBLGq3v5miDGC4vkVTn54xA==}
-    engines: {node: '>=10.0'}
-    peerDependencies:
-      tslib: '2'
-
-  '@jsonjoy.com/buffers@1.2.0':
-    resolution: {integrity: sha512-6RX+W5a+ZUY/c/7J5s5jK9UinLfJo5oWKh84fb4X0yK2q4WXEWUWZWuEMjvCb1YNUQhEAhUfr5scEGOH7jC4YQ==}
-    engines: {node: '>=10.0'}
-    peerDependencies:
-      tslib: '2'
-
-  '@jsonjoy.com/codegen@1.0.0':
-    resolution: {integrity: sha512-E8Oy+08cmCf0EK/NMxpaJZmOxPqM+6iSe2S4nlSBrPZOORoDJILxtbSUEDKQyTamm/BVAhIGllOBNU79/dwf0g==}
-    engines: {node: '>=10.0'}
-    peerDependencies:
-      tslib: '2'
-
-  '@jsonjoy.com/json-pack@1.20.0':
-    resolution: {integrity: sha512-adcXFVorSQULtT4XDL0giRLr2EVGIcyWm6eQKZWTrRA4EEydGOY8QVQtL0PaITQpUyu+lOd/QOicw6vdy1v8QQ==}
-    engines: {node: '>=10.0'}
-    peerDependencies:
-      tslib: '2'
-
-  '@jsonjoy.com/json-pointer@1.0.2':
-    resolution: {integrity: sha512-Fsn6wM2zlDzY1U+v4Nc8bo3bVqgfNTGcn6dMgs6FjrEnt4ZCe60o6ByKRjOGlI2gow0aE/Q41QOigdTqkyK5fg==}
-    engines: {node: '>=10.0'}
-    peerDependencies:
-      tslib: '2'
-
-  '@jsonjoy.com/util@1.9.0':
-    resolution: {integrity: sha512-pLuQo+VPRnN8hfPqUTLTHk126wuYdXVxE6aDmjSeV4NCAgyxWbiOIeNJVtID3h1Vzpoi9m4jXezf73I6LgabgQ==}
-    engines: {node: '>=10.0'}
-    peerDependencies:
-      tslib: '2'
 
   '@lit-labs/ssr-dom-shim@1.4.0':
     resolution: {integrity: sha512-ficsEARKnmmW5njugNYKipTm4SFnbik7CXtoencDZzmzo/dQ+2Q0bgkzJuoJP20Aj0F+izzJjOqsnkd6F/o1bw==}
@@ -4129,9 +4081,6 @@ packages:
   create-ecdh@4.0.4:
     resolution: {integrity: sha512-mf+TCx8wWc9VpuxfP2ht0iSISLZnt0JgWlrOKZiNqyUZWnjIaCIVNQArMHnCZKfEYRg6IM7A+NeJoN8gf/Ws0A==}
 
-  create-hash@1.1.3:
-    resolution: {integrity: sha512-snRpch/kwQhcdlnZKYanNF1m0RDlrCdSKQaH87w1FCFPVPNCQ/Il9QJKAX2jVBZddRdaHBMC+zXa9Gw9tmkNUA==}
-
   create-hash@1.2.0:
     resolution: {integrity: sha512-z00bCGNHDG8mHAkP7CtT1qVu+bFQUPjYq/4Iv3C3kWjTFV10zIjfSoeqXo9Asws8gwSHDGj/hl2u4OGIjapeCg==}
 
@@ -4985,12 +4934,6 @@ packages:
     resolution: {integrity: sha512-XxwI8EOhVQgWp6iDL+3b0r86f4d6AX6zSU55HfB4ydCEuXLXc5FcYeOu+nnGftS4TEju/11rt4KJPTMgbfmv4A==}
     engines: {node: '>=10.13.0'}
 
-  glob-to-regex.js@1.2.0:
-    resolution: {integrity: sha512-QMwlOQKU/IzqMUOAZWubUOT8Qft+Y0KQWnX9nK3ch0CJg0tTp4TvGZsTfudYKv2NzoQSyPcnA6TYeIQ3jGichQ==}
-    engines: {node: '>=10.0'}
-    peerDependencies:
-      tslib: '2'
-
   glob@10.4.5:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
     hasBin: true
@@ -5119,16 +5062,9 @@ packages:
     resolution: {integrity: sha512-NqADB8VjPFLM2V0VvHUewwwsw0ZWBaIdgo+ieHtK3hasLz4qeCRjYcqfB6AQrBggRKppKF8L52/VqdVsO47Dlw==}
     engines: {node: '>= 0.4'}
 
-  hash-base@2.0.2:
-    resolution: {integrity: sha512-0TROgQ1/SxE6KmxWSvXHvRj90/Xo1JvZShofnYF+f6ZsGtR4eES7WfrQzPalmyagfKZCXpVnitiRebZulWsbiw==}
-
   hash-base@3.0.5:
     resolution: {integrity: sha512-vXm0l45VbcHEVlTCzs8M+s0VeYsB2lnlAaThoLKGXr3bE/VWDOelNUnycUPEhKEaXARL2TEFjBOyUiM6+55KBg==}
     engines: {node: '>= 0.10'}
-
-  hash-base@3.1.0:
-    resolution: {integrity: sha512-1nmYp/rhMDiE7AYkDw+lLwlAzz0AntGIe51F3RfFfEqyQ3feY2eI/NcwC6umIQVOASPMsWJLJScWKSSvzL9IVA==}
-    engines: {node: '>=4'}
 
   hash-base@3.1.2:
     resolution: {integrity: sha512-Bb33KbowVTIj5s7Ked1OsqHUeCpz//tPwR+E2zJgJKo9Z5XolZ9b6bdUgjmYlwnWhoOQKoTd1TYToZGn5mAYOg==}
@@ -5197,10 +5133,6 @@ packages:
 
   humanize-ms@1.2.1:
     resolution: {integrity: sha512-Fl70vYtsAFb/C06PTS9dZBo7ihau+Tu/DNCk/OyHhea07S+aeMWpFFkUaXRa8fI+ScZbEI8dfSxwY7gxZ9SAVQ==}
-
-  hyperdyperid@1.2.0:
-    resolution: {integrity: sha512-Y93lCzHYgGWdrJ66yIktxiaGULYc6oGiABxhcO5AufBeOyoIdZF7bIfLaOrbM0iGIOXQQgxxRrFEnb+Y6w1n4A==}
-    engines: {node: '>=10.18'}
 
   iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
@@ -5707,9 +5639,6 @@ packages:
     resolution: {integrity: sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==}
     engines: {node: '>= 0.6'}
 
-  memfs@4.49.0:
-    resolution: {integrity: sha512-L9uC9vGuc4xFybbdOpRLoOAOq1YEBBsocCs5NVW32DfU+CZWWIn3OVF+lB8Gp4ttBVSMazwrTrjv8ussX/e3VQ==}
-
   memory-streams@0.1.3:
     resolution: {integrity: sha512-qVQ/CjkMyMInPaaRMrwWNDvf6boRZXaT/DbQeMYcCWuXPEBf1v8qChOc9OlEVQp2uOvRXa1Qu30fLmKhY6NipA==}
 
@@ -6084,9 +6013,6 @@ packages:
   ordinal@1.0.3:
     resolution: {integrity: sha512-cMddMgb2QElm8G7vdaa02jhUNbTSrhsgAGUz1OokD83uJTwSUn+nKoNoKVVaRa08yF6sgfO7Maou1+bgLd9rdQ==}
 
-  os-browserify@0.3.0:
-    resolution: {integrity: sha512-gjcpUc3clBf9+210TRaDWbf+rZZZEshZ+DlXMRCeAjp0xhTrnQsKHypIy1J3d5hKdUzj69t708EHtU8P6bUn0A==}
-
   os-tmpdir@1.0.2:
     resolution: {integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g==}
     engines: {node: '>=0.10.0'}
@@ -6187,9 +6113,6 @@ packages:
     resolution: {integrity: sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==}
     engines: {node: '>= 0.8'}
 
-  path-browserify@1.0.1:
-    resolution: {integrity: sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==}
-
   path-exists@4.0.0:
     resolution: {integrity: sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w==}
     engines: {node: '>=8'}
@@ -6231,10 +6154,6 @@ packages:
 
   pathval@1.1.1:
     resolution: {integrity: sha512-Dp6zGqpTdETdR63lehJYPeIOqpiNBNtc7BpWSLrOje7UaIsE5aY92r/AunQA7rsXvet3lrJ3JnZX29UPTKXyKQ==}
-
-  pbkdf2@3.1.3:
-    resolution: {integrity: sha512-wfRLBZ0feWRhCIkoMB6ete7czJcnNnqRpcoWQBLqatqXXmelSRqfdDK4F3u9T2s2cXas/hQJcryI/4lAL+XTlA==}
-    engines: {node: '>=0.12'}
 
   pbkdf2@3.1.5:
     resolution: {integrity: sha512-Q3CG/cYvCO1ye4QKkuH7EXxs3VC/rI1/trd+qX2+PolbaKG0H+bgcZzrTt96mMyRtejk+JMCiLUn3y29W8qmFQ==}
@@ -6834,12 +6753,6 @@ packages:
     resolution: {integrity: sha512-l0OE8wL34P4nJH/H2ffoaniAokM2qSmrtXHmlpvYr5AVVX8msAyW0l8NVJFDxlSK4u3Uh/f41cQheDVdnYijwQ==}
     hasBin: true
 
-  ripemd160@2.0.1:
-    resolution: {integrity: sha512-J7f4wutN8mdbV08MJnXibYpCOPHR+yzy+iQ/AsjMv2j8cLavQ8VGagDFUwwTAdF8FmRKVeNpbTTEwNHCW1g94w==}
-
-  ripemd160@2.0.2:
-    resolution: {integrity: sha512-ii4iagi25WusVoiC4B4lq7pbXfAp3D9v5CwfkY33vffw2+pkDjY1D8GaN7spsxvCSx8dkPqOZCEZyfxcmJG2IA==}
-
   ripemd160@2.0.3:
     resolution: {integrity: sha512-5Di9UC0+8h1L6ZD2d7awM7E/T4uA1fJRlx6zk/NvdCCVEoAnFqvHmCuNeIKoCeIixBX/q8uM+6ycDvF8woqosA==}
     engines: {node: '>= 0.8'}
@@ -7279,12 +7192,6 @@ packages:
   thenify@3.3.1:
     resolution: {integrity: sha512-RVZSIV5IG10Hk3enotrhvz0T9em6cyHBLkH/YAZuKqd8hRkKhSfCGIcP2KUY0EPxndzANBmNllzWPwak+bheSw==}
 
-  thingies@2.5.0:
-    resolution: {integrity: sha512-s+2Bwztg6PhWUD7XMfeYm5qliDdSiZm7M7n8KjTkIsm3l/2lgVRc2/Gx/v+ZX8lT4FMA+i8aQvhcWylldc+ZNw==}
-    engines: {node: '>=10.18'}
-    peerDependencies:
-      tslib: ^2
-
   thread-stream@0.15.2:
     resolution: {integrity: sha512-UkEhKIg2pD+fjkHQKyJO3yoIvAP3N6RlNFt2dUhcS1FGvCD1cQa1M/PGknCLFIyZdtJOWQjejp7bdNqmN7zwdA==}
 
@@ -7359,12 +7266,6 @@ packages:
 
   tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
-
-  tree-dump@1.1.0:
-    resolution: {integrity: sha512-rMuvhU4MCDbcbnleZTFezWsaZXRFemSqAM+7jPnzUl1fo9w3YEKOxAeui0fz3OI4EU4hf23iyA7uQRVko+UaBA==}
-    engines: {node: '>=10.0'}
-    peerDependencies:
-      tslib: '2'
 
   tree-kill@1.2.2:
     resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
@@ -9673,13 +9574,6 @@ snapshots:
     optionalDependencies:
       '@types/node': 20.19.12
 
-  '@inquirer/external-editor@1.0.1(@types/node@22.7.5)':
-    dependencies:
-      chardet: 2.1.0
-      iconv-lite: 0.6.3
-    optionalDependencies:
-      '@types/node': 22.7.5
-
   '@ioredis/commands@1.3.1': {}
 
   '@irys/arweave@0.0.2':
@@ -9691,33 +9585,6 @@ snapshots:
       bignumber.js: 9.3.1
     transitivePeerDependencies:
       - debug
-
-  '@irys/bundles@0.0.1(arweave@1.15.7)(bufferutil@4.0.9)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@ethersproject/bytes': 5.8.0
-      '@ethersproject/hash': 5.8.0
-      '@ethersproject/providers': 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      '@ethersproject/signing-key': 5.8.0
-      '@ethersproject/transactions': 5.8.0
-      '@ethersproject/wallet': 5.8.0
-      '@irys/arweave': 0.0.2
-      '@noble/ed25519': 1.7.5
-      base64url: 3.0.1
-      bs58: 4.0.1
-      keccak: 3.0.4
-      secp256k1: 5.0.1
-    optionalDependencies:
-      '@randlabs/myalgo-connect': 1.4.2
-      algosdk: 1.24.1
-      arweave-stream-tx: 1.2.2(arweave@1.15.7)
-      multistream: 4.1.0
-      tmp-promise: 3.0.3
-    transitivePeerDependencies:
-      - arweave
-      - bufferutil
-      - debug
-      - encoding
-      - utf-8-validate
 
   '@irys/bundles@0.0.3(arweave@1.15.7)(bufferutil@4.0.9)(utf-8-validate@5.0.10)':
     dependencies:
@@ -9829,22 +9696,6 @@ snapshots:
       - encoding
       - utf-8-validate
 
-  '@irys/upload-core@0.0.2(arweave@1.15.7)(bufferutil@4.0.9)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@irys/bundles': 0.0.1(arweave@1.15.7)(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      '@irys/query': 0.0.9
-      '@supercharge/promise-pool': 3.2.0
-      async-retry: 1.3.3
-      axios: 1.11.0
-      base64url: 3.0.1
-      bignumber.js: 9.3.1
-    transitivePeerDependencies:
-      - arweave
-      - bufferutil
-      - debug
-      - encoding
-      - utf-8-validate
-
   '@irys/upload@0.0.15(@types/node@20.19.11)(arweave@1.15.7)(bufferutil@4.0.9)(utf-8-validate@5.0.10)':
     dependencies:
       '@irys/bundles': 0.0.3(arweave@1.15.7)(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -9856,46 +9707,6 @@ snapshots:
       csv-parse: 5.6.0
       csv-stringify: 6.6.0
       inquirer: 8.2.7(@types/node@20.19.11)
-      mime-types: 2.1.35
-    transitivePeerDependencies:
-      - '@types/node'
-      - arweave
-      - bufferutil
-      - debug
-      - encoding
-      - utf-8-validate
-
-  '@irys/upload@0.0.15(@types/node@22.7.5)(arweave@1.15.7)(bufferutil@4.0.9)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@irys/bundles': 0.0.3(arweave@1.15.7)(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      '@irys/upload-core': 0.0.10(arweave@1.15.7)(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      async-retry: 1.3.3
-      axios: 1.11.0
-      base64url: 3.0.1
-      bignumber.js: 9.3.1
-      csv-parse: 5.6.0
-      csv-stringify: 6.6.0
-      inquirer: 8.2.7(@types/node@22.7.5)
-      mime-types: 2.1.35
-    transitivePeerDependencies:
-      - '@types/node'
-      - arweave
-      - bufferutil
-      - debug
-      - encoding
-      - utf-8-validate
-
-  '@irys/upload@0.0.3(@types/node@20.19.12)(arweave@1.15.7)(bufferutil@4.0.9)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@irys/bundles': 0.0.1(arweave@1.15.7)(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      '@irys/upload-core': 0.0.2(arweave@1.15.7)(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      async-retry: 1.3.3
-      axios: 1.11.0
-      base64url: 3.0.1
-      bignumber.js: 9.3.1
-      csv-parse: 5.6.0
-      csv-stringify: 6.6.0
-      inquirer: 8.2.7(@types/node@20.19.12)
       mime-types: 2.1.35
     transitivePeerDependencies:
       - '@types/node'
@@ -9974,41 +9785,6 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
-
-  '@jsonjoy.com/base64@1.1.2(tslib@2.8.1)':
-    dependencies:
-      tslib: 2.8.1
-
-  '@jsonjoy.com/buffers@1.2.0(tslib@2.8.1)':
-    dependencies:
-      tslib: 2.8.1
-
-  '@jsonjoy.com/codegen@1.0.0(tslib@2.8.1)':
-    dependencies:
-      tslib: 2.8.1
-
-  '@jsonjoy.com/json-pack@1.20.0(tslib@2.8.1)':
-    dependencies:
-      '@jsonjoy.com/base64': 1.1.2(tslib@2.8.1)
-      '@jsonjoy.com/buffers': 1.2.0(tslib@2.8.1)
-      '@jsonjoy.com/codegen': 1.0.0(tslib@2.8.1)
-      '@jsonjoy.com/json-pointer': 1.0.2(tslib@2.8.1)
-      '@jsonjoy.com/util': 1.9.0(tslib@2.8.1)
-      hyperdyperid: 1.2.0
-      thingies: 2.5.0(tslib@2.8.1)
-      tslib: 2.8.1
-
-  '@jsonjoy.com/json-pointer@1.0.2(tslib@2.8.1)':
-    dependencies:
-      '@jsonjoy.com/codegen': 1.0.0(tslib@2.8.1)
-      '@jsonjoy.com/util': 1.9.0(tslib@2.8.1)
-      tslib: 2.8.1
-
-  '@jsonjoy.com/util@1.9.0(tslib@2.8.1)':
-    dependencies:
-      '@jsonjoy.com/buffers': 1.2.0(tslib@2.8.1)
-      '@jsonjoy.com/codegen': 1.0.0(tslib@2.8.1)
-      tslib: 2.8.1
 
   '@lit-labs/ssr-dom-shim@1.4.0': {}
 
@@ -13192,13 +12968,13 @@ snapshots:
   bip39-light@1.0.7:
     dependencies:
       create-hash: 1.2.0
-      pbkdf2: 3.1.3
+      pbkdf2: 3.1.5
 
   bip39@3.0.2:
     dependencies:
       '@types/node': 11.11.6
       create-hash: 1.2.0
-      pbkdf2: 3.1.3
+      pbkdf2: 3.1.5
       randombytes: 2.1.0
 
   bl@4.1.0:
@@ -13715,19 +13491,12 @@ snapshots:
       bn.js: 4.12.2
       elliptic: 6.6.1
 
-  create-hash@1.1.3:
-    dependencies:
-      cipher-base: 1.0.6
-      inherits: 2.0.4
-      ripemd160: 2.0.2
-      sha.js: 2.4.12
-
   create-hash@1.2.0:
     dependencies:
       cipher-base: 1.0.6
       inherits: 2.0.4
       md5.js: 1.3.5
-      ripemd160: 2.0.2
+      ripemd160: 2.0.3
       sha.js: 2.4.12
 
   create-hmac@1.1.7:
@@ -13735,7 +13504,7 @@ snapshots:
       cipher-base: 1.0.6
       create-hash: 1.2.0
       inherits: 2.0.4
-      ripemd160: 2.0.2
+      ripemd160: 2.0.3
       safe-buffer: 5.2.1
       sha.js: 2.4.12
 
@@ -13783,7 +13552,7 @@ snapshots:
       diffie-hellman: 5.0.3
       hash-base: 3.0.5
       inherits: 2.0.4
-      pbkdf2: 3.1.3
+      pbkdf2: 3.1.5
       public-encrypt: 4.0.3
       randombytes: 2.1.0
       randomfill: 1.0.4
@@ -14750,10 +14519,6 @@ snapshots:
     dependencies:
       is-glob: 4.0.3
 
-  glob-to-regex.js@1.2.0(tslib@2.8.1):
-    dependencies:
-      tslib: 2.8.1
-
   glob@10.4.5:
     dependencies:
       foreground-child: 3.3.1
@@ -14982,19 +14747,9 @@ snapshots:
     dependencies:
       has-symbols: 1.1.0
 
-  hash-base@2.0.2:
-    dependencies:
-      inherits: 2.0.4
-
   hash-base@3.0.5:
     dependencies:
       inherits: 2.0.4
-      safe-buffer: 5.2.1
-
-  hash-base@3.1.0:
-    dependencies:
-      inherits: 2.0.4
-      readable-stream: 3.6.2
       safe-buffer: 5.2.1
 
   hash-base@3.1.2:
@@ -15079,8 +14834,6 @@ snapshots:
     dependencies:
       ms: 2.1.3
 
-  hyperdyperid@1.2.0: {}
-
   iconv-lite@0.4.24:
     dependencies:
       safer-buffer: 2.1.2
@@ -15148,26 +14901,6 @@ snapshots:
   inquirer@8.2.7(@types/node@20.19.12):
     dependencies:
       '@inquirer/external-editor': 1.0.1(@types/node@20.19.12)
-      ansi-escapes: 4.3.2
-      chalk: 4.1.2
-      cli-cursor: 3.1.0
-      cli-width: 3.0.0
-      figures: 3.2.0
-      lodash: 4.17.21
-      mute-stream: 0.0.8
-      ora: 5.4.1
-      run-async: 2.4.1
-      rxjs: 7.8.2
-      string-width: 4.2.3
-      strip-ansi: 6.0.1
-      through: 2.3.8
-      wrap-ansi: 6.2.0
-    transitivePeerDependencies:
-      - '@types/node'
-
-  inquirer@8.2.7(@types/node@22.7.5):
-    dependencies:
-      '@inquirer/external-editor': 1.0.1(@types/node@22.7.5)
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       cli-cursor: 3.1.0
@@ -15596,7 +15329,7 @@ snapshots:
 
   md5.js@1.3.5:
     dependencies:
-      hash-base: 3.1.0
+      hash-base: 3.1.2
       inherits: 2.0.4
       safe-buffer: 5.2.1
 
@@ -15605,15 +15338,6 @@ snapshots:
       '@babel/runtime': 7.28.3
 
   media-typer@0.3.0: {}
-
-  memfs@4.49.0:
-    dependencies:
-      '@jsonjoy.com/json-pack': 1.20.0(tslib@2.8.1)
-      '@jsonjoy.com/util': 1.9.0(tslib@2.8.1)
-      glob-to-regex.js: 1.2.0(tslib@2.8.1)
-      thingies: 2.5.0(tslib@2.8.1)
-      tree-dump: 1.1.0(tslib@2.8.1)
-      tslib: 2.8.1
 
   memory-streams@0.1.3:
     dependencies:
@@ -15987,8 +15711,6 @@ snapshots:
 
   ordinal@1.0.3: {}
 
-  os-browserify@0.3.0: {}
-
   os-tmpdir@1.0.2: {}
 
   outdent@0.5.0: {}
@@ -16122,8 +15844,6 @@ snapshots:
 
   parseurl@1.3.3: {}
 
-  path-browserify@1.0.1: {}
-
   path-exists@4.0.0: {}
 
   path-is-absolute@1.0.1: {}
@@ -16150,15 +15870,6 @@ snapshots:
   pathe@2.0.3: {}
 
   pathval@1.1.1: {}
-
-  pbkdf2@3.1.3:
-    dependencies:
-      create-hash: 1.1.3
-      create-hmac: 1.1.7
-      ripemd160: 2.0.1
-      safe-buffer: 5.2.1
-      sha.js: 2.4.12
-      to-buffer: 1.2.1
 
   pbkdf2@3.1.5:
     dependencies:
@@ -16755,16 +16466,6 @@ snapshots:
     dependencies:
       glob: 10.4.5
 
-  ripemd160@2.0.1:
-    dependencies:
-      hash-base: 2.0.2
-      inherits: 2.0.4
-
-  ripemd160@2.0.2:
-    dependencies:
-      hash-base: 3.1.0
-      inherits: 2.0.4
-
   ripemd160@2.0.3:
     dependencies:
       hash-base: 3.1.2
@@ -17344,10 +17045,6 @@ snapshots:
     dependencies:
       any-promise: 1.3.0
 
-  thingies@2.5.0(tslib@2.8.1):
-    dependencies:
-      tslib: 2.8.1
-
   thread-stream@0.15.2:
     dependencies:
       real-require: 0.1.0
@@ -17418,10 +17115,6 @@ snapshots:
       url-parse: 1.5.10
 
   tr46@0.0.3: {}
-
-  tree-dump@1.1.0(tslib@2.8.1):
-    dependencies:
-      tslib: 2.8.1
 
   tree-kill@1.2.2: {}
 
