@@ -10,8 +10,13 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
       // Polyfill Node.js modules
       stream: 'stream-browserify',
+      'stream/promises': 'stream-browserify',
       crypto: 'crypto-browserify',
       buffer: 'buffer',
+      path: 'path-browserify',
+      fs: 'memfs',
+      os: 'os-browserify/browser',
+      util: 'util',
     },
   },
   define: {
