@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { PureIrysProvider } from './contexts/PureIrysContext';
 
 const queryClient = new QueryClient();
 
@@ -55,7 +56,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
             borderRadius: 'medium',
           })}
         >
-          {children}
+          <PureIrysProvider>
+            {children}
+          </PureIrysProvider>
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>

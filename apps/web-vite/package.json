@@ -15,6 +15,7 @@
     "@irys/query": "^0.0.10",
     "@irys/upload": "^0.0.3",
     "@debhub/shared": "workspace:*",
+    "@debhub/pure-irys-client": "workspace:*",
     "@radix-ui/react-dialog": "^1.0.4",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-select": "^2.2.6",

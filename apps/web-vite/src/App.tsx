@@ -18,6 +18,7 @@ const StoragePage = lazy(() => import('./pages/StoragePage'))
 const BlockchainPage = lazy(() => import('./pages/BlockchainPage'))
 const UsagePage = lazy(() => import('./pages/UsagePage'))
 const ProgrammableDataPage = lazy(() => import('./pages/ProgrammableDataPage'))
+const PureIrysTestPage = lazy(() => import('./pages/PureIrysTestPage'))
 
 // Loading fallback component
 const PageLoader = () => (
@@ -117,6 +118,14 @@ function App() {
               element={
                 <Suspense fallback={<PageLoader />}>
                   <ProgrammableDataPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="pure-irys-test"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <PureIrysTestPage />
                 </Suspense>
               }
             />
