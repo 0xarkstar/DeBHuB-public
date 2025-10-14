@@ -8,11 +8,16 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      // Polyfill Node.js modules
+      stream: 'stream-browserify',
+      crypto: 'crypto-browserify',
+      buffer: 'buffer',
     },
   },
   define: {
     // Polyfill global for some dependencies
     global: 'globalThis',
+    'process.env': {},
   },
   optimizeDeps: {
     esbuildOptions: {
@@ -21,6 +26,7 @@ export default defineConfig({
         global: 'globalThis',
       },
     },
+    exclude: ['@debhub/pure-irys-client'],
   },
   server: {
     port: 3000,
@@ -29,5 +35,8 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
+    commonjsOptions: {
+      transformMixedEsModules: true,
+    },
   },
 })
