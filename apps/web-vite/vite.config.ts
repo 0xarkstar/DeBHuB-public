@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import { fileURLToPath } from 'url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -8,15 +9,14 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      // Polyfill Node.js modules
-      stream: 'stream-browserify',
-      'stream/promises': 'stream-browserify',
-      crypto: 'crypto-browserify',
-      buffer: 'buffer',
-      path: 'path-browserify',
-      fs: 'memfs',
-      os: 'os-browserify/browser',
-      util: 'util',
+      // Polyfill Node.js modules with absolute paths
+      stream: path.resolve(__dirname, '../../node_modules/stream-browserify/index.js'),
+      'stream/promises': path.resolve(__dirname, '../../node_modules/stream-browserify/index.js'),
+      crypto: path.resolve(__dirname, '../../node_modules/crypto-browserify/index.js'),
+      buffer: path.resolve(__dirname, '../../node_modules/buffer/index.js'),
+      path: path.resolve(__dirname, '../../node_modules/path-browserify/index.js'),
+      os: path.resolve(__dirname, '../../node_modules/os-browserify/browser.js'),
+      util: path.resolve(__dirname, '../../node_modules/util/util.js'),
     },
   },
   define: {
