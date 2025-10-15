@@ -1,599 +1,647 @@
-# ?„í‚¤?ì²˜ (Architecture)
+# Architecture - DeBHuB Pure Irys BaaS
 
-DeBHuB ?Œë«?¼ì˜ ?„ì „???„í‚¤?ì²˜ ê°œìš”?…ë‹ˆ??
+**ì„¸ê³„ ìµœì´ˆ Pure Irys L1 ê¸°ë°˜ ì™„ì „ íƒˆì¤‘ì•™í™” BaaS ì•„í‚¤í…ì²˜**
+
+---
 
 ## ëª©ì°¨
 
-- [?œìŠ¤??ê°œìš”](#?œìŠ¤??ê°œìš”)
-- [?´ì¤‘ ?„í‚¤?ì²˜](#?´ì¤‘-?„í‚¤?ì²˜)
-- [Pure Irys ëª¨ë“œ](#pure-irys-ëª¨ë“œ)
-- [Full Stack ëª¨ë“œ](#full-stack-ëª¨ë“œ)
-- [?°ì´???ë¦„](#?°ì´???ë¦„)
-- [?¤í† ë¦¬ì? ?„í‚¤?ì²˜](#?¤í† ë¦¬ì?-?„í‚¤?ì²˜)
-- [ë³´ì•ˆ ?„í‚¤?ì²˜](#ë³´ì•ˆ-?„í‚¤?ì²˜)
-- [?±ëŠ¥ ìµœì ??(#?±ëŠ¥-ìµœì ??
+- [ì‹œìŠ¤í…œ ê°œìš”](#ì‹œìŠ¤í…œ-ê°œìš”)
+- [Pure Irys ì•„í‚¤í…ì²˜](#pure-irys-ì•„í‚¤í…ì²˜)
+- [Smart Contracts](#smart-contracts)
+- [ë°ì´í„° íë¦„](#ë°ì´í„°-íë¦„)
+- [ìºì‹± ì „ëµ](#ìºì‹±-ì „ëµ)
+- [ë³´ì•ˆ ì•„í‚¤í…ì²˜](#ë³´ì•ˆ-ì•„í‚¤í…ì²˜)
+- [ì„±ëŠ¥ ìµœì í™”](#ì„±ëŠ¥-ìµœì í™”)
 
 ---
 
-## ?Œ ?œìŠ¤??ê°œìš”
+## ì‹œìŠ¤í…œ ê°œìš”
 
-DeBHuB??Irys DataChain??ê¸°ë°˜?¼ë¡œ êµ¬ì¶•??**?´ì¤‘ ?„í‚¤?ì²˜** ë¬¸ì„œ???Œë«?¼ì…?ˆë‹¤:
+DeBHuBëŠ” **Irys L1 DataChain**ë§Œì„ ì‚¬ìš©í•˜ëŠ” ì™„ì „ íƒˆì¤‘ì•™í™” BaaS í”Œë«í¼ì…ë‹ˆë‹¤.
 
-- **Irys DataChain** - ?êµ¬?ì´ê³?ë¶ˆë???ë¸”ë¡ì²´ì¸ ?¤í† ë¦¬ì?
-- **IndexedDB ìºì‹±** - ë¹ ë¥¸ ?¤í”„?¼ì¸ ?¡ì„¸??
-- **ì§€ê°??¸ì¦** - MetaMaskë¥??µí•œ ?ˆì¤‘?™í™” ?¸ì¦
-- **? íƒ??ë°±ì—”??* - GraphQL APIë¥??µí•œ ê³ ê¸‰ ê¸°ëŠ¥ (AI, ë¶„ì„)
-- **?„ë¡œê·¸ë˜ë¨¸ë¸” ?°ì´??* - ?¤ë§ˆ??ê³„ì•½ ê¸°ë°˜ ?°ì´??ë¡œì§
+### í•µì‹¬ ì›ì¹™
 
-### ?¤ê³„ ?ì¹™
+1. **Zero Backend** - ë°±ì—”ë“œ ì„œë²„ ë¶ˆí•„ìš”
+2. **Zero Database** - PostgreSQL, MongoDB ë¶ˆí•„ìš”
+3. **Zero Redis** - ìºì‹± ì„œë²„ ë¶ˆí•„ìš”
+4. **Pure Blockchain** - Irys L1 DataChain + Smart Contracts
+5. **Client-side First** - IndexedDB ìºì‹±, ë¸Œë¼ìš°ì €ì—ì„œ ëª¨ë“  ì²˜ë¦¬
 
-1. **? ì—°???„í‚¤?ì²˜** - ë°±ì—”??? ë¬´??ê´€ê³„ì—†???‘ë™
-2. **?¤í”„?¼ì¸ ?°ì„ ** - IndexedDBë¡?ë¹ ë¥¸ ë¡œì»¬ ?¡ì„¸??
-3. **?êµ¬ ?€?¥ì†Œ** - Irys??ë¶ˆë? ?°ì´???€??
-4. **?€???ˆì „??* - ?„ì²´ TypeScript ì»¤ë²„ë¦¬ì?
-5. **?±ëŠ¥ ì¤‘ì‹¬** - ì½”ë“œ ?¤í”Œë¦¬íŒ…, ?ˆì´ì§€ ë¡œë”©, ìºì‹±
-6. **?ì§„???¥ìƒ** - Pure Irysë¡??œì‘, ?„ìš”??Full Stack?¼ë¡œ ?•ì¥
+### ì•„í‚¤í…ì²˜ ì² í•™
+
+```
+ì „í†µì  BaaS:
+Frontend â†’ Backend API â†’ PostgreSQL + Redis â†’ Cloud Storage
+
+Pure Irys BaaS:
+Frontend â†’ Irys L1 DataChain (Smart Contracts + Permanent Storage)
+         â†’ IndexedDB (Client-side Cache)
+```
+
+**ê²°ê³¼**: ì¸í”„ë¼ ë³µì¡ë„ 90% ê°ì†Œ, ìš´ì˜ ë¹„ìš© 95% ì ˆê°
 
 ---
 
-## ?—ï¸??´ì¤‘ ?„í‚¤?ì²˜
+## Pure Irys ì•„í‚¤í…ì²˜
 
-DeBHuB????ê°€ì§€ ?„í‚¤?ì²˜ ëª¨ë“œë¥?ì§€?í•©?ˆë‹¤:
+### ì „ì²´ êµ¬ì¡°
 
-### ë¹„êµ??
+```
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚             React Frontend (Vite 5)                     â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚
+â”‚  â”‚  PureIrysClient (Singleton)                       â”‚  â”‚
+â”‚  â”‚  - wagmi (Wallet Integration)                     â”‚  â”‚
+â”‚  â”‚  - ethers.js v6 (Smart Contract Calls)            â”‚  â”‚
+â”‚  â”‚  - @irys/web-upload (Data Upload)                 â”‚  â”‚
+â”‚  â”‚  - @irys/query (Data Query)                       â”‚  â”‚
+â”‚  â”‚  - IndexedDB Cache (5min TTL)                     â”‚  â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                      â”‚ Direct RPC Calls (HTTPS)
+                      â†“
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚         Irys L1 DataChain (Chain ID: 1270)              â”‚
+â”‚                                                          â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚
+â”‚  â”‚  Smart Contracts (6ê°œ Solidity ì»¨íŠ¸ë™íŠ¸)         â”‚  â”‚
+â”‚  â”‚                                                    â”‚  â”‚
+â”‚  â”‚  DocumentRegistry  â†’ PostgreSQL ëŒ€ì²´              â”‚  â”‚
+â”‚  â”‚  - ë¬¸ì„œ ë©”íƒ€ë°ì´í„° ì¸ë±ì‹±                         â”‚  â”‚
+â”‚  â”‚  - í”„ë¡œì íŠ¸ë³„ ë¬¸ì„œ ì¡°íšŒ                           â”‚  â”‚
+â”‚  â”‚  - ì†Œìœ ìë³„ ë¬¸ì„œ ê´€ë¦¬                             â”‚  â”‚
+â”‚  â”‚                                                    â”‚  â”‚
+â”‚  â”‚  AccessControl     â†’ ë°±ì—”ë“œ ê¶Œí•œ ë¡œì§ ëŒ€ì²´        â”‚  â”‚
+â”‚  â”‚  - RBAC ê¶Œí•œ ê´€ë¦¬                                 â”‚  â”‚
+â”‚  â”‚  - ë¦¬ì†ŒìŠ¤ ì ‘ê·¼ ì œì–´                               â”‚  â”‚
+â”‚  â”‚                                                    â”‚  â”‚
+â”‚  â”‚  ProvenanceChain   â†’ Git ë²„ì „ ê´€ë¦¬ ëŒ€ì²´          â”‚  â”‚
+â”‚  â”‚  - ë²„ì „ íˆìŠ¤í† ë¦¬ ì¶”ì                              â”‚  â”‚
+â”‚  â”‚  - ë³€ê²½ ì‚¬í•­ ê¸°ë¡                                 â”‚  â”‚
+â”‚  â”‚                                                    â”‚  â”‚
+â”‚  â”‚  EventBus          â†’ WebSocket ëŒ€ì²´               â”‚  â”‚
+â”‚  â”‚  - ì‹¤ì‹œê°„ ì´ë²¤íŠ¸ ë¸Œë¡œë“œìºìŠ¤íŒ…                     â”‚  â”‚
+â”‚  â”‚  - ë¬¸ì„œ ìƒì„±/ìˆ˜ì • ì•Œë¦¼                            â”‚  â”‚
+â”‚  â”‚                                                    â”‚  â”‚
+â”‚  â”‚  CacheController   â†’ Redis ëŒ€ì²´                   â”‚  â”‚
+â”‚  â”‚  - ìºì‹œ ë¬´íš¨í™” ì‹ í˜¸                               â”‚  â”‚
+â”‚  â”‚  - ê¸€ë¡œë²Œ ìºì‹œ ê´€ë¦¬                               â”‚  â”‚
+â”‚  â”‚                                                    â”‚  â”‚
+â”‚  â”‚  SearchIndex       â†’ ElasticSearch ëŒ€ì²´           â”‚  â”‚
+â”‚  â”‚  - íƒœê·¸ ê¸°ë°˜ ê²€ìƒ‰                                 â”‚  â”‚
+â”‚  â”‚  - ì „ë¬¸ ê²€ìƒ‰ ì¸ë±ìŠ¤                               â”‚  â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚
+â”‚                                                          â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚
+â”‚  â”‚  Permanent Storage (Irys Native)                  â”‚  â”‚
+â”‚  â”‚  - ëª¨ë“  ë¬¸ì„œ ì½˜í…ì¸                                 â”‚  â”‚
+â”‚  â”‚  - ì˜êµ¬ ë¶ˆë³€ ì €ì¥                                  â”‚  â”‚
+â”‚  â”‚  - ë²„ì „ë³„ ìŠ¤ëƒ…ìƒ·                                   â”‚  â”‚
+â”‚  â”‚  - Gateway: https://gateway.irys.xyz              â”‚  â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+```
 
-| ?¹ì§• | Pure Irys | Full Stack |
-|------|-----------|------------|
-| **ë°±ì—”???„ìš”** | ??ë¶ˆí•„??| ???„ìš” |
-| **?°ì´?°ë² ?´ìŠ¤** | ??| PostgreSQL |
-| **ë¡œì»¬ ìºì‹±** | IndexedDB | IndexedDB + Redis |
-| **?êµ¬ ?€?¥ì†Œ** | Irys DataChain | Irys DataChain |
-| **?¤ì‹œê°??‘ì—…** | ??| WebSocket |
-| **AI ê¸°ëŠ¥** | ??| ??OpenAI |
-| **ë¶„ì„ ?€?œë³´??* | ??| ??|
-| **ë²¡í„° ê²€??* | ??| ??|
-| **ë²ˆë“¤ ?¬ê¸°** | ?‘ìŒ | ??|
-| **ë°°í¬ ë³µì¡??* | ??Œ | ?’ìŒ |
-| **?´ì˜ ë¹„ìš©** | ??Œ | ?’ìŒ |
+### ì»´í¬ë„ŒíŠ¸ ìƒì„¸
+
+#### 1. Frontend Layer
+
+**React + Vite 5**
+- SPA (Single Page Application)
+- Code Splittingìœ¼ë¡œ ë²ˆë“¤ ìµœì í™”
+- Lazy Loadingìœ¼ë¡œ ì´ˆê¸° ë¡œë”© ìµœì†Œí™”
+
+**PureIrysClient**
+```typescript
+// packages/pure-irys-client/src/PureIrysClient.ts
+export class PureIrysClient {
+  private signer: Signer;                    // ethers.js Signer
+  private irysUploader: WebUploader;         // Irys ì—…ë¡œë”
+  private query: Query;                      // Irys ì¿¼ë¦¬
+  private cache: IndexedDBCache;             // ìºì‹±
+
+  // 6ê°œ Smart Contract ì¸ìŠ¤í„´ìŠ¤
+  private documentRegistry: Contract;
+  private accessControl: Contract;
+  private provenanceChain: Contract;
+  private eventBus: Contract;
+  private cacheController: Contract;
+  private searchIndex: Contract;
+}
+```
+
+**React Hooks (7ê°œ)**
+```typescript
+// 1. Client ì´ˆê¸°í™”
+usePureIrysClient(signer?: Signer)
+
+// 2. ë¬¸ì„œ CRUD
+useCreateDocument(client)
+useDocument(client, docId)
+useUpdateDocument(client)
+useSearchDocuments(client, options)
+
+// 3. ì‹¤ì‹œê°„
+useDocumentSubscription(client, docId, callback)
+
+// 4. ìºì‹œ
+useCacheStats(client)
+```
+
+#### 2. Blockchain Layer
+
+**Irys L1 DataChain**
+- **Chain ID**: 1270 (Testnet)
+- **RPC URL**: https://testnet-rpc.irys.xyz/v1/execution-rpc
+- **Block Time**: ~2ì´ˆ (ë¹ ë¥¸ finality)
+- **Gas**: ì €ë ´í•œ íŠ¸ëœì­ì…˜ ë¹„ìš©
+
+**Smart Contracts ì£¼ì†Œ** (Testnet ë°°í¬ë¨):
+```
+DocumentRegistry:  0x937956DA31B42C3ad9f6eC4366360Ae763391566
+AccessControl:     0xdD1ACe083c156296760aAe07718Baab969642B8D
+ProvenanceChain:   0x44755E8C746Dc1819a0e8c74503AFC106FC800CB
+EventBus:          0x042E4e6a56aA1680171Da5e234D9cE42CBa03E1c
+CacheController:   0x8aFb8b9d57e9b6244e29a090ea4da1A9043a91E2
+SearchIndex:       0x2345938F52790F1d8a1E3355cA66eA3e60494A36
+```
+
+#### 3. Storage Layer
+
+**Irys Permanent Storage**
+- ëª¨ë“  ë¬¸ì„œ ì½˜í…ì¸  ì €ì¥
+- ì˜êµ¬ ë³´ì¡´ (ì‚­ì œ ë¶ˆê°€ëŠ¥)
+- Gatewayë¥¼ í†µí•œ HTTP ì ‘ê·¼
+- Tagsë¥¼ í†µí•œ ë©”íƒ€ë°ì´í„°
+
+**IndexedDB Cache**
+- ë¸Œë¼ìš°ì € ë¡œì»¬ ìŠ¤í† ë¦¬ì§€
+- 5ë¶„ TTL (Time To Live)
+- ìë™ ë¬´íš¨í™” (ë¸”ë¡ì²´ì¸ ì´ë²¤íŠ¸ ê¸°ë°˜)
+- ì˜¤í”„ë¼ì¸ ì§€ì›
 
 ---
 
-## ?”µ Pure Irys ëª¨ë“œ
+## Smart Contracts
 
-### ?„í‚¤?ì²˜ ?¤ì´?´ê·¸??
+### 1. DocumentRegistry
 
-```
-?Œâ??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€??
-??                  React Frontend                      ??
-??                    (Vite 5)                          ??
-?? ?Œâ??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?? ??
-?? ?? Components                                     ?? ??
-?? ?? - Dashboard, Projects, Documents               ?? ??
-?? ?? - ConnectWallet, Editor                        ?? ??
-?? ?”â??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?? ??
-?? ?Œâ??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?? ??
-?? ?? Irys Hooks (irys-hooks.ts)                    ?? ??
-?? ?? - useProjects()                               ?? ??
-?? ?? - useDocuments()                              ?? ??
-?? ?? - useIrysQuery()                              ?? ??
-?? ?”â??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?? ??
-?? ?Œâ??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?? ??
-?? ?? IrysDatabase (irys-database.ts)               ?? ??
-?? ?? - ?„ë¡œ?íŠ¸ CRUD                                ?? ??
-?? ?? - ë¬¸ì„œ CRUD                                    ?? ??
-?? ?? - ë²„ì „ ê´€ë¦?                                    ?? ??
-?? ?”â??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?? ??
-?”â??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?¬â??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€??
-                   ??
-                   ?œâ???IndexedDB (ë¡œì»¬ ìºì‹œ, TTL: 5ë¶?
-                   ??
-                   ?œâ???Irys Query SDK (@irys/query)
-                   ??    - GraphQL-like ì¿¼ë¦¬
-                   ??    - ?œê·¸ ê¸°ë°˜ ê²€??
-                   ??
-                   ?”â???Irys Upload SDK (@irys/upload)
-                         - ë¬¸ì„œ ?…ë¡œ??
-                         - ë²„ì „ ì¶”ì 
-                         - ?êµ¬ ?€??
-```
+**ëª©ì **: PostgreSQL í…Œì´ë¸” ëŒ€ì²´
 
-### ?°ì´???ë¦„ (Pure Irys)
+```solidity
+contract DocumentRegistry {
+    struct Document {
+        bytes32 irysId;        // Irys íŠ¸ëœì­ì…˜ ID
+        address owner;         // ë¬¸ì„œ ì†Œìœ ì
+        bytes32 projectId;     // í”„ë¡œì íŠ¸ ID
+        string title;          // ë¬¸ì„œ ì œëª©
+        uint256 createdAt;     // ìƒì„± ì‹œê°„
+        uint256 updatedAt;     // ìˆ˜ì • ì‹œê°„
+        bool isPublic;         // ê³µê°œ ì—¬ë¶€
+        uint8 status;          // ìƒíƒœ
+        uint256 viewCount;     // ì¡°íšŒìˆ˜
+    }
 
-#### 1. ?„ë¡œ?íŠ¸ ?ì„±
-```
-User Click "New Project"
-  ??IrysDatabase.createProject()
-    ??Generate Project ID
-    ??Upload to Irys with tags:
-      - app-name: debhub
-      - content-type: project
-      - project-id: <id>
-    ??Save to IndexedDB
-  ??Return Project
+    // ë¬¸ì„œ ë“±ë¡
+    function registerDocument(
+        bytes32 irysId,
+        bytes32 projectId,
+        string memory title,
+        bytes32[] memory tags
+    ) public returns (bytes32 docId);
+
+    // ë¬¸ì„œ ì¡°íšŒ
+    function getDocument(bytes32 docId)
+        public view returns (Document memory);
+
+    // í”„ë¡œì íŠ¸ë³„ ë¬¸ì„œ ì¡°íšŒ
+    function getDocumentsByProject(bytes32 projectId)
+        public view returns (bytes32[] memory);
+
+    // ì†Œìœ ìë³„ ë¬¸ì„œ ì¡°íšŒ
+    function getDocumentsByOwner(address owner)
+        public view returns (bytes32[] memory);
+}
 ```
 
-#### 2. ë¬¸ì„œ ?‘ì„±
-```
-User Writes Document
-  ??IrysDatabase.createDocument()
-    ??Save Draft to IndexedDB (ì¦‰ì‹œ)
-  ??User Clicks "Publish"
-    ??Upload to Irys with tags:
-      - app-name: debhub
-      - content-type: document
-      - project-id: <project_id>
-      - document-id: <doc_id>
-    ??Update IndexedDB with Irys ID
-  ??Return Document with permanentUrl
-```
+### 2. AccessControl
 
-#### 3. ë¬¸ì„œ ì¡°íšŒ
-```
-User Opens Document
-  ??IrysDatabase.getDocumentById()
-    ??Check IndexedDB Cache
-      ?œâ???Cache Hit (< 5min): Return Cached
-      ?”â???Cache Miss:
-          ??Query Irys with @irys/query
-          ??Parse Results
-          ??Cache in IndexedDB
-          ??Return Document
+**ëª©ì **: ë°±ì—”ë“œ ê¶Œí•œ ë¡œì§ ëŒ€ì²´
+
+```solidity
+contract AccessControl {
+    enum Permission { NONE, READ, WRITE, ADMIN, OWNER }
+
+    // ê¶Œí•œ ë¶€ì—¬
+    function grantPermission(
+        bytes32 resourceId,
+        address user,
+        Permission permission
+    ) public;
+
+    // ê¶Œí•œ í™•ì¸
+    function hasPermission(
+        bytes32 resourceId,
+        address user,
+        Permission required
+    ) public view returns (bool);
+}
 ```
 
-### ê¸°ìˆ  ?¤íƒ (Pure Irys)
+### 3. ProvenanceChain
 
-**?„ë¡ ?¸ì—”??**
-- React 18 + Vite 5
-- TypeScript 5
-- TailwindCSS
-- Radix UI
+**ëª©ì **: Git ë²„ì „ ê´€ë¦¬ ì‹œìŠ¤í…œ ëŒ€ì²´
 
-**ë¸”ë¡ì²´ì¸:**
-- @irys/upload - ?°ì´???…ë¡œ??
-- @irys/query - ?°ì´??ì¿¼ë¦¬
-- ethers.js - ì§€ê°??°ë™
+```solidity
+contract ProvenanceChain {
+    struct Version {
+        bytes32 irysId;
+        address author;
+        uint256 timestamp;
+        bytes32 previousVersion;
+        string changeDescription;
+        bool aiGenerated;
+        string aiModel;
+    }
 
-**ë¡œì»¬ ?¤í† ë¦¬ì?:**
-- IndexedDB (Dexie.js)
-- 5ë¶?TTL ìºì‹±
+    // ë²„ì „ ì¶”ê°€
+    function addVersion(
+        bytes32 entityId,
+        bytes32 irysId,
+        bytes32 previousVersion,
+        string memory description
+    ) public;
+
+    // ë²„ì „ íˆìŠ¤í† ë¦¬ ì¡°íšŒ
+    function getVersionHistory(bytes32 entityId)
+        public view returns (Version[] memory);
+}
+```
+
+### 4. EventBus
+
+**ëª©ì **: WebSocket ì‹¤ì‹œê°„ í†µì‹  ëŒ€ì²´
+
+```solidity
+contract EventBus {
+    event DocumentCreated(
+        bytes32 indexed irysId,
+        bytes32 indexed projectId,
+        string title
+    );
+
+    event DocumentUpdated(
+        bytes32 indexed docId,
+        address indexed author,
+        bytes32 newVersionId
+    );
+
+    // ì´ë²¤íŠ¸ ë°œìƒ
+    function emitDocumentCreated(...) public;
+    function emitDocumentUpdated(...) public;
+}
+```
+
+### 5. CacheController
+
+**ëª©ì **: Redis ìºì‹œ ê´€ë¦¬ ëŒ€ì²´
+
+```solidity
+contract CacheController {
+    event CacheInvalidated(bytes32 indexed resourceId);
+
+    // ìºì‹œ ë¬´íš¨í™”
+    function invalidateCache(bytes32 resourceId) public;
+}
+```
+
+### 6. SearchIndex
+
+**ëª©ì **: ElasticSearch ëŒ€ì²´
+
+```solidity
+contract SearchIndex {
+    // íƒœê·¸ ì¸ë±ì‹±
+    function indexDocument(
+        bytes32 docId,
+        bytes32[] memory tags
+    ) public;
+
+    // íƒœê·¸ë¡œ ê²€ìƒ‰
+    function search(bytes32 tag)
+        public view returns (bytes32[] memory);
+}
+```
 
 ---
 
-## ?”´ Full Stack ëª¨ë“œ
+## ë°ì´í„° íë¦„
 
-### ?„í‚¤?ì²˜ ?¤ì´?´ê·¸??
+### ë¬¸ì„œ ìƒì„± í”Œë¡œìš°
 
 ```
-?Œâ??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€??
-??                  React Frontend                      ??
-??                    (Vite 5)                          ??
-?? ?Œâ??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?? ??
-?? ?? Apollo Client (Conditional)                    ?? ??
-?? ?? - GraphQL Queries                              ?? ??
-?? ?? - Mutations                                    ?? ??
-?? ?? - Subscriptions (WebSocket)                    ?? ??
-?? ?”â??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?? ??
-?? ?Œâ??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?? ??
-?? ?? IrysDatabase (Fallback)                       ?? ??
-?? ?? - ë°±ì—”???¤íŒ¨???¬ìš©                            ?? ??
-?? ?”â??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?? ??
-?”â??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?¬â??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€??
-                   ??
-                   ??HTTP/WebSocket
-?Œâ??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€??
-??             Apollo Server 4 (GraphQL)                ??
-?? ?Œâ??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?? ??
-?? ?? Resolvers (enhanced-resolvers.ts)             ?? ??
-?? ?? - Query/Mutation/Subscription                 ?? ??
-?? ?”â??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?? ??
-?”â??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?¬â??€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€??
-                   ??
-                   ?œâ???Services Layer
-                   ??  ?œâ???AnalyticsService
-                   ??  ?œâ???SearchService
-                   ??  ?œâ???StorageService
-                   ??  ?œâ???EdgeService
-                   ??  ?”â???ProgrammableDataService
-                   ??
-                   ?œâ???PostgreSQL (Prisma)
-                   ??  ?œâ???Projects
-                   ??  ?œâ???Documents
-                   ??  ?œâ???Users
-                   ??  ?”â???Analytics
-                   ??
-                   ?œâ???Redis (Optional)
-                   ??  ?œâ???Query Cache
-                   ??  ?”â???Pub/Sub
-                   ??
-                   ?”â???Irys DataChain
-                       ?œâ???Permanent Storage
-                       ?”â???Verification
+1. User: "Create Document" ë²„íŠ¼ í´ë¦­
+   â†“
+2. Frontend: í¼ ë°ì´í„° ìˆ˜ì§‘
+   â†“
+3. PureIrysClient.createDocument({
+     projectId: 'my-project',
+     title: 'My Doc',
+     content: 'Hello World!',
+     tags: ['tech', 'tutorial']
+   })
+   â†“
+4. Irys Upload: ì½˜í…ì¸ ë¥¼ Irysì— ì—…ë¡œë“œ
+   â†’ Receipt: { id: 'irys_tx_id_123' }
+   â†“
+5. Smart Contract: DocumentRegistry.registerDocument()
+   â†’ Returns: docId = 'doc_abc123'
+   â†“
+6. Smart Contract: ProvenanceChain.recordProvenance()
+   â†’ Initial version ê¸°ë¡
+   â†“
+7. Smart Contract: EventBus.emitDocumentCreated()
+   â†’ ë¸”ë¡ì²´ì¸ ì´ë²¤íŠ¸ ë°œìƒ
+   â†“
+8. IndexedDB: ë¬¸ì„œ ìºì‹± (5ë¶„ TTL)
+   â†“
+9. Frontend: UI ì—…ë°ì´íŠ¸, ì„±ê³µ ë©”ì‹œì§€
 ```
 
-### ?°ì´???ë¦„ (Full Stack)
+**ì†Œìš” ì‹œê°„**: 2-5ì´ˆ (ë¸”ë¡ì²´ì¸ confirmation)
 
-#### 1. ë¬¸ì„œ ?ì„± (GraphQL)
-```
-User Creates Document
-  ??GraphQL Mutation: createDocument
-    ??Enhanced Resolver
-      ?œâ???1. ?…ë ¥ ê²€ì¦?
-      ?œâ???2. PostgreSQL??ë©”í??°ì´???€??
-      ?œâ???3. ë°±ê·¸?¼ìš´?? Irys ?…ë¡œ??
-      ??    ?”â???StorageService.uploadDocument()
-      ?œâ???4. ?¤ì‹œê°?ë¸Œë¡œ?œìº?¤íŠ¸ (WebSocket)
-      ?”â???5. ?‘ë‹µ ë°˜í™˜
-```
+### ë¬¸ì„œ ì¡°íšŒ í”Œë¡œìš°
 
-#### 2. ë¬¸ì„œ ê²€??(Full-text)
 ```
-User Searches "keyword"
-  ??GraphQL Query: searchDocuments
-    ??SearchService.search()
-      ?œâ???PostgreSQL Full-text Query
-      ?œâ????ìˆ˜ ê³„ì‚°
-      ?œâ????˜ì´?¼ì´??ì¶”ì¶œ
-      ?”â????•ë ¬??ê²°ê³¼ ë°˜í™˜
-```
-
-#### 3. AI ?œì•ˆ (OpenAI)
-```
-User Types in Editor
-  ??GraphQL Query: getAISuggestions
-    ??AIService.suggest()
-      ?œâ???OpenAI API ?¸ì¶œ
-      ?œâ???ì»¨í…?¤íŠ¸ ë¶„ì„
-      ?”â????œì•ˆ?¬í•­ ë°˜í™˜
+1. User: ë¬¸ì„œ ë§í¬ í´ë¦­
+   â†“
+2. PureIrysClient.getDocument(docId)
+   â†“
+3. IndexedDB ìºì‹œ í™•ì¸
+   â”œâ”€ Cache HIT (< 5min)
+   â”‚  â†’ ì¦‰ì‹œ ë°˜í™˜ (~10ms)
+   â”‚
+   â””â”€ Cache MISS
+      â†“
+      4. DocumentRegistry.getDocument(docId)
+         â†’ ë©”íƒ€ë°ì´í„° ì¡°íšŒ (~200ms)
+      â†“
+      5. Irys Gateway: GET /irys_tx_id_123
+         â†’ ì½˜í…ì¸  ë‹¤ìš´ë¡œë“œ (~300ms)
+      â†“
+      6. IndexedDBì— ìºì‹±
+      â†“
+      7. ë°˜í™˜ (ì´ ~500ms)
 ```
 
-### ê¸°ìˆ  ?¤íƒ (Full Stack)
+### ë¬¸ì„œ ìˆ˜ì • í”Œë¡œìš°
 
-**ë°±ì—”??**
-- Apollo Server 4
-- Prisma ORM
-- PostgreSQL 14+
-- Redis (optional)
-- OpenAI API
+```
+1. User: ë¬¸ì„œ í¸ì§‘ í›„ "Save" í´ë¦­
+   â†“
+2. PureIrysClient.updateDocument(docId, { content, description })
+   â†“
+3. Irys Upload: ìƒˆ ë²„ì „ ì—…ë¡œë“œ
+   â†’ New Receipt: { id: 'irys_tx_id_456' }
+   â†“
+4. DocumentRegistry.updateDocument()
+   â†’ ë©”íƒ€ë°ì´í„° ì—…ë°ì´íŠ¸
+   â†“
+5. ProvenanceChain.addVersion()
+   â†’ ìƒˆ ë²„ì „ ê¸°ë¡
+   â†“
+6. EventBus.emitDocumentUpdated()
+   â†’ ì‹¤ì‹œê°„ ì´ë²¤íŠ¸
+   â†“
+7. IndexedDB ìºì‹œ ë¬´íš¨í™”
+   â†“
+8. ë‹¤ë¥¸ ì‚¬ìš©ìë“¤ì˜ í´ë¼ì´ì–¸íŠ¸ì—ì„œ ì´ë²¤íŠ¸ ê°ì§€
+   â†’ ìë™ ë¦¬ë¡œë“œ
+```
 
-**ì¶”ê? ê¸°ëŠ¥:**
-- ?¤ì‹œê°??‘ì—… (WebSocket)
-- AI ê¸°ë°˜ ?œì•ˆ
-- ê³ ê¸‰ ë¶„ì„
-- ë²¡í„° ê²€??
-- ?„ë¡œê·¸ë˜ë¨¸ë¸” ?°ì´??
+### ì‹¤ì‹œê°„ ì—…ë°ì´íŠ¸
+
+```
+User Aê°€ ë¬¸ì„œ ìˆ˜ì •
+   â†“
+EventBus.emitDocumentUpdated() í˜¸ì¶œ
+   â†“
+Blockchain Event ë°œìƒ
+   â†“
+User Bì˜ PureIrysClient ì´ë²¤íŠ¸ ë¦¬ìŠ¤ë„ˆ ê°ì§€
+   â†“
+IndexedDB ìºì‹œ ë¬´íš¨í™”
+   â†“
+Frontend ìë™ ë¦¬ë Œë”ë§
+   â†“
+User Bê°€ ìµœì‹  ë²„ì „ í™•ì¸
+```
 
 ---
 
-## ?“Š ?¤í† ë¦¬ì? ?„í‚¤?ì²˜
+## ìºì‹± ì „ëµ
 
-### 3-Tier ?¤í† ë¦¬ì? ëª¨ë¸
+### 3-Tier Cache Architecture
 
-DeBHuB??3ê³„ì¸µ ?¤í† ë¦¬ì?ë¥??¬ìš©?©ë‹ˆ??
-
-#### 1. IndexedDB (ë¡œì»¬ ìºì‹œ)
-**ëª©ì :** ë¹ ë¥¸ ?¤í”„?¼ì¸ ?¡ì„¸??
-
-**?€???°ì´??**
-- ?„ë¡œ?íŠ¸ ëª©ë¡
-- ë¬¸ì„œ ë©”í??°ì´??
-- ìµœê·¼ ì¡°íšŒ??ë¬¸ì„œ
-- ?¬ìš©???¤ì •
-
-**?¹ì§•:**
-- 5ë¶?TTL
-- ?ë™ ë§Œë£Œ
-- ?¤í”„?¼ì¸ ì§€??
-
-#### 2. Irys DataChain (?êµ¬ ?€?¥ì†Œ)
-**ëª©ì :** ë¶ˆë? ?êµ¬ ?€??
-
-**?€???°ì´??**
-- ?„ì²´ ë¬¸ì„œ ?´ìš©
-- ?„ë¡œ?íŠ¸ ?•ë³´
-- ë²„ì „ ?ˆìŠ¤? ë¦¬
-- ?Œì¼ ì²¨ë?
-
-**?¹ì§•:**
-- ë¸”ë¡ì²´ì¸ ê²€ì¦?
-- ?êµ¬ ë³´ê?
-- ë¬´ì œ???€??
-- ?”í˜¸??ì¦ëª…
-
-#### 3. PostgreSQL (Full Stackë§?
-**ëª©ì :** ë³µì¡??ì¿¼ë¦¬ ë°?ê´€ê³„í˜• ?°ì´??
-
-**?€???°ì´??**
-- ?¬ìš©???„ë¡œ??
-- ?‘ì—… ê´€ê³?
-- ë¶„ì„ ?°ì´??
-- ê²€???¸ë±??
-
-**?¹ì§•:**
-- ë¹ ë¥¸ ì¿¼ë¦¬
-- ê´€ê³„í˜• ?°ì´??
-- ACID ?¸ëœ??…˜
-
-### ?°ì´???™ê¸°???„ëµ
-
-#### Pure Irys ëª¨ë“œ:
 ```
-User Action ??IndexedDB (ì¦‰ì‹œ) ??Irys (ë°±ê·¸?¼ìš´??
+Layer 1: Component State (React State)
+  â†“ (ì¦‰ì‹œ, 0ms)
+
+Layer 2: IndexedDB (Browser Storage)
+  â†“ (ë¹ ë¦„, 10-50ms)
+  â†“ TTL: 5ë¶„
+
+Layer 3: Irys DataChain (Blockchain)
+  â†“ (ëŠë¦¼, 200-500ms)
+  â†“ Permanent Storage
 ```
 
-#### Full Stack ëª¨ë“œ:
-```
-User Action ??PostgreSQL (ì¦‰ì‹œ) ??Irys (ë°±ê·¸?¼ìš´??
-                                 ??IndexedDB (ìºì‹œ)
+### IndexedDB ìŠ¤í‚¤ë§ˆ
+
+```typescript
+interface CacheEntry<T> {
+  key: string;          // ìºì‹œ í‚¤
+  data: T;              // ë°ì´í„°
+  timestamp: number;    // ì €ì¥ ì‹œê°„
+  irysId?: string;      // Irys íŠ¸ëœì­ì…˜ ID
+  ttl: number;          // ìœ íš¨ ì‹œê°„ (ms)
+}
+
+// ìºì‹œ íƒ€ì…
+- documents: Map<docId, Document>
+- queries: Map<queryKey, Document[]>
+- metadata: Map<key, any>
 ```
 
-**?¼ê???ëª¨ë¸:** Eventual Consistency (ìµœì¢… ?¼ê???
+### ìºì‹œ ë¬´íš¨í™”
+
+**ìë™ ë¬´íš¨í™”**:
+1. TTL ë§Œë£Œ (5ë¶„)
+2. ë¸”ë¡ì²´ì¸ ì´ë²¤íŠ¸ (DocumentUpdated)
+3. CacheController ì‹ í˜¸
+
+**ìˆ˜ë™ ë¬´íš¨í™”**:
+```typescript
+await client.clearCache();              // ì „ì²´ ì‚­ì œ
+await cache.invalidateDocument(docId);  // íŠ¹ì • ë¬¸ì„œ
+await cache.invalidatePattern(pattern); // íŒ¨í„´ ë§¤ì¹­
+```
 
 ---
 
-## ?”’ ë³´ì•ˆ ?„í‚¤?ì²˜
+## ë³´ì•ˆ ì•„í‚¤í…ì²˜
 
-### ì§€ê°?ê¸°ë°˜ ?¸ì¦
+### ì§€ê°‘ ê¸°ë°˜ ì¸ì¦
 
-#### ?¸ì¦ ?ë¦„:
 ```
-1. ?¬ìš©?ê? MetaMask ?°ê²° ?´ë¦­
-2. ?„ë¡ ?¸ì—”?œê? ì±Œë¦°ì§€ ë©”ì‹œì§€ ?ì„±
-3. ?¬ìš©?ê? ê°œì¸?¤ë¡œ ?œëª…
-4. ?œëª… ê²€ì¦?(ethers.js)
-5. ?¸ì…˜ ?ì„± (Pure Irys: ë¡œì»¬, Full Stack: JWT)
+1. User: "Connect Wallet" í´ë¦­
+   â†“
+2. RainbowKit: ì§€ê°‘ ì„ íƒ (MetaMask, WalletConnect ë“±)
+   â†“
+3. wagmi: ì§€ê°‘ ì—°ê²° ìš”ì²­
+   â†“
+4. User: ì—°ê²° ìŠ¹ì¸
+   â†“
+5. ethers.js: Signer ê°ì²´ ìƒì„±
+   â†“
+6. PureIrysClient: Signerë¡œ ì´ˆê¸°í™”
+   â†“
+7. ëª¨ë“  íŠ¸ëœì­ì…˜ì— ìë™ ì„œëª…
 ```
 
 ### ê¶Œí•œ ëª¨ë¸
 
-#### Pure Irys ëª¨ë“œ:
-- ì§€ê°?ì£¼ì†Œ ê¸°ë°˜ ?Œìœ ê¶?
-- Irys ?°ì´?°ì˜ ?ì„±??= ?Œìœ ??
-- ë¡œì»¬ ?¸ì…˜ ê´€ë¦?
+**ì†Œìœ ê¶Œ ê¸°ë°˜**:
+- ì§€ê°‘ ì£¼ì†Œ = ì‚¬ìš©ì ì‹ë³„ì
+- Document.owner = msg.sender (ìƒì„±ì)
+- ì†Œìœ ìë§Œ ìˆ˜ì •/ì‚­ì œ ê°€ëŠ¥
 
-#### Full Stack ëª¨ë“œ:
-- ??•  ê¸°ë°˜ ?¡ì„¸???œì–´ (RBAC)
-- ?„ë¡œ?íŠ¸ ?˜ì? ê¶Œí•œ:
-  - `OWNER` - ?„ì²´ ?œì–´
-  - `ADMIN` - ì½˜í…ì¸?& ?‘ì—…??ê´€ë¦?
-  - `EDITOR` - ë¬¸ì„œ ?¸ì§‘
-  - `VIEWER` - ?½ê¸° ?„ìš©
+**RBAC (Role-Based Access Control)**:
+```
+OWNER (5):  ëª¨ë“  ê¶Œí•œ
+ADMIN (4):  ì½˜í…ì¸  ê´€ë¦¬, ë©¤ë²„ ê´€ë¦¬
+EDITOR (3): ì½˜í…ì¸  í¸ì§‘
+READ (2):   ì½ê¸° ì „ìš©
+NONE (1):   ì ‘ê·¼ ë¶ˆê°€
+```
 
-### ?°ì´??ë³´ì•ˆ
+### ë°ì´í„° ë³´ì•ˆ
 
-**?„ì†¡ ì¤?**
-- HTTPS for API
-- WSS for WebSocket
-- ì§€ê°??œëª… ê²€ì¦?
+**ì „ì†¡ ì¤‘**:
+- HTTPS (RPC í†µì‹ )
+- ì§€ê°‘ ì„œëª… ê²€ì¦
+- Replay attack ë°©ì§€
 
-**?€??ì¤?**
-- Irys: ë¶ˆë? & ê²€ì¦?ê°€??
-- ? íƒ???”í˜¸??(ì¤‘ìš” ë¬¸ì„œ)
-- IndexedDB: ë¸Œë¼?°ì? ?Œë“œë°•ìŠ¤
+**ì €ì¥ ì‹œ**:
+- Irys: ë¸”ë¡ì²´ì¸ ë¶ˆë³€ì„±
+- IndexedDB: ë¸Œë¼ìš°ì € ìƒŒë“œë°•ìŠ¤
+- ì„ íƒì  ì•”í˜¸í™” ì§€ì› (í–¥í›„)
 
 ---
 
-## ???±ëŠ¥ ìµœì ??
+## ì„±ëŠ¥ ìµœì í™”
 
-### ?„ë¡ ?¸ì—”??ìµœì ??
+### Frontend ìµœì í™”
 
-#### 1. ì½”ë“œ ?¤í”Œë¦¬íŒ…
+**ì½”ë“œ ìŠ¤í”Œë¦¬íŒ…**:
 ```typescript
-// Lazy loading pages
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const DocumentPage = lazy(() => import('./pages/DocumentPage'));
+// Lazy loading
+const DashboardPure = lazy(() => import('./pages/DashboardPure'));
+const NewProjectPure = lazy(() => import('./pages/NewProjectPure'));
 ```
 
-**ë²ˆë“¤ ?¬ê¸°:**
+**ë²ˆë“¤ í¬ê¸°**:
 - Initial: ~150KB (gzipped)
 - Per route: ~20-50KB
+- ì´ First Load: ~200KB
 
-#### 2. ?°ì´??ìºì‹±
-```typescript
-// IndexedDB with 5min TTL
-const cache = await db.cache.get(key);
-if (cache && Date.now() - cache.timestamp < 5 * 60 * 1000) {
-  return cache.data; // Cache hit
-}
-```
-
-#### 3. ?´ë?ì§€ ìµœì ??
+**ì´ë¯¸ì§€ ìµœì í™”**:
+- WebP í¬ë§·
 - Lazy loading
-- WebP format
 - Responsive images
-- CDN delivery (Irys Gateway)
 
-### ë°±ì—”??ìµœì ??(Full Stack)
+### Blockchain ìµœì í™”
 
-#### 1. ?°ì´?°ë² ?´ìŠ¤
-```sql
--- Proper indexing
-CREATE INDEX idx_documents_project ON documents(project_id);
-CREATE INDEX idx_documents_published ON documents(published_at);
-
--- Connection pooling (Prisma)
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-```
-
-#### 2. Redis ìºì‹±
+**ë°°ì¹˜ ì²˜ë¦¬**:
 ```typescript
-// Query result caching
-const cached = await redis.get(`documents:${projectId}`);
-if (cached) return JSON.parse(cached);
-
-const documents = await prisma.document.findMany({ ... });
-await redis.setex(`documents:${projectId}`, 300, JSON.stringify(documents));
+// ì—¬ëŸ¬ ë¬¸ì„œ í•œ ë²ˆì— ë“±ë¡
+const docIds = await Promise.all(
+  documents.map(doc => client.createDocument(doc))
+);
 ```
 
-#### 3. GraphQL ìµœì ??
+**Gas ìµœì í™”**:
+- íš¨ìœ¨ì ì¸ Solidity ì½”ë“œ
+- Storage ìµœì†Œí™”
+- Event í™œìš© (logs cheaper than storage)
+
+### ìºì‹± ìµœì í™”
+
+**ì ì¤‘ë¥  ëª©í‘œ**: 90%+
+
+**ì „ëµ**:
+1. ìì£¼ ì¡°íšŒë˜ëŠ” ë¬¸ì„œ ìš°ì„  ìºì‹±
+2. í”„ë¡œì íŠ¸ ë‹¨ìœ„ í”„ë¦¬í˜ì¹˜
+3. ìŠ¤ë§ˆíŠ¸ ë¬´íš¨í™” (í•„ìš”í•œ ê²ƒë§Œ)
+
+**ì¸¡ì •**:
 ```typescript
-// DataLoader for batching
-const documentLoader = new DataLoader(async (ids) => {
-  const documents = await prisma.document.findMany({
-    where: { id: { in: ids } }
-  });
-  return ids.map(id => documents.find(d => d.id === id));
-});
+const stats = await client.getCacheStats();
+console.log(`Hit rate: ${stats.hitRate}%`);
 ```
 
-### Irys ìµœì ??
+### ì„±ëŠ¥ ë©”íŠ¸ë¦­
 
-#### 1. ë°°ì¹˜ ?…ë¡œ??
-```typescript
-// ?¬ëŸ¬ ë¬¸ì„œë¥???ë²ˆì— ?…ë¡œ??
-const receipts = await uploader.uploadFolder(documents);
-```
-
-#### 2. ì¿¼ë¦¬ ìµœì ??
-```typescript
-// ?„ìš”???„ë“œë§?ì¡°íšŒ
-const query = new Query();
-query
-  .search('debhub')
-  .tags([
-    { name: 'content-type', values: ['document'] },
-    { name: 'project-id', values: [projectId] }
-  ])
-  .limit(20);
-```
-
-### ?±ëŠ¥ ë©”íŠ¸ë¦?
-
-| ?‘ì—… | Pure Irys | Full Stack |
-|------|-----------|------------|
-| **ì´ˆê¸° ë¡œë“œ** | 1-2ì´?| 2-3ì´?|
-| **ë¬¸ì„œ ì¡°íšŒ** | 100-300ms | 50-150ms |
-| **ë¬¸ì„œ ?€??* | ì¦‰ì‹œ (ìºì‹œ) | ì¦‰ì‹œ (DB) |
-| **ë¬¸ì„œ ?¼ë¸”ë¦¬ì‹œ** | 2-5ì´?| 2-5ì´?|
-| **ê²€??* | 1-2ì´?| 100-300ms |
+| ì‘ì—… | ìºì‹œ HIT | ìºì‹œ MISS | ëª©í‘œ |
+|------|----------|-----------|------|
+| ë¬¸ì„œ ì¡°íšŒ | ~10ms | ~500ms | < 1s |
+| ë¬¸ì„œ ìƒì„± | N/A | 2-5s | < 10s |
+| ë¬¸ì„œ ìˆ˜ì • | N/A | 2-5s | < 10s |
+| ê²€ìƒ‰ | ~50ms | 1-2s | < 3s |
+| ì´ˆê¸° ë¡œë“œ | N/A | 1-2s | < 3s |
 
 ---
 
-## ?“¦ ë°°í¬ ?„í‚¤?ì²˜
+## í™•ì¥ì„±
 
-### Pure Irys ëª¨ë“œ ë°°í¬
+### ìˆ˜í‰ í™•ì¥
 
+**ê¸°ì¡´ BaaS**:
 ```
-Vercel / Netlify
-    ??
-    ?œâ???Static Build (React + Vite)
-    ??  ?”â???apps/web-vite/dist/
-    ??
-    ?”â???Environment Variables:
-        ?œâ???VITE_IRYS_NETWORK=mainnet
-        ?œâ???VITE_ENABLE_BACKEND=false
-        ?”â???VITE_WALLET_CONNECT_PROJECT_ID=xxx
+ë” ë§ì€ ì‚¬ìš©ì
+  â†’ ë” ë§ì€ ì„œë²„ í•„ìš”
+  â†’ ë” í° ë°ì´í„°ë² ì´ìŠ¤ í•„ìš”
+  â†’ ë” ë³µì¡í•œ ë¡œë“œ ë°¸ëŸ°ì‹±
+  â†’ ìš´ì˜ ë¹„ìš© ì¦ê°€
 ```
 
-**ë°°í¬ ?¨ê³„:**
-1. `pnpm build` - ?„ë¡ ?¸ì—”??ë¹Œë“œ
-2. Deploy to Vercel/Netlify
-3. ?˜ê²½ ë³€???¤ì •
-4. ?„ë£Œ! (ë°±ì—”??ë¶ˆí•„??
-
-### Full Stack ëª¨ë“œ ë°°í¬
-
+**Pure Irys BaaS**:
 ```
-Frontend (Vercel/Netlify)
-    ??
-Backend (Railway/Render/DigitalOcean)
-    ?œâ???Apollo Server
-    ?œâ???Services
-    ?”â???Prisma ORM
-            ??
-PostgreSQL (Supabase/Neon)
-Redis (Upstash) [Optional]
-Irys DataChain
+ë” ë§ì€ ì‚¬ìš©ì
+  â†’ ë¸”ë¡ì²´ì¸ì´ ìë™ìœ¼ë¡œ ì²˜ë¦¬
+  â†’ ì¸í”„ë¼ ë³€ê²½ ë¶ˆí•„ìš”
+  â†’ ìš´ì˜ ë¹„ìš© ë™ì¼
+  â†’ ìë™ ìŠ¤ì¼€ì¼ë§
 ```
 
-**ë°°í¬ ?¨ê³„:**
-1. PostgreSQL ?°ì´?°ë² ?´ìŠ¤ ?ì„±
-2. ë°±ì—”??ë°°í¬:
-   ```bash
-   cd apps/api
-   pnpm prisma migrate deploy
-   pnpm build
-   pnpm start
-   ```
-3. ?„ë¡ ?¸ì—”??ë°°í¬:
-   ```bash
-   cd apps/web-vite
-   pnpm build
-   # Deploy to Vercel
-   ```
-4. ?˜ê²½ ë³€???¤ì •
+### ê¸€ë¡œë²Œ ë¶„ì‚°
+
+- Irys Gateway: ì „ì„¸ê³„ CDN
+- IndexedDB: ë¡œì»¬ ìºì‹±
+- No central server: ë‹¨ì¼ ì¥ì• ì  ì—†ìŒ
 
 ---
 
-## ?¯ ?„í‚¤?ì²˜ ê²°ì •
+## ì°¸ê³  ë¬¸ì„œ
 
-### ???´ì¤‘ ?„í‚¤?ì²˜?¸ê??
-
-**Pure Irys ëª¨ë“œ???´ì :**
-- ??ë°±ì—”??ë¶ˆí•„????ë°°í¬ ê°„ë‹¨
-- ???´ì˜ ë¹„ìš© ìµœì†Œ
-- ???„ì „???ˆì¤‘?™í™”
-- ??ë¹ ë¥¸ ?„ë¡œ? í??´í•‘
-
-**Full Stack ëª¨ë“œ???´ì :**
-- ??ê³ ê¸‰ ê¸°ëŠ¥ (AI, ë¶„ì„)
-- ??ë¹ ë¥¸ ë³µì¡??ì¿¼ë¦¬
-- ???¤ì‹œê°??‘ì—…
-- ??ê¸°ì—…??ê¸°ëŠ¥
-
-### ??Irys?¸ê??
-
-**? íƒ ?´ìœ :**
-- Arweaveë³´ë‹¤ ë¹ ë¥¸ finality
-- GraphQL-like ì¿¼ë¦¬ API
-- ??? ë¹„ìš©
-- TypeScript SDK
-- ?„ë¡œê·¸ë˜ë¨¸ë¸” ?°ì´??ì§€??
-
-### ??IndexedDB?¸ê??
-
-**? íƒ ?´ìœ :**
-- ë¸Œë¼?°ì? ?´ì¥
-- ?€?©ëŸ‰ ?€??ê°€??
-- êµ¬ì¡°?”ëœ ?°ì´??
-- ë¹„ë™ê¸?API
-- ?¤í”„?¼ì¸ ì§€??
+- [ë¹ ë¥¸ ì‹œì‘](./GETTING_STARTED.md)
+- [Pure Irys ì„¤ì • ê°€ì´ë“œ](../PURE_IRYS_SETUP.md)
+- [ë°°í¬ ê°€ì´ë“œ](./DEPLOYMENT.md)
+- [API ë¬¸ì„œ](./API.md)
 
 ---
 
-## ?”® ?¥í›„ ê°œì„  ?¬í•­
+**DeBHuB Pure Irys BaaS Architecture**
 
-### ê³„íš??ê¸°ëŠ¥
-
-1. **P2P ?™ê¸°??*
-   - WebRTCë¥??µí•œ ì§ì ‘ peer-to-peer ?™ê¸°??
-   - ì¤‘ì•™ ?œë²„ ?†ì´ ?¤ì‹œê°??‘ì—…
-
-2. **End-to-End ?”í˜¸??*
-   - ?´ë¼?´ì–¸??ì¸??”í˜¸??
-   - ?„ë¼?´ë¹— ë¬¸ì„œ ì§€??
-
-3. **?¤í”„?¼ì¸ ?¸ì§‘**
-   - Service Worker ?µí•©
-   - ?¤í”„?¼ì¸ ???ë™ ?ì‰
-   - ?¨ë¼??ë³µê? ???ë™ ?™ê¸°??
-
-4. **ëª¨ë°”????*
-   - React Native
-   - ?™ì¼???„í‚¤?ì²˜
-   - ?¬ë¡œ???Œë«???™ê¸°??
-
-5. **?ŒëŸ¬ê·¸ì¸ ?œìŠ¤??*
-   - ì»¤ìŠ¤?€ ?ë””???•ì¥
-   - ?œë“œ?Œí‹° ?µí•©
-   - ?Œë§ˆ ?œìŠ¤??
-
----
-
-???ì„¸???´ìš©?€ ?¤ìŒ ë¬¸ì„œë¥?ì°¸ì¡°?˜ì„¸??
-- [?œì‘?˜ê¸°](./GETTING_STARTED.md)
-- [API ?ˆí¼?°ìŠ¤](./API.md)
-- [ë°°í¬ ê°€?´ë“œ](./DEPLOYMENT_GUIDE.md)
-- [?„ë¡œê·¸ë˜ë¨¸ë¸” ?°ì´??(./PROGRAMMABLE_DATA_ARCHITECTURE.md)
+Made with â¤ï¸ by DeBHuB Team

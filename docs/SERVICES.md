@@ -1,731 +1,805 @@
-# DeBHuB Services Guide
+# Pure Irys BaaS - Smart Contracts Guide
 
-Complete documentation for all DeBHuB platform services.
+**Complete documentation for all Pure Irys Smart Contracts**
+
+This guide documents the 6 Smart Contracts that replace traditional backend services in Pure Irys BaaS architecture.
+
+---
 
 ## Table of Contents
 
-- [Search Service](#search-service)
-- [Analytics Service](#analytics-service)
-- [Realtime Service](#realtime-service)
-- [Storage Service](#storage-service)
-- [Function Service](#function-service)
-- [Edge Service](#edge-service)
-- [Programmable Data Service](#programmable-data-service)
-- [Database Service](#database-service)
+- [Overview](#overview)
+- [DocumentRegistry Contract](#documentregistry-contract)
+- [AccessControl Contract](#accesscontrol-contract)
+- [ProvenanceChain Contract](#provenancechain-contract)
+- [EventBus Contract](#eventbus-contract)
+- [CacheController Contract](#cachecontroller-contract)
+- [SearchIndex Contract](#searchindex-contract)
+- [Integration Guide](#integration-guide)
+- [Best Practices](#best-practices)
 
 ---
 
-## Search Service
+## Overview
 
-The Search Service provides full-text and semantic search capabilities across documents.
+### Architecture Transformation
 
-### Features
+Pure Irys BaaS eliminates traditional backend infrastructure by replacing services with Smart Contracts:
 
-- **Full-Text Search** - Search across document titles and content
-- **Advanced Filtering** - Filter by project, author, tags, and date ranges
-- **Autocomplete** - Real-time search suggestions
-- **Relevance Scoring** - Intelligent result ranking
-- **Highlighting** - Context-aware search result snippets
+| Traditional Service | Smart Contract Replacement | Purpose |
+|---------------------|---------------------------|---------|
+| PostgreSQL Tables | DocumentRegistry | Document metadata indexing |
+| Backend Auth Logic | AccessControl | Permission management |
+| Git Version Control | ProvenanceChain | Version history tracking |
+| WebSocket Server | EventBus | Real-time event distribution |
+| Redis Cache | CacheController | Cache invalidation signaling |
+| ElasticSearch | SearchIndex | Search indexing |
 
-### API
+### Contract Deployment
 
-#### `search(query: string, options?: SearchOptions): Promise<SearchResult[]>`
+All contracts are deployed on **Irys L1 DataChain**:
 
-Performs full-text search across documents.
+#### Testnet (Chain ID: 1270)
 
-```typescript
-const results = await searchService.search('graphql', {
-  projectId: 'project-123',
-  limit: 20,
-  offset: 0,
-  includeContent: true
-});
+```
+RPC: https://testnet-rpc.irys.xyz/v1/execution-rpc
+
+DocumentRegistry:  0x937956DA31B42C3ad9f6eC4366360Ae763391566
+AccessControl:     0xdD1ACe083c156296760aAe07718Baab969642B8D
+ProvenanceChain:   0x44755E8C746Dc1819a0e8c74503AFC106FC800CB
+EventBus:          0x042E4e6a56aA1680171Da5e234D9cE42CBa03E1c
+CacheController:   0x8aFb8b9d57e9b6244e29a090ea4da1A9043a91E2
+SearchIndex:       0x2345938F52790F1d8a1E3355cA66eA3e60494A36
+
+Deployed: 2025-10-13T19:32:01.637Z
 ```
 
-**Options:**
-- `projectId?: string` - Filter by project
-- `limit?: number` - Maximum results (default: 10)
-- `offset?: number` - Pagination offset (default: 0)
-- `includeContent?: boolean` - Include full content (default: true)
+#### Mainnet (Chain ID: 9990)
 
-**Returns:** Array of search results with:
-- `documentId: string` - Document identifier
-- `title: string` - Document title
-- `content: string` - Document content (truncated)
-- `similarity: number` - Relevance score (0-1)
-- `highlights: string[]` - Context snippets with query terms
-- `metadata: object` - Additional metadata
-
-#### `advancedSearch(params: AdvancedSearchParams): Promise<SearchResult[]>`
-
-Advanced search with multiple filters.
-
-```typescript
-const results = await searchService.advancedSearch({
-  query: 'authentication',
-  projectId: 'project-123',
-  authorId: 'user-456',
-  tags: ['security', 'api'],
-  dateFrom: '2024-01-01',
-  dateTo: '2024-12-31',
-  limit: 10
-});
 ```
+RPC: https://rpc.irys.xyz
 
-#### `getSuggestions(partialQuery: string, projectId?: string, limit?: number): Promise<string[]>`
-
-Get autocomplete suggestions.
-
-```typescript
-const suggestions = await searchService.getSuggestions('auth', 'project-123', 5);
-// Returns: ['Authentication', 'Authorization', 'Auth Tokens', ...]
-```
-
-#### `searchByTags(tags: string[], projectId?: string, limit?: number): Promise<SearchResult[]>`
-
-Search documents by tags.
-
-```typescript
-const results = await searchService.searchByTags(['api', 'security'], 'project-123');
-```
-
-### Implementation Details
-
-- Uses PostgreSQL LIKE queries with case-insensitive matching
-- Implements relevance scoring (title matches weighted higher)
-- Extracts contextual highlights around query terms
-- Supports pagination for large result sets
-
----
-
-## Analytics Service
-
-The Analytics Service provides metrics, insights, and activity tracking.
-
-### Features
-
-- **Project Metrics** - Comprehensive project statistics
-- **User Analytics** - User activity and contribution metrics
-- **Document Metrics** - Individual document statistics
-- **Activity Tracking** - Recent activity feeds
-- **Platform Statistics** - System-wide metrics
-
-### API
-
-#### `getProjectMetrics(projectId: string): Promise<ProjectMetrics>`
-
-Get comprehensive project metrics.
-
-```typescript
-const metrics = await analyticsService.getProjectMetrics('project-123');
-console.log(metrics.totalDocuments);
-console.log(metrics.recentActivity);
-```
-
-**Returns:**
-- `totalDocuments: number` - Total document count
-- `publishedDocuments: number` - Published document count
-- `draftDocuments: number` - Draft document count
-- `totalVersions: number` - Total version count
-- `totalComments: number` - Total comment count
-- `totalCollaborators: number` - Collaborator count
-- `recentActivity: ActivityItem[]` - Recent activity feed
-
-#### `getUserMetrics(userId: string): Promise<UserMetrics>`
-
-Get user activity metrics.
-
-```typescript
-const metrics = await analyticsService.getUserMetrics('user-456');
-console.log(metrics.totalDocuments);
-console.log(metrics.collaboratingProjects);
-```
-
-**Returns:**
-- `totalDocuments: number` - Documents created by user
-- `totalComments: number` - Comments made by user
-- `totalProjects: number` - Projects owned by user
-- `collaboratingProjects: number` - Projects user collaborates on
-- `joinedDate: Date` - User registration date
-
-#### `getDocumentMetrics(documentId: string): Promise<DocumentMetrics>`
-
-Get document-specific metrics.
-
-```typescript
-const metrics = await analyticsService.getDocumentMetrics('doc-789');
-console.log(metrics.wordCount);
-console.log(metrics.totalVersions);
-```
-
-**Returns:**
-- `totalVersions: number` - Document version count
-- `totalComments: number` - Comment count
-- `resolvedComments: number` - Resolved comment count
-- `unresolvedComments: number` - Unresolved comment count
-- `wordCount: number` - Document word count
-
-#### `getPlatformStats(): Promise<PlatformStats>`
-
-Get platform-wide statistics.
-
-```typescript
-const stats = await analyticsService.getPlatformStats();
-console.log(stats.totalUsers);
-console.log(stats.totalDocuments);
-```
-
-#### `trackEvent(event: string, properties: object): Promise<void>`
-
-Track custom analytics events.
-
-```typescript
-await analyticsService.trackEvent('document_exported', {
-  userId: 'user-123',
-  documentId: 'doc-456',
-  format: 'pdf'
-});
+To be deployed - Use testnet contracts for development
 ```
 
 ---
 
-## Realtime Service
+## DocumentRegistry Contract
 
-The Realtime Service enables WebSocket-based real-time collaboration.
+**Replaces**: PostgreSQL `documents` table
+
+**Purpose**: Index and query document metadata stored on Irys
 
 ### Features
 
-- **Live Collaboration** - Real-time document editing
-- **Cursor Sharing** - See other users' cursors
-- **Selection Tracking** - View other users' selections
-- **Presence Tracking** - Active user monitoring
-- **Conflict Resolution** - CRDT-like conflict handling
-- **GraphQL Subscriptions** - Real-time data updates
+- Document registration with metadata
+- Owner-based queries
+- Project-based queries
+- Tag-based filtering
+- Existence verification
+- Metadata updates
 
-### API
+### Contract Interface
 
-#### `joinSession(sessionId: string, user: SessionUser, websocket: WebSocket): Promise<void>`
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
 
-Join a collaboration session.
+interface IDocumentRegistry {
+    struct Document {
+        bytes32 id;
+        bytes32 irysId;      // Irys transaction ID
+        bytes32 projectId;
+        address owner;
+        string title;
+        bytes32[] tags;
+        uint256 createdAt;
+        uint256 updatedAt;
+        bool exists;
+    }
 
-```typescript
-await realtimeService.joinSession('doc:123', {
-  id: 'user-456',
-  name: 'John Doe',
-  avatar: 'https://avatar.url'
-}, websocket);
-```
+    // Register new document
+    function registerDocument(
+        bytes32 irysId,
+        bytes32 projectId,
+        string memory title,
+        bytes32[] memory tags
+    ) external returns (bytes32 docId);
 
-#### `shareCursor(sessionId: string, userId: string, position: CursorPosition): Promise<void>`
+    // Update document metadata
+    function updateDocument(
+        bytes32 docId,
+        bytes32 newIrysId,
+        string memory newTitle,
+        bytes32[] memory newTags
+    ) external;
 
-Share cursor position with other users.
+    // Query functions
+    function getDocument(bytes32 docId) external view returns (Document memory);
+    function getDocumentsByOwner(address owner) external view returns (bytes32[] memory);
+    function getDocumentsByProject(bytes32 projectId) external view returns (bytes32[] memory);
+    function documentExists(bytes32 docId) external view returns (bool);
 
-```typescript
-await realtimeService.shareCursor('doc:123', 'user-456', {
-  line: 10,
-  column: 25
-});
-```
-
-#### `shareSelection(sessionId: string, userId: string, selection: Selection): Promise<void>`
-
-Share text selection.
-
-```typescript
-await realtimeService.shareSelection('doc:123', 'user-456', {
-  start: { line: 10, column: 0 },
-  end: { line: 12, column: 45 }
-});
-```
-
-#### `streamChange(sessionId: string, userId: string, change: DocumentChange): Promise<void>`
-
-Stream document changes to all participants.
-
-```typescript
-await realtimeService.streamChange('doc:123', 'user-456', {
-  operation: 'insert',
-  position: 150,
-  text: 'Hello World'
-});
-```
-
-#### `getActiveUsers(documentId: string): Promise<ActiveUser[]>`
-
-Get currently active users on a document.
-
-```typescript
-const activeUsers = await realtimeService.getActiveUsers('doc-123');
-activeUsers.forEach(user => {
-  console.log(user.name, user.cursor);
-});
-```
-
-### WebSocket Messages
-
-**Client → Server:**
-
-```json
-{
-  "type": "cursor",
-  "position": { "line": 10, "column": 25 }
+    // Events
+    event DocumentRegistered(bytes32 indexed docId, bytes32 indexed irysId, address indexed owner);
+    event DocumentUpdated(bytes32 indexed docId, bytes32 newIrysId);
 }
 ```
 
-```json
-{
-  "type": "change",
-  "change": {
-    "operation": "insert",
-    "position": 150,
-    "text": "Hello"
-  }
-}
+### Usage with PureIrysClient
+
+```typescript
+import { PureIrysClient } from '@debhub/pure-irys-client';
+
+const client = new PureIrysClient(signer);
+await client.init();
+
+// Create document (uploads to Irys + registers in contract)
+const docId = await client.createDocument({
+  projectId: 'my-project',
+  title: 'Getting Started',
+  content: 'Document content here...',
+  tags: ['tutorial', 'docs'],
+});
+
+// Get document (queries contract + fetches from Irys)
+const doc = await client.getDocument(docId);
+console.log(doc.title, doc.irysId, doc.createdAt);
+
+// Update document (new Irys upload + contract update)
+await client.updateDocument(docId, {
+  content: 'Updated content',
+  changeDescription: 'Fixed typo',
+});
+
+// Query documents
+const myDocs = await client.searchDocuments({
+  projectId: 'my-project',
+  tags: ['tutorial'],
+  limit: 10,
+});
 ```
 
-**Server → Client:**
+### Direct Contract Interaction
 
-```json
-{
-  "type": "cursor",
-  "userId": "user-456",
-  "position": { "line": 10, "column": 25 }
-}
-```
+```typescript
+import { ethers } from 'ethers';
+import DocumentRegistryABI from '@debhub/pure-irys-client/contracts/abis/DocumentRegistry.json';
 
-```json
-{
-  "type": "document_change",
-  "change": {
-    "id": "change_123",
-    "operation": "insert",
-    "position": 150,
-    "text": "Hello",
-    "userId": "user-456",
-    "timestamp": 1234567890
-  }
-}
+const contract = new ethers.Contract(
+  '0x937956DA31B42C3ad9f6eC4366360Ae763391566',
+  DocumentRegistryABI,
+  signer
+);
+
+// Register document
+const tx = await contract.registerDocument(
+  ethers.encodeBytes32String('irys-tx-id'),
+  ethers.encodeBytes32String('project-123'),
+  'Document Title',
+  [ethers.encodeBytes32String('tag1'), ethers.encodeBytes32String('tag2')]
+);
+await tx.wait();
+
+// Query document
+const doc = await contract.getDocument(docId);
+console.log(doc.title, doc.owner, doc.createdAt);
 ```
 
 ---
 
-## Storage Service
+## AccessControl Contract
 
-The Storage Service manages file uploads and storage on Irys.
+**Replaces**: Backend authorization logic
+
+**Purpose**: Decentralized permission management
 
 ### Features
 
-- **Multiple Buckets** - Organized storage (images, attachments, exports, themes, backups)
-- **File Validation** - Size and type validation
-- **Image Optimization** - Automatic image processing
-- **Encryption** - File encryption for sensitive data
-- **CDN Integration** - Fast content delivery
+- Role-based access control (RBAC)
+- Resource-level permissions
+- Permission delegation
+- Multi-role support
+- Owner management
 
-### Storage Buckets
+### Permission Levels
 
-1. **images** - Public images (10MB max, CDN enabled)
-2. **attachments** - Private files (100MB max, encrypted)
-3. **exports** - Document exports (50MB max, 24h TTL)
-4. **themes** - Custom themes (1MB max)
-5. **backups** - Encrypted backups (versioning enabled)
+```solidity
+enum Permission {
+    NONE,       // 0 - No access
+    READ,       // 1 - Read only
+    WRITE,      // 2 - Read + Write
+    ADMIN,      // 3 - Full control
+    OWNER       // 4 - Ownership rights
+}
+```
 
-### API
+### Contract Interface
 
-#### `uploadFile(bucket: BucketName, file: UploadFile, options?: UploadOptions): Promise<UploadResult>`
+```solidity
+interface IAccessControl {
+    // Grant permission
+    function grantPermission(
+        bytes32 resourceId,
+        address user,
+        Permission permission
+    ) external;
 
-Upload file to specific bucket.
+    // Revoke permission
+    function revokePermission(
+        bytes32 resourceId,
+        address user
+    ) external;
+
+    // Check permission
+    function hasPermission(
+        bytes32 resourceId,
+        address user,
+        Permission required
+    ) external view returns (bool);
+
+    // Get user permission
+    function getPermission(
+        bytes32 resourceId,
+        address user
+    ) external view returns (Permission);
+
+    // Transfer ownership
+    function transferOwnership(
+        bytes32 resourceId,
+        address newOwner
+    ) external;
+
+    // Events
+    event PermissionGranted(bytes32 indexed resourceId, address indexed user, Permission permission);
+    event PermissionRevoked(bytes32 indexed resourceId, address indexed user);
+    event OwnershipTransferred(bytes32 indexed resourceId, address indexed oldOwner, address indexed newOwner);
+}
+```
+
+### Usage with PureIrysClient
 
 ```typescript
-const result = await storageService.uploadFile('images', {
-  name: 'screenshot.png',
-  data: buffer,
-  type: 'image/png',
-  size: 1024000
-}, {
-  metadata: { documentId: 'doc-123' }
+// PureIrysClient handles permissions automatically
+
+// Only owner can update
+await client.updateDocument(docId, {
+  content: 'Updated content'
 });
+// → Checks AccessControl contract first
+// → Throws error if user lacks permission
 
-console.log(result.url);
-console.log(result.permanentUrl);
+// Grant permission to collaborator
+await client.grantAccess(docId, collaboratorAddress, 'WRITE');
+
+// Check permission
+const canEdit = await client.checkPermission(docId, userAddress, 'WRITE');
+if (canEdit) {
+  // Allow editing UI
+}
 ```
 
-#### `uploadDocumentImage(projectId: string, documentId: string, file: UploadFile, options?: ImageUploadOptions): Promise<UploadResult>`
-
-Upload and optimize document image.
+### Direct Contract Interaction
 
 ```typescript
-const result = await storageService.uploadDocumentImage(
-  'project-123',
-  'doc-456',
-  imageFile,
-  { quality: 80, sizes: [800, 1200, 1600] }
+import AccessControlABI from '@debhub/pure-irys-client/contracts/abis/AccessControl.json';
+
+const contract = new ethers.Contract(
+  '0xdD1ACe083c156296760aAe07718Baab969642B8D',
+  AccessControlABI,
+  signer
 );
-```
 
-#### `uploadAttachment(projectId: string, documentId: string, file: UploadFile, options?: AttachmentUploadOptions): Promise<UploadResult>`
-
-Upload encrypted attachment.
-
-```typescript
-const result = await storageService.uploadAttachment(
-  'project-123',
-  'doc-456',
-  file,
-  { encrypt: true, encryptionKey: 'secret-key' }
+// Grant write permission
+await contract.grantPermission(
+  docId,
+  collaboratorAddress,
+  2 // Permission.WRITE
 );
-```
 
-#### `createBackup(projectId: string, backupData: ProjectBackupData, options?: BackupOptions): Promise<UploadResult>`
-
-Create encrypted project backup.
-
-```typescript
-const result = await storageService.createBackup(
-  'project-123',
-  {
-    version: '1.0',
-    projectId: 'project-123',
-    documents: [...],
-    settings: {...},
-    collaborators: [...],
-    createdAt: new Date().toISOString()
-  },
-  { type: 'full', encryptionKey: 'backup-key' }
+// Check permission
+const hasWrite = await contract.hasPermission(
+  docId,
+  userAddress,
+  2 // Permission.WRITE
 );
+
+// Transfer ownership
+await contract.transferOwnership(docId, newOwnerAddress);
 ```
 
 ---
 
-## Function Service
+## ProvenanceChain Contract
 
-The Function Service provides serverless function execution capabilities.
+**Replaces**: Git version control system
 
-### Built-in Functions
-
-#### Document Enhancement
-- `enhance-document` - Multi-task document enhancement
-- `generate-outline` - Extract document structure
-- `check-grammar` - Grammar and spelling checks
-- `optimize-seo` - SEO optimization analysis
-
-#### Content Generation
-- `summarize` - AI-powered summarization
-- `translate` - Multi-language translation
-- `create-embedding` - Generate vector embeddings
-- `find-related` - Find related documents
-
-#### Document Processing
-- `generate-pdf` - PDF generation
-- `create-epub` - EPUB ebook creation
-- `extract-toc` - Table of contents extraction
-- `validate-links` - Link validation
-
-#### Analytics
-- `analyze-readability` - Flesch readability score
-- `calculate-metrics` - Project metrics calculation
-- `generate-insights` - AI-generated insights
-
-### API
-
-#### `invoke(functionName: string, payload: any): Promise<FunctionResult>`
-
-Execute a serverless function.
-
-```typescript
-const result = await functionService.invoke('analyze-readability', {
-  content: 'Document content here...'
-});
-
-console.log(result.data.fleschScore);
-console.log(result.data.level);
-console.log(result.executionTime);
-```
-
-#### `registerFunction(name: string, handler: FunctionHandler): void`
-
-Register custom function.
-
-```typescript
-functionService.registerFunction('custom-function', async (payload) => {
-  // Custom logic here
-  return { result: 'success' };
-});
-```
-
-### Function Examples
-
-**Generate Outline:**
-
-```typescript
-const result = await functionService.invoke('generate-outline', {
-  content: markdownContent
-});
-
-console.log(result.data.items); // Hierarchical outline
-console.log(result.data.totalItems);
-console.log(result.data.maxDepth);
-```
-
-**Analyze Readability:**
-
-```typescript
-const result = await functionService.invoke('analyze-readability', {
-  content: documentContent
-});
-
-console.log(result.data.fleschScore); // 0-100
-console.log(result.data.level); // 'beginner', 'intermediate', 'advanced'
-console.log(result.data.readingTime); // minutes
-```
-
-**Optimize SEO:**
-
-```typescript
-const result = await functionService.invoke('optimize-seo', {
-  content: documentContent,
-  keywords: ['graphql', 'api', 'documentation']
-});
-
-console.log(result.data.score);
-console.log(result.data.keywordAnalysis);
-console.log(result.data.recommendations);
-```
-
----
-
-## Edge Service
-
-The Edge Service enables global edge function deployment and execution.
+**Purpose**: Immutable version history tracking
 
 ### Features
 
-- **Multi-Region Deployment** - Deploy to US, EU, Asia Pacific
-- **Automatic Routing** - Select optimal region based on user location
-- **Function Caching** - Redis-based function code caching
-- **CDN Capabilities** - Content delivery network features
-- **Execution Metrics** - Performance monitoring
+- Complete version history
+- Version linking (parent-child)
+- Change descriptions
+- Irys-backed immutability
+- Version retrieval
 
-### Available Regions
+### Contract Interface
 
-- `us-east-1` - US East (Virginia)
-- `us-west-1` - US West (California)
-- `eu-west-1` - EU West (Ireland)
-- `ap-southeast-1` - Asia Pacific (Singapore)
+```solidity
+interface IProvenanceChain {
+    struct Version {
+        bytes32 id;
+        bytes32 irysId;          // Irys transaction ID for this version
+        bytes32 entityId;        // Document ID
+        bytes32 previousVersion; // Previous version ID (0x0 for first version)
+        address author;
+        string description;      // Change description
+        uint256 timestamp;
+    }
 
-### API
+    // Add new version
+    function addVersion(
+        bytes32 entityId,
+        bytes32 irysId,
+        bytes32 previousVersion,
+        string memory description
+    ) external returns (bytes32 versionId);
 
-#### `deploy(options: DeployOptions): Promise<DeploymentResult>`
+    // Get version
+    function getVersion(bytes32 versionId) external view returns (Version memory);
 
-Deploy edge function to regions.
+    // Get all versions for entity
+    function getVersionHistory(bytes32 entityId) external view returns (Version[] memory);
 
-```typescript
-const result = await edgeService.deploy({
-  functionName: 'process-data',
-  code: `
-    return {
-      processed: true,
-      data: payload.data.toUpperCase()
-    };
-  `,
-  config: { timeout: 10000 },
-  regions: ['us-east-1', 'eu-west-1']
-});
+    // Get latest version
+    function getLatestVersion(bytes32 entityId) external view returns (Version memory);
 
-console.log(result.irysId);
-console.log(result.endpoints);
+    // Events
+    event VersionAdded(bytes32 indexed versionId, bytes32 indexed entityId, bytes32 indexed irysId, address author);
+}
 ```
 
-#### `execute(functionName: string, payload: any, options?: ExecuteOptions): Promise<ExecutionResult>`
-
-Execute edge function.
+### Usage with PureIrysClient
 
 ```typescript
-const result = await edgeService.execute('process-data', {
-  data: 'hello world'
-}, {
-  region: 'us-east-1',
-  timeout: 5000
+// Every document update creates a new version automatically
+await client.updateDocument(docId, {
+  content: 'Updated content',
+  changeDescription: 'Fixed typo in introduction',
+});
+// → Uploads new version to Irys
+// → Adds version to ProvenanceChain
+// → Links to previous version
+
+// Get version history
+const versions = await client.getVersionHistory(docId);
+versions.forEach(v => {
+  console.log(v.timestamp, v.description, v.irysId);
 });
 
-console.log(result.data);
-console.log(result.executionTime);
-console.log(result.region);
+// Get specific version content
+const v1Content = await client.getVersionContent(docId, versions[0].irysId);
 ```
 
-#### `serveCachedContent(contentId: string, options?: CDNOptions): Promise<CDNResponse>`
-
-Serve cached content from edge.
+### Direct Contract Interaction
 
 ```typescript
-const response = await edgeService.serveCachedContent('irys-tx-id', {
-  region: 'us-east-1',
-  contentType: 'text/html',
-  cacheTTL: 3600
-});
+import ProvenanceChainABI from '@debhub/pure-irys-client/contracts/abis/ProvenanceChain.json';
 
-console.log(response.content);
-console.log(response.cacheHit);
-```
+const contract = new ethers.Contract(
+  '0x44755E8C746Dc1819a0e8c74503AFC106FC800CB',
+  ProvenanceChainABI,
+  signer
+);
 
-#### `getDeploymentStatus(functionName: string): Promise<DeploymentStatus>`
+// Add version
+const tx = await contract.addVersion(
+  docId,
+  ethers.encodeBytes32String('new-irys-id'),
+  previousVersionId,
+  'Updated formatting'
+);
+await tx.wait();
 
-Check deployment status.
+// Get version history
+const versions = await contract.getVersionHistory(docId);
+console.log(`Total versions: ${versions.length}`);
 
-```typescript
-const status = await edgeService.getDeploymentStatus('process-data');
-console.log(status.activeRegions);
-console.log(status.totalRegions);
+// Get latest version
+const latest = await contract.getLatestVersion(docId);
+console.log('Latest Irys ID:', latest.irysId);
 ```
 
 ---
 
-## Programmable Data Service
+## EventBus Contract
 
-The Programmable Data Service provides automated workflows and data transformations.
+**Replaces**: WebSocket server for real-time updates
+
+**Purpose**: Blockchain-native event distribution
 
 ### Features
 
-- **Custom Rules** - Define business logic rules
-- **Automated Triggers** - Event-driven workflows
-- **Data Notarization** - Blockchain-based verification
-- **Automatic Versioning** - Version control with Irys
-- **Integrity Verification** - Hash-based data validation
+- Event publishing
+- Subscription support (off-chain)
+- Event filtering by type
+- Event history
+- Real-time notifications
 
-### Built-in Triggers
+### Contract Interface
 
-- `on_document_create` - Triggered on document creation
-- `on_document_update` - Triggered on document update
-- `on_document_publish` - Triggered on document publication
-- `on_document_delete` - Triggered on document deletion
-- `auto_backup` - Automatic backup creation
-- `auto_version` - Automatic version creation
-- `auto_notarize` - Automatic notarization
-- `track_event` - Event tracking
-- `aggregate_metrics` - Metrics aggregation
+```solidity
+interface IEventBus {
+    struct Event {
+        bytes32 id;
+        string eventType;
+        bytes32 resourceId;
+        bytes data;
+        address publisher;
+        uint256 timestamp;
+    }
 
-### API
+    // Publish event
+    function publishEvent(
+        string memory eventType,
+        bytes32 resourceId,
+        bytes memory data
+    ) external returns (bytes32 eventId);
 
-#### `setRules(entityId: string, rules: ProgrammableRule[]): Promise<RuleSetResult>`
+    // Get event
+    function getEvent(bytes32 eventId) external view returns (Event memory);
 
-Set programmable rules for entity.
+    // Get events by resource
+    function getEventsByResource(
+        bytes32 resourceId,
+        uint256 fromTimestamp
+    ) external view returns (Event[] memory);
 
-```typescript
-const result = await programmableDataService.setRules('doc-123', [
-  {
-    type: 'backup',
-    trigger: 'on_document_update',
-    conditions: { version: { gt: 5 } },
-    actions: [{ type: 'auto_backup' }],
-    enabled: true
-  },
-  {
-    type: 'notarization',
-    trigger: 'on_document_publish',
-    conditions: {},
-    actions: [{ type: 'auto_notarize' }],
-    enabled: true
-  }
-]);
+    // Events (listened by off-chain subscribers)
+    event EventPublished(
+        bytes32 indexed eventId,
+        string indexed eventType,
+        bytes32 indexed resourceId,
+        bytes data,
+        address publisher,
+        uint256 timestamp
+    );
+}
 ```
 
-#### `executeRules(entityId: string, event: string, context: RuleContext): Promise<RuleExecutionResult[]>`
+### Event Types
 
-Execute rules for an event.
+- `document.created` - New document created
+- `document.updated` - Document content updated
+- `document.deleted` - Document deleted
+- `comment.added` - Comment added
+- `permission.granted` - Permission granted
+- `version.added` - New version added
+
+### Usage with PureIrysClient
 
 ```typescript
-const results = await programmableDataService.executeRules(
-  'doc-123',
-  'on_document_update',
-  {
-    entityId: 'doc-123',
-    event: 'on_document_update',
-    data: { content: '...' }
-  }
+// Subscribe to document updates (listens to EventBus contract events)
+const unsubscribe = client.onDocumentUpdate(docId, (id, version) => {
+  console.log(`Document ${id} updated to version ${version}`);
+  // Automatically refresh UI
+});
+
+// Subscribe to all project events
+const unsubscribeAll = client.onProjectEvents('my-project', (event) => {
+  console.log('Event:', event.type, event.data);
+});
+
+// Cleanup
+unsubscribe();
+```
+
+### Direct Contract Interaction
+
+```typescript
+import EventBusABI from '@debhub/pure-irys-client/contracts/abis/EventBus.json';
+
+const contract = new ethers.Contract(
+  '0x042E4e6a56aA1680171Da5e234D9cE42CBa03E1c',
+  EventBusABI,
+  signer
 );
+
+// Publish event
+const data = ethers.AbiCoder.defaultAbiCoder().encode(
+  ['string', 'uint256'],
+  ['New content', 12345]
+);
+await contract.publishEvent('document.updated', docId, data);
+
+// Listen to events (off-chain)
+contract.on('EventPublished', (eventId, eventType, resourceId, data, publisher, timestamp) => {
+  if (eventType === 'document.updated' && resourceId === docId) {
+    console.log('Document updated!', data);
+    // Refresh UI
+  }
+});
 ```
 
-#### `notarize(entityId: string, data: any, metadata?: NotarizeMetadata): Promise<NotarizeResult>`
+---
 
-Notarize data on blockchain.
+## CacheController Contract
+
+**Replaces**: Redis cache invalidation
+
+**Purpose**: Client-side cache invalidation signaling
+
+### Features
+
+- Cache invalidation triggers
+- Resource-level invalidation
+- Batch invalidation
+- Invalidation history
+- Subscription support
+
+### Contract Interface
+
+```solidity
+interface ICacheController {
+    // Invalidate cache for resource
+    function invalidate(bytes32 resourceId) external;
+
+    // Invalidate multiple resources
+    function invalidateBatch(bytes32[] memory resourceIds) external;
+
+    // Get last invalidation time
+    function getLastInvalidation(bytes32 resourceId) external view returns (uint256);
+
+    // Events
+    event CacheInvalidated(bytes32 indexed resourceId, uint256 timestamp);
+    event BatchCacheInvalidated(bytes32[] resourceIds, uint256 timestamp);
+}
+```
+
+### Usage with PureIrysClient
 
 ```typescript
-const result = await programmableDataService.notarize('doc-123', {
+// Cache invalidation happens automatically
+await client.updateDocument(docId, { content: 'Updated' });
+// → Triggers CacheController.invalidate(docId)
+// → All clients listening to this docId clear their IndexedDB cache
+// → Next getDocument() fetches fresh data from Irys
+
+// Manual cache invalidation
+await client.invalidateCache(docId);
+
+// Listen for invalidation events
+client.onCacheInvalidated(docId, () => {
+  console.log('Cache invalidated, refetching...');
+  client.getDocument(docId); // Force refresh
+});
+```
+
+### Direct Contract Interaction
+
+```typescript
+import CacheControllerABI from '@debhub/pure-irys-client/contracts/abis/CacheController.json';
+
+const contract = new ethers.Contract(
+  '0x8aFb8b9d57e9b6244e29a090ea4da1A9043a91E2',
+  CacheControllerABI,
+  signer
+);
+
+// Invalidate cache
+await contract.invalidate(docId);
+
+// Batch invalidation
+await contract.invalidateBatch([docId1, docId2, docId3]);
+
+// Listen for invalidation
+contract.on('CacheInvalidated', (resourceId, timestamp) => {
+  if (resourceId === myDocId) {
+    // Clear local cache
+    await indexedDB.deleteDatabase('pure-irys-cache');
+  }
+});
+```
+
+---
+
+## SearchIndex Contract
+
+**Replaces**: ElasticSearch
+
+**Purpose**: On-chain search indexing
+
+### Features
+
+- Keyword indexing
+- Tag-based search
+- Owner-based search
+- Project-based search
+- Full-text search pointers
+
+### Contract Interface
+
+```solidity
+interface ISearchIndex {
+    // Index document
+    function indexDocument(
+        bytes32 docId,
+        bytes32 projectId,
+        bytes32[] memory keywords,
+        bytes32[] memory tags
+    ) external;
+
+    // Update index
+    function updateIndex(
+        bytes32 docId,
+        bytes32[] memory newKeywords,
+        bytes32[] memory newTags
+    ) external;
+
+    // Search by keywords
+    function searchByKeywords(
+        bytes32[] memory keywords,
+        bytes32 projectId
+    ) external view returns (bytes32[] memory);
+
+    // Search by tags
+    function searchByTags(
+        bytes32[] memory tags,
+        bytes32 projectId
+    ) external view returns (bytes32[] memory);
+
+    // Events
+    event DocumentIndexed(bytes32 indexed docId, bytes32 indexed projectId);
+    event IndexUpdated(bytes32 indexed docId);
+}
+```
+
+### Usage with PureIrysClient
+
+```typescript
+// Indexing happens automatically on document creation
+await client.createDocument({
+  projectId: 'my-project',
+  title: 'GraphQL Tutorial',
+  content: 'Learn GraphQL basics...',
+  tags: ['graphql', 'tutorial'],
+});
+// → Indexes keywords: ['graphql', 'tutorial', 'learn', 'basics']
+// → Indexes tags: ['graphql', 'tutorial']
+
+// Search documents
+const results = await client.searchDocuments({
+  projectId: 'my-project',
+  query: 'graphql tutorial',
+  tags: ['tutorial'],
+  limit: 10,
+});
+
+results.forEach(doc => {
+  console.log(doc.title, doc.score);
+});
+```
+
+### Direct Contract Interaction
+
+```typescript
+import SearchIndexABI from '@debhub/pure-irys-client/contracts/abis/SearchIndex.json';
+
+const contract = new ethers.Contract(
+  '0x2345938F52790F1d8a1E3355cA66eA3e60494A36',
+  SearchIndexABI,
+  signer
+);
+
+// Index document
+await contract.indexDocument(
+  docId,
+  projectId,
+  [
+    ethers.encodeBytes32String('graphql'),
+    ethers.encodeBytes32String('tutorial'),
+  ],
+  [
+    ethers.encodeBytes32String('tutorial'),
+    ethers.encodeBytes32String('docs'),
+  ]
+);
+
+// Search by tags
+const results = await contract.searchByTags(
+  [ethers.encodeBytes32String('tutorial')],
+  projectId
+);
+console.log(`Found ${results.length} documents`);
+```
+
+---
+
+## Integration Guide
+
+### Using PureIrysClient (Recommended)
+
+The easiest way to interact with all contracts:
+
+```typescript
+import { PureIrysClient } from '@debhub/pure-irys-client';
+import { ethers } from 'ethers';
+
+// Initialize client
+const provider = new ethers.BrowserProvider(window.ethereum);
+const signer = await provider.getSigner();
+const client = new PureIrysClient(signer);
+await client.init();
+
+// All contract interactions handled automatically
+const docId = await client.createDocument({
+  projectId: 'my-project',
   title: 'Document Title',
-  content: 'Document content...'
-}, {
-  event: 'document_published'
+  content: 'Content here',
+  tags: ['tag1', 'tag2'],
 });
-
-console.log(result.irysId);
-console.log(result.contentHash);
-console.log(result.permanentUrl);
+// → DocumentRegistry.registerDocument()
+// → SearchIndex.indexDocument()
+// → ProvenanceChain.addVersion()
+// → EventBus.publishEvent()
 ```
 
-#### `permanent(data: any, options?: PermanentOptions): Promise<PermanentResult>`
-
-Store data permanently with versioning.
+### Using React Hooks
 
 ```typescript
-const result = await programmableDataService.permanent({
-  title: 'Document',
-  content: '...'
-}, {
-  entityId: 'doc-123',
-  entityType: 'document',
-  enableVersioning: true
-});
+import {
+  usePureIrysClient,
+  useCreateDocument,
+  useDocument,
+  useSearchDocuments,
+} from '@debhub/pure-irys-client';
 
-console.log(result.version);
-console.log(result.previousIrysId);
+function MyComponent() {
+  const { client, isInitializing } = usePureIrysClient();
+  const { createDocument, isCreating } = useCreateDocument(client);
+  const { document, isLoading } = useDocument(client, docId);
+
+  const handleCreate = async () => {
+    const id = await createDocument({
+      projectId: 'my-project',
+      title: 'New Doc',
+      content: 'Content',
+      tags: ['tag'],
+    });
+  };
+
+  return <div>{document?.title}</div>;
+}
 ```
 
-#### `verify(irysId: string, data: any): Promise<VerificationResult>`
+### Direct Contract Usage
 
-Verify data integrity.
-
-```typescript
-const result = await programmableDataService.verify('irys-tx-id', localData);
-console.log(result.verified);
-console.log(result.localHash);
-console.log(result.irysHash);
-```
-
----
-
-## Database Service
-
-The Database Service provides advanced PostgreSQL operations.
-
-### Features
-
-- **Batch Operations** - Efficient bulk inserts/updates
-- **Transaction Management** - ACID transaction support
-- **Connection Pooling** - Optimized connection management
-- **Query Optimization** - Efficient query execution
-- **Migration Support** - Database schema migrations
-
-### API
-
-#### Connection Management
+For advanced use cases:
 
 ```typescript
-await databaseService.connect();
-await databaseService.disconnect();
-```
+import { ethers } from 'ethers';
+import { CONTRACT_ADDRESSES } from '@debhub/pure-irys-client/contracts/addresses';
+import DocumentRegistryABI from '@debhub/pure-irys-client/contracts/abis/DocumentRegistry.json';
 
-#### Health Checks
+const network = 'testnet'; // or 'mainnet'
+const provider = new ethers.BrowserProvider(window.ethereum);
+const signer = await provider.getSigner();
 
-```typescript
-const isHealthy = await databaseService.healthCheck();
-```
+const documentRegistry = new ethers.Contract(
+  CONTRACT_ADDRESSES[network].DocumentRegistry,
+  DocumentRegistryABI,
+  signer
+);
 
-#### Transactions
-
-```typescript
-await databaseService.transaction(async (tx) => {
-  await tx.project.create({...});
-  await tx.document.create({...});
-});
+// Direct contract interaction
+const tx = await documentRegistry.registerDocument(
+  ethers.encodeBytes32String('irys-id'),
+  ethers.encodeBytes32String('project-id'),
+  'Document Title',
+  [ethers.encodeBytes32String('tag1')]
+);
+await tx.wait();
 ```
 
 ---
@@ -734,28 +808,274 @@ await databaseService.transaction(async (tx) => {
 
 ### Performance Optimization
 
-1. **Use Caching** - Leverage Redis for frequently accessed data
-2. **Batch Operations** - Group related operations
-3. **Optimize Queries** - Use proper indexes and query patterns
-4. **Monitor Metrics** - Track service performance
+1. **Use IndexedDB Caching**:
+   ```typescript
+   // PureIrysClient caches automatically with 5min TTL
+   const doc = await client.getDocument(docId);
+   // → First call: Queries contract + fetches from Irys
+   // → Subsequent calls (within 5min): Returns from IndexedDB
+   ```
+
+2. **Batch Operations**:
+   ```typescript
+   // Instead of multiple updates
+   for (const id of docIds) {
+     await client.updateDocument(id, {...});
+   }
+
+   // Use batch invalidation
+   await cacheController.invalidateBatch(docIds);
+   ```
+
+3. **Lazy Loading**:
+   ```typescript
+   // Don't fetch full content for lists
+   const docs = await client.searchDocuments({
+     projectId: 'my-project',
+     limit: 10,
+   });
+   // → Only fetches metadata from contract
+   // → Fetch full content on demand
+   ```
 
 ### Security
 
-1. **Validate Input** - Always validate user input
-2. **Use Encryption** - Encrypt sensitive data
-3. **Implement Auth** - Proper authentication/authorization
-4. **Rate Limiting** - Prevent abuse
+1. **Permission Checks**:
+   ```typescript
+   // Always check permissions before operations
+   const canEdit = await client.checkPermission(docId, userAddress, 'WRITE');
+   if (!canEdit) {
+     throw new Error('Insufficient permissions');
+   }
+   await client.updateDocument(docId, {...});
+   ```
+
+2. **Input Validation**:
+   ```typescript
+   // Validate on client side before blockchain tx
+   if (!title || title.length > 256) {
+     throw new Error('Invalid title');
+   }
+   await client.createDocument({ title, ... });
+   ```
+
+3. **Gas Optimization**:
+   ```typescript
+   // Estimate gas before transaction
+   const gasEstimate = await contract.estimateGas.registerDocument(...);
+   console.log('Estimated gas:', gasEstimate.toString());
+   ```
 
 ### Error Handling
 
-1. **Graceful Degradation** - Handle service failures
-2. **Proper Logging** - Log errors with context
-3. **Retry Logic** - Implement exponential backoff
-4. **User Feedback** - Provide meaningful error messages
+1. **Graceful Degradation**:
+   ```typescript
+   try {
+     const doc = await client.getDocument(docId);
+   } catch (error) {
+     // Check if Irys is down
+     if (error.message.includes('gateway')) {
+       // Use cached version
+       const cached = await indexedDB.get(docId);
+       return cached;
+     }
+     throw error;
+   }
+   ```
+
+2. **Transaction Retries**:
+   ```typescript
+   async function createWithRetry(data, maxRetries = 3) {
+     for (let i = 0; i < maxRetries; i++) {
+       try {
+         return await client.createDocument(data);
+       } catch (error) {
+         if (i === maxRetries - 1) throw error;
+         await new Promise(r => setTimeout(r, 1000 * (i + 1)));
+       }
+     }
+   }
+   ```
+
+3. **User Feedback**:
+   ```typescript
+   try {
+     await client.updateDocument(docId, { content });
+     toast.success('Document updated successfully');
+   } catch (error) {
+     if (error.code === 'INSUFFICIENT_FUNDS') {
+       toast.error('Insufficient ETH for gas fees');
+     } else if (error.message.includes('permission')) {
+       toast.error('You do not have edit access');
+     } else {
+       toast.error('Failed to update document');
+     }
+   }
+   ```
+
+### Gas Optimization
+
+1. **Minimize Contract Calls**:
+   ```typescript
+   // Bad: Multiple contract reads
+   for (const id of docIds) {
+     const doc = await documentRegistry.getDocument(id);
+   }
+
+   // Good: Batch query (if contract supports)
+   const docs = await documentRegistry.getDocumentsBatch(docIds);
+   ```
+
+2. **Use Events for Monitoring**:
+   ```typescript
+   // Instead of polling
+   setInterval(() => {
+     const doc = await client.getDocument(docId);
+   }, 5000);
+
+   // Listen to events (no gas cost)
+   client.onDocumentUpdate(docId, (id, version) => {
+     // Refresh only when actually updated
+   });
+   ```
 
 ---
 
-For more information, see:
-- [Architecture Documentation](./ARCHITECTURE.md)
-- [API Reference](./API.md)
-- [Getting Started Guide](./GETTING_STARTED.md)
+## Migration from Traditional Services
+
+### PostgreSQL → DocumentRegistry
+
+**Before (SQL)**:
+```sql
+INSERT INTO documents (id, title, content, owner_id)
+VALUES ('doc-123', 'Title', 'Content', 'user-456');
+
+SELECT * FROM documents WHERE owner_id = 'user-456';
+```
+
+**After (Smart Contract)**:
+```typescript
+// Upload to Irys
+const irysId = await irysUploader.upload(content);
+
+// Register in contract
+await documentRegistry.registerDocument(
+  irysId,
+  projectId,
+  title,
+  tags
+);
+
+// Query
+const docs = await documentRegistry.getDocumentsByOwner(ownerAddress);
+```
+
+### Backend Auth → AccessControl
+
+**Before (Backend)**:
+```typescript
+// Backend middleware
+function checkPermission(userId, resourceId, required) {
+  const permission = db.query(
+    'SELECT permission FROM permissions WHERE user_id = ? AND resource_id = ?',
+    [userId, resourceId]
+  );
+  return permission >= required;
+}
+```
+
+**After (Smart Contract)**:
+```typescript
+const hasPermission = await accessControl.hasPermission(
+  resourceId,
+  userAddress,
+  Permission.WRITE
+);
+```
+
+### WebSocket → EventBus
+
+**Before (WebSocket Server)**:
+```typescript
+// Server
+io.on('connection', (socket) => {
+  socket.on('document:update', (data) => {
+    socket.broadcast.emit('document:updated', data);
+  });
+});
+
+// Client
+socket.on('document:updated', (data) => {
+  updateUI(data);
+});
+```
+
+**After (Smart Contract Events)**:
+```typescript
+// Publish event (on-chain)
+await eventBus.publishEvent('document.updated', docId, data);
+
+// Listen to event (off-chain)
+eventBus.on('EventPublished', (eventId, eventType, resourceId, data) => {
+  if (eventType === 'document.updated') {
+    updateUI(data);
+  }
+});
+```
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+1. **"Contract call failed"**:
+   - Verify contract addresses match network (testnet vs mainnet)
+   - Check user is on correct network (Chain ID 1270 or 9990)
+   - Ensure sufficient ETH for gas fees
+
+2. **"Permission denied"**:
+   - Verify user has correct permission level
+   - Check AccessControl contract for resource
+   - Ensure transaction signer is authorized
+
+3. **"Document not found"**:
+   - Verify document exists in DocumentRegistry
+   - Check Irys transaction ID is valid
+   - Ensure document wasn't deleted
+
+### Debug Tools
+
+```typescript
+// Enable verbose logging
+const client = new PureIrysClient(signer, {
+  debug: true // Logs all contract calls
+});
+
+// Check contract deployment
+const code = await provider.getCode(CONTRACT_ADDRESSES.testnet.DocumentRegistry);
+console.log('Contract deployed:', code !== '0x');
+
+// Verify network
+const network = await provider.getNetwork();
+console.log('Connected to:', network.chainId);
+```
+
+---
+
+## Related Documentation
+
+- [Architecture Guide](./ARCHITECTURE.md) - System architecture
+- [Getting Started](./GETTING_STARTED.md) - Development setup
+- [Deployment Guide](./DEPLOYMENT.md) - Production deployment
+- [Pure Irys Setup](../PURE_IRYS_SETUP.md) - Quick start
+
+---
+
+**DeBHuB Pure Irys BaaS** - Smart Contracts Documentation
+
+**Zero Backend. Pure Blockchain. Maximum Decentralization.**
+
+Made with ❤️ by the DeBHuB Team
+
+**Status**: 🟢 Production Ready | **Version**: 3.0.0-pure | **Updated**: 2025-10-16
