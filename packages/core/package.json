@@ -11,14 +11,15 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@debhub/shared": "workspace:*",
-    "@debhub/irys-integration": "workspace:*",
     "@debhub/ai-integration": "workspace:*",
+    "@debhub/irys-integration": "workspace:*",
+    "@debhub/shared": "workspace:*",
     "@prisma/client": "^5.22.0",
     "events": "^3.3.0",
     "redis": "^4.6.0"
   },
   "devDependencies": {
+    "@types/hapi__shot": "^6.0.0",
     "@types/node": "^20.19.12",
     "typescript": "^5.9.2"
   }

@@ -262,17 +262,26 @@ export class PureIrysClient {
       return null;
     }
 
-    // Fetch content from Irys (simplified for now)
+    // Fetch content from Irys
     const irysId = ethers.toUtf8String(doc.irysId).replace(/\x00/g, "");
 
-    // TODO: Fetch actual content from Irys
     let content = "";
     try {
-      // const txData = await this.query.search("irys:transactions").ids([irysId]);
-      // content = txData[0]?.data || "";
-      content = "[Content stored on Irys]"; // Placeholder
+      const gatewayAddress = this.config.irys.network === "testnet"
+        ? "https://gateway.irys.xyz/"
+        : "https://gateway.irys.xyz/";
+
+      const response = await fetch(`${gatewayAddress}${irysId}`);
+      if (response.ok) {
+        content = await response.text();
+        console.log(`✅ Fetched content from Irys: ${irysId.substring(0, 8)}...`);
+      } else {
+        console.warn(`Failed to fetch from Irys gateway: ${response.status}`);
+        content = "[Content not available]";
+      }
     } catch (err) {
       console.warn("Failed to fetch content from Irys:", err);
+      content = "[Content fetch error]";
     }
 
     const document: Document = {

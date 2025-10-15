@@ -58,7 +58,8 @@
       "Bash(git config:*)",
       "Bash(git reflog:*)",
       "Bash(git gc:*)",
-      "Bash(test:*)"
+      "Bash(test:*)",
+      "Bash(if exist node_modules rmdir /s /q node_modules)"
     ],
     "deny": [],
     "ask": []

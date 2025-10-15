@@ -3,8 +3,9 @@ import { CONTRACT_ADDRESSES, IRYS_VM_CHAIN_ID } from '@debhub/shared';
 
 export class BlockchainService {
   private provider: ethers.JsonRpcProvider;
-  private authRolesContract: ethers.Contract;
-  private postsContract: ethers.Contract;
+  private authRolesContract?: ethers.Contract;
+  private postsContract?: ethers.Contract;
+  private enabled: boolean = false;
 
   constructor() {
     // Default to IrysVM network
@@ -24,20 +25,38 @@ export class BlockchainService {
       "event PostUpdated(address indexed author, string newTransactionId, string previousTransactionId)"
     ];
 
-    this.authRolesContract = new ethers.Contract(
-      process.env.AUTH_ROLES_CONTRACT_ADDRESS || CONTRACT_ADDRESSES.AUTH_ROLES,
-      authRolesABI,
-      this.provider
-    );
+    // Only initialize contracts if addresses are provided
+    const authRolesAddress = process.env.AUTH_ROLES_CONTRACT_ADDRESS || CONTRACT_ADDRESSES.AUTH_ROLES;
+    const postsAddress = process.env.POSTS_CONTRACT_ADDRESS || CONTRACT_ADDRESSES.POSTS;
 
-    this.postsContract = new ethers.Contract(
-      process.env.POSTS_CONTRACT_ADDRESS || CONTRACT_ADDRESSES.POSTS,
-      postsABI,
-      this.provider
-    );
+    if (authRolesAddress && authRolesAddress !== '') {
+      this.authRolesContract = new ethers.Contract(
+        authRolesAddress,
+        authRolesABI,
+        this.provider
+      );
+      this.enabled = true;
+    }
+
+    if (postsAddress && postsAddress !== '') {
+      this.postsContract = new ethers.Contract(
+        postsAddress,
+        postsABI,
+        this.provider
+      );
+      this.enabled = true;
+    }
+
+    if (!this.enabled) {
+      console.warn('⚠️ BlockchainService: No contract addresses configured, running in offline mode');
+    }
   }
 
   async hasRole(userAddress: string, role: string): Promise<boolean> {
+    if (!this.enabled || !this.authRolesContract) {
+      console.warn('BlockchainService: Contract not available');
+      return false;
+    }
     try {
       return await this.authRolesContract.hasRole(userAddress, role);
     } catch (error) {
@@ -47,13 +66,17 @@ export class BlockchainService {
   }
 
   async registerPost(irysTransactionId: string, signerPrivateKey: string): Promise<string> {
+    if (!this.enabled || !this.postsContract) {
+      console.warn('BlockchainService: Contract not available, skipping blockchain registration');
+      return 'offline-mode';
+    }
     try {
       const wallet = new ethers.Wallet(signerPrivateKey, this.provider);
       const postsWithSigner = this.postsContract.connect(wallet);
-      
+
       const tx = await postsWithSigner.getFunction("registerPost")(irysTransactionId);
       const receipt = await tx.wait();
-      
+
       console.log(`✅ Post registered on blockchain: ${receipt.hash}`);
       return receipt.hash;
     } catch (error) {
@@ -83,6 +106,10 @@ export class BlockchainService {
   }
 
   subscribeToPostEvents(callback: (author: string, irysTxId: string, timestamp: number) => void) {
+    if (!this.enabled || !this.postsContract) {
+      console.warn('BlockchainService: Contract not available, skipping event subscription');
+      return;
+    }
     this.postsContract.on('PostCreated', (author, irysTxId, timestamp) => {
       callback(author, irysTxId, Number(timestamp));
     });
