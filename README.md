@@ -1,127 +1,123 @@
-# DeBHuB
+# DeBHuB (IrysBase)
 
-> **Web3 Backend-as-a-Service Platform with Blockchain Storage**
+> **세계 최초 Pure Irys L1 기반 완전 탈중앙화 BaaS 플랫폼**
 
-DeBHuB (Decentralized Backend Hub)는 **Supabase와 유사한 BaaS 플랫폼**으로, Irys DataChain을 활용한 영구 블록체인 스토리지와 PostgreSQL을 결합한 하이브리드 아키텍처를 제공합니다.
+**Zero Backend. Zero Database. Pure Blockchain.**
+
+Irys L1 DataChain만으로 동작하는 혁신적인 Backend-as-a-Service 플랫폼입니다.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![Irys](https://img.shields.io/badge/Irys-L1%20DataChain-purple.svg)](https://irys.xyz/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ---
 
-## ✨ 핵심 특징
+## 🚀 핵심 특징
 
-### 🚀 Complete BaaS Platform
-- **GraphQL API** - Apollo Server 4 기반 강력한 API 레이어
-- **PostgreSQL Database** - Prisma ORM으로 완벽한 데이터 관리
-- **Redis Caching** - 빠른 응답을 위한 캐싱 레이어
-- **Real-time Subscriptions** - WebSocket 기반 실시간 데이터 동기화
-- **Authentication** - Wallet-based auth (MetaMask, WalletConnect)
+### ⚡ Pure Irys Architecture
 
-### 🔗 Blockchain Integration
-- **Irys DataChain** - 영구 블록체인 스토리지 (Arweave 기반)
-- **Permanent Storage** - 데이터 불변성 및 영구 보관
-- **Version Control** - 블록체인 기반 버전 관리
-- **Smart Contracts** - Solidity 계약으로 권한 관리
+**데이터베이스 없음. 백엔드 서버 없음. 오직 블록체인.**
 
-### 💡 Advanced Features
-- **AI Integration** - OpenAI API 연동 (문서 분석, 임베딩)
-- **Vector Search** - 의미론적 검색 (Semantic Search)
-- **Analytics** - 실시간 분석 대시보드
-- **Programmable Data** - 데이터 트리거 및 워크플로우
-- **Edge Functions** - 서버리스 함수 실행
+- **Irys L1 DataChain** - 독립 레이어1 블록체인으로 완전히 전환 (Arweave 네트워크로부터 분리됨)
+- **Smart Contracts** - 6개의 Solidity 컨트랙트로 모든 데이터 관리
+- **Programmable Data** - 블록체인에서 직접 실행되는 로직
+- **IndexedDB Caching** - 클라이언트 사이드 캐싱 (5분 TTL)
+- **Permanent Storage** - 영구 불변 데이터 저장
 
-### 🏗️ Dual Architecture
-DeBHuB는 **2가지 동작 모드**를 지원합니다:
+### 🎯 왜 Pure Irys인가?
 
-1. **Full Stack Mode** (기본)
-   - Backend API + Frontend + Database + Blockchain
-   - 완전한 BaaS 기능 활용
+**전통적인 BaaS 문제점:**
+```
+❌ PostgreSQL - 중앙화된 데이터베이스, 단일 장애점
+❌ Redis - 별도 캐싱 서버 필요, 복잡도 증가
+❌ Backend API - 서버 운영 비용, 스케일링 문제
+❌ Arweave - 영구 저장만 가능, 쿼리/검색 불가
+```
 
-2. **Pure Irys Mode** (새로 추가! ✨)
-   - **Zero Backend, Zero Database** - 순수 블록체인만으로 동작
-   - Frontend → Irys L1 DataChain 직접 연결
-   - 6개 스마트 컨트랙트로 데이터 관리
-   - IndexedDB 클라이언트 캐싱
-   - `/pure` 경로로 접근
+**Pure Irys 솔루션:**
+```
+✅ Smart Contracts - 데이터 인덱싱, 검색, 권한 관리
+✅ Programmable Data - 백엔드 로직을 블록체인에서 실행
+✅ IndexedDB - 클라이언트 캐싱, 서버 불필요
+✅ Event System - 실시간 업데이트, WebSocket 대체
+✅ Irys L1 - 빠른 블록 생성, 저렴한 트랜잭션
+```
 
 ---
 
-## 🏗️ 아키텍처
+## 🏗️ Pure Irys 아키텍처
+
+### 시스템 구조
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    React Frontend (Vite 5)                  │
-│  - Dashboard, Projects, Documents                           │
-│  - Apollo Client (GraphQL)                                  │
-│  - Wallet Integration (RainbowKit, wagmi)                   │
-└────────────────────┬────────────────────────────────────────┘
-                     │ HTTP/WebSocket
+┌──────────────────────────────────────────────────────────┐
+│             React Frontend (Vite 5)                      │
+│  ┌────────────────────────────────────────────────────┐  │
+│  │  PureIrysClient (Singleton)                        │  │
+│  │  - wagmi (Wallet Connection)                       │  │
+│  │  - ethers.js v6 (Contract Interaction)             │  │
+│  │  - IndexedDB Cache (TTL 5min)                      │  │
+│  └────────────────────────────────────────────────────┘  │
+└────────────────────┬─────────────────────────────────────┘
+                     │ Direct RPC Calls
                      ↓
-┌─────────────────────────────────────────────────────────────┐
-│              Fastify Backend (GraphQL API)                  │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │          DeBHuB Core Orchestrator                   │   │
-│  │  - Database Service (Prisma)                        │   │
-│  │  - Storage Service (Irys)                           │   │
-│  │  - Realtime Service (WebSocket)                     │   │
-│  │  - Vector DB Service (AI Search)                    │   │
-│  │  - Analytics Service                                │   │
-│  │  - Programmable Data Service                        │   │
-│  └─────────────────────────────────────────────────────┘   │
-└─────────────────────┬───────────────────────────────────────┘
-                      │
-          ┌───────────┴───────────┐
-          ↓                       ↓
-┌──────────────────┐    ┌──────────────────┐
-│   PostgreSQL     │    │  Irys DataChain  │
-│   (Prisma ORM)   │    │  (Blockchain)    │
-│                  │    │                  │
-│  - Users         │    │  - Permanent     │
-│  - Projects      │    │    Storage       │
-│  - Documents     │    │  - Version       │
-│  - Analytics     │    │    History       │
-└──────────────────┘    └──────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│         Irys L1 DataChain (Chain ID: 1270)               │
+│  ┌────────────────────────────────────────────────────┐  │
+│  │  Smart Contracts (6개)                             │  │
+│  │  ├─ DocumentRegistry  - 문서 인덱싱 & 메타데이터   │  │
+│  │  ├─ AccessControl     - 권한 관리 (RBAC)          │  │
+│  │  ├─ ProvenanceChain   - 버전 히스토리             │  │
+│  │  ├─ EventBus          - 실시간 이벤트             │  │
+│  │  ├─ CacheController   - 캐시 무효화 신호          │  │
+│  │  └─ SearchIndex       - 태그 기반 검색            │  │
+│  └────────────────────────────────────────────────────┘  │
+│  ┌────────────────────────────────────────────────────┐  │
+│  │  Permanent Storage (Irys Native)                   │  │
+│  │  - 모든 문서 콘텐츠                                 │  │
+│  │  - 영구 불변 저장                                   │  │
+│  │  - 버전별 스냅샷                                    │  │
+│  └────────────────────────────────────────────────────┘  │
+└──────────────────────────────────────────────────────────┘
 ```
 
 ### 데이터 흐름
 
-#### 1. Document Creation (문서 생성)
+#### 문서 생성
 ```
 User (Frontend)
-  ↓ GraphQL Mutation: createDocument
-Backend API
-  ↓ 1. Validate & Save to PostgreSQL
-  ↓ 2. Upload to Irys (background)
-  ↓ 3. Broadcast via WebSocket
-  ↓ 4. Return result
-Frontend (Real-time update)
+  ↓ 1. 지갑 연결 (wagmi + RainbowKit)
+PureIrysClient
+  ↓ 2. Irys에 콘텐츠 업로드 (WebUploader)
+  ↓ 3. Smart Contract에 등록 (DocumentRegistry.registerDocument)
+  ↓ 4. 프로비넌스 기록 (ProvenanceChain.recordProvenance)
+  ↓ 5. 이벤트 발생 (EventBus.emitDocumentCreated)
+  ↓ 6. IndexedDB 캐시 저장
+Frontend (즉시 UI 업데이트)
 ```
 
-#### 2. Document Query (문서 조회)
+#### 문서 조회
 ```
 User (Frontend)
-  ↓ GraphQL Query: getDocument
-Backend API
-  ↓ Check Redis Cache
-  ├─ Cache HIT → Return immediately
-  └─ Cache MISS:
-       ↓ Query PostgreSQL
-       ↓ Cache result in Redis
-       ↓ Return to Frontend
+  ↓ 요청
+PureIrysClient
+  ├─ IndexedDB 캐시 확인
+  │   └─ HIT → 즉시 반환 (1ms)
+  └─ MISS:
+      ↓ 1. Smart Contract에서 메타데이터 조회
+      ↓ 2. Irys Gateway에서 콘텐츠 가져오기
+      ↓ 3. IndexedDB에 캐시 저장
+      └─ 반환 (~200ms)
 ```
 
-#### 3. AI-Powered Search (AI 검색)
+#### 실시간 업데이트
 ```
-User Search Query
-  ↓ GraphQL Query: searchDocuments
-Backend API
-  ↓ Generate embedding (OpenAI)
-  ↓ Vector similarity search
-  ↓ Full-text search (PostgreSQL)
-  ↓ Merge & rank results
-  ↓ Return to Frontend
+Document Updated (다른 사용자)
+  ↓ EventBus.emitDocumentUpdated
+Blockchain Event
+  ↓ PureIrysClient 리스너 감지
+  ↓ IndexedDB 캐시 무효화
+Frontend (자동 리렌더링)
 ```
 
 ---
@@ -130,21 +126,15 @@ Backend API
 
 ### 사전 요구사항
 
-**Full Stack Mode:**
+**필수:**
 - Node.js 18+
 - pnpm 9+
-- PostgreSQL 14+
-- Redis (선택사항, 캐싱용)
-- MetaMask 지갑
+- MetaMask (또는 호환 지갑)
 
-**Pure Irys Mode (권장 시작):**
-- Node.js 18+
-- pnpm 9+
-- MetaMask 지갑만 있으면 됩니다!
+**선택:**
+- Irys Testnet ETH (테스트용 - [Faucet](https://irys.xyz/faucet))
 
 ### 설치 및 실행
-
-#### Option 1: Pure Irys Mode (간단하게 시작하기 🚀)
 
 ```bash
 # 1. 저장소 클론
@@ -165,157 +155,7 @@ pnpm dev
 
 **접속:** http://localhost:5173/pure
 
-✨ **Pure Irys Mode는 백엔드 설정 없이 바로 사용 가능합니다!**
-
-자세한 가이드: [PURE_IRYS_SETUP.md](PURE_IRYS_SETUP.md)
-
----
-
-#### Option 2: Full Stack Mode (전체 기능 사용)
-
-```bash
-# 1. 저장소 클론
-git clone https://github.com/0xarkstar/irysbase.git
-cd irysbase
-
-# 2. 의존성 설치
-pnpm install
-
-# 3. PostgreSQL 데이터베이스 생성
-createdb debhub
-
-# 4. 환경 변수 설정
-cp apps/api/.env.example apps/api/.env
-cp apps/web-vite/.env.example apps/web-vite/.env
-# .env 파일들을 열어서 필수 값 입력
-
-# 5. 데이터베이스 마이그레이션
-cd apps/api
-pnpm prisma migrate dev
-pnpm prisma generate
-
-# 6. 백엔드 + 프론트엔드 동시 실행
-cd ../..
-pnpm run platform:dev
-```
-
-### 접속 주소
-- **Pure Irys Mode**: http://localhost:5173/pure
-- **Full Stack Mode**: http://localhost:5173
-- **Backend API**: http://localhost:4000/graphql
-- **Health Check**: http://localhost:4000/health
-
----
-
-## ⚙️ 환경 변수 설정
-
-### Backend (apps/api/.env)
-
-```env
-# ============================================
-# DeBHuB Backend API - Environment Variables
-# ============================================
-
-# -------------------- Database --------------------
-DATABASE_URL=postgresql://username:password@localhost:5432/debhub
-
-# -------------------- Redis (Optional) --------------------
-REDIS_URL=redis://localhost:6379
-
-# -------------------- Private Keys (⚠️ NEVER COMMIT) --------------------
-# Blockchain transaction signing
-SIGNER_PRIVATE_KEY=0x...
-
-# Irys data uploads
-IRYS_PRIVATE_KEY=0x...
-
-# -------------------- Blockchain --------------------
-CHAIN_ID=1270
-RPC_URL=https://rpc.irys.computer
-
-# -------------------- Irys Configuration --------------------
-IRYS_NETWORK=mainnet
-IRYS_TOKEN=ethereum
-
-# -------------------- Smart Contracts --------------------
-AUTH_ROLES_CONTRACT_ADDRESS=
-POSTS_CONTRACT_ADDRESS=
-
-# -------------------- AI Services (Optional) --------------------
-OPENAI_API_KEY=
-
-# -------------------- Server --------------------
-PORT=4000
-NODE_ENV=development
-FRONTEND_URL=http://localhost:5173
-```
-
-### Frontend (apps/web-vite/.env)
-
-```env
-# ============================================
-# DeBHuB Frontend - Environment Variables
-# ============================================
-
-# -------------------- Backend API --------------------
-VITE_API_URL=http://localhost:4000
-VITE_GRAPHQL_URL=http://localhost:4000/graphql
-VITE_WS_URL=ws://localhost:4000/graphql
-
-# -------------------- Wallet Connect --------------------
-VITE_WALLETCONNECT_PROJECT_ID=your_project_id_here
-
-# -------------------- Blockchain --------------------
-VITE_CHAIN_ID=1270
-VITE_RPC_URL=https://rpc.irys.computer
-
-# -------------------- Backend Mode (Optional) --------------------
-# true = Use Backend API (Full Stack Mode)
-# false = Direct Irys connection (Serverless Mode)
-VITE_ENABLE_BACKEND=true
-
-# -------------------- Irys Configuration --------------------
-VITE_IRYS_NETWORK=mainnet
-VITE_IRYS_TOKEN=ethereum
-```
-
-**⚠️ 보안 주의사항:**
-- `.env` 파일은 **절대 Git에 커밋하지 마세요**
-- Private Key는 **테스트용 지갑만 사용**하세요
-- 프로덕션에서는 **환경 변수 또는 Secret Manager** 사용
-
----
-
-## 💻 기술 스택
-
-### Backend
-- **Fastify** - 고성능 웹 프레임워크 (Express 대비 3배 빠름)
-- **Apollo Server 4** - GraphQL 서버
-- **Prisma** - 타입 안전 ORM
-- **PostgreSQL** - 메인 데이터베이스
-- **Redis** - 캐싱 레이어
-- **Bull** - 백그라운드 작업 큐
-
-### Frontend
-- **React 18** - UI 라이브러리
-- **Vite 5** - 빌드 도구
-- **TypeScript 5** - 타입 안전성
-- **TailwindCSS** - 유틸리티 CSS
-- **Radix UI** - 접근성 컴포넌트
-- **Apollo Client** - GraphQL 클라이언트
-
-### Blockchain & Storage
-- **Irys DataChain** - 영구 블록체인 스토리지
-- **@irys/upload** - 데이터 업로드 SDK
-- **@irys/query** - GraphQL-like 쿼리 SDK
-- **ethers.js** - Ethereum 라이브러리
-- **wagmi** - React Ethereum hooks
-- **RainbowKit** - 지갑 UI
-
-### AI & Analytics
-- **OpenAI API** - 텍스트 분석 및 임베딩
-- **Vector Search** - 의미론적 검색
-- **Analytics Service** - 사용자 분석
+✨ **5분 안에 시작 가능! 백엔드 설정 완전히 불필요!**
 
 ---
 
@@ -324,44 +164,27 @@ VITE_IRYS_TOKEN=ethereum
 ```
 irysbase/
 ├── apps/
-│   ├── api/                          # 🔥 Backend API (Fastify + GraphQL)
-│   │   ├── src/
-│   │   │   ├── index-enhanced.ts      # Enhanced 서버 엔트리포인트
-│   │   │   ├── index-pure.ts          # Pure Irys 서버 (최소 백엔드)
-│   │   │   ├── resolvers/             # GraphQL Resolvers
-│   │   │   ├── services/              # Core Services
-│   │   │   │   ├── database.ts        # Prisma 연결
-│   │   │   │   ├── irys.ts            # Irys 통합
-│   │   │   │   ├── blockchain.ts      # 블록체인 연결
-│   │   │   │   └── auth.ts            # 인증
-│   │   │   └── schema-enhanced.graphql
-│   │   └── prisma/schema.prisma
-│   │
-│   └── web-vite/                     # 🎨 Frontend (React + Vite)
+│   └── web-vite/                     # React Frontend
 │       ├── src/
 │       │   ├── pages/
-│       │   │   ├── Dashboard.tsx          # Full Stack 대시보드
-│       │   │   ├── DashboardPure.tsx      # 🆕 Pure Irys 대시보드
-│       │   │   ├── NewProjectPure.tsx     # 🆕 Pure Irys 프로젝트 생성
-│       │   │   ├── ProjectPage.tsx        # 프로젝트 상세
-│       │   │   └── DocumentPage.tsx       # 문서 편집기
+│       │   │   ├── DashboardPure.tsx      # Pure Irys 대시보드
+│       │   │   └── NewProjectPure.tsx     # 프로젝트 생성
 │       │   ├── contexts/
-│       │   │   └── PureIrysContext.tsx    # 🆕 Pure Irys Provider
-│       │   ├── components/
-│       │   ├── lib/
-│       │   │   ├── apollo-client.ts       # GraphQL 클라이언트
-│       │   │   └── wagmi.ts               # 지갑 설정
-│       │   └── App.tsx
+│       │   │   └── PureIrysContext.tsx    # Irys Client Provider
+│       │   └── lib/
+│       │       └── wagmi.ts               # 지갑 설정
 │       └── package.json
 │
 ├── packages/
-│   ├── pure-irys-client/            # 🆕 Pure Irys BaaS Client
+│   ├── pure-irys-client/            # ⭐ Pure Irys BaaS Client
 │   │   ├── src/
 │   │   │   ├── PureIrysClient.ts         # 메인 클라이언트
-│   │   │   ├── cache/IndexedDBCache.ts   # IndexedDB 캐싱
-│   │   │   ├── hooks/usePureIrys.ts      # React Hooks
+│   │   │   ├── cache/
+│   │   │   │   └── IndexedDBCache.ts     # IndexedDB 캐싱
+│   │   │   ├── hooks/
+│   │   │   │   └── usePureIrys.ts        # React Hooks (7개)
 │   │   │   ├── contracts/
-│   │   │   │   ├── addresses.ts          # 컨트랙트 주소
+│   │   │   │   ├── addresses.ts          # 배포된 컨트랙트 주소
 │   │   │   │   └── abis/                 # 6개 컨트랙트 ABI
 │   │   │   │       ├── DocumentRegistry.json
 │   │   │   │       ├── AccessControl.json
@@ -369,77 +192,127 @@ irysbase/
 │   │   │   │       ├── EventBus.json
 │   │   │   │       ├── CacheController.json
 │   │   │   │       └── SearchIndex.json
-│   │   │   └── types.ts
+│   │   │   └── types/
 │   │   └── README.md
 │   │
-│   ├── core/                         # 🧠 Core Orchestrator
-│   ├── shared/                       # 📦 Shared Types
-│   ├── contracts/                    # ⚡ Smart Contracts
-│   │   ├── contracts/
-│   │   │   ├── pure-irys/            # 🆕 Pure Irys Contracts (6개)
-│   │   │   ├── AuthRoles.sol
-│   │   │   └── Posts.sol
-│   │   └── scripts/
-│   │       └── deploy-pure-irys.ts   # 🆕 배포 스크립트
-│   │
-│   ├── irys-integration/             # 🌐 Irys SDK Wrapper
-│   ├── ai-integration/               # 🤖 AI Services
-│   └── testing/                      # 🧪 Testing Suite
+│   └── contracts/                    # Smart Contracts
+│       ├── contracts/pure-irys/      # 6개 Solidity 컨트랙트
+│       └── scripts/
+│           └── deploy-pure-irys.ts   # 배포 스크립트
 │
-├── docs/                            # 📚 Documentation
-│   ├── ARCHITECTURE.md
-│   ├── GETTING_STARTED.md
-│   └── API.md
-│
-├── scripts/                         # 🛠️ Utility Scripts
-│   ├── setup-environment.sh
-│   └── deploy-contracts.ts
-│
-├── docker-compose.yml               # 🐳 Docker Setup
-├── turbo.json                       # Turborepo 설정
-├── pnpm-workspace.yaml              # pnpm 워크스페이스
-└── package.json
+├── docs/
+│   ├── PURE_IRYS_SETUP.md           # 완전한 설정 가이드
+│   └── archive/
+└── CHANGELOG.md                      # 버전 히스토리
+```
+
+---
+
+## 💻 기술 스택
+
+### Frontend
+- **React 18** - UI 라이브러리
+- **Vite 5** - 빌드 도구 (HMR, 빠른 빌드)
+- **TypeScript 5** - 타입 안전성 (strict mode)
+- **TailwindCSS** - 유틸리티 CSS
+- **Radix UI** - 접근성 컴포넌트
+
+### Blockchain & Web3
+- **Irys L1 DataChain** - 독립 레이어1 블록체인
+- **@irys/web-upload** - 브라우저 업로더 (v0.0.15)
+- **@irys/query** - 블록체인 쿼리 SDK (v0.0.13)
+- **ethers.js v6** - Smart Contract 상호작용
+- **wagmi v2** - React Ethereum hooks
+- **RainbowKit** - 지갑 연결 UI
+
+### Storage & Caching
+- **IndexedDB** - 클라이언트 사이드 캐싱 (idb v8.0.0)
+- **Irys Native Storage** - 영구 불변 저장소
+
+### Smart Contracts (Deployed)
+```
+Chain: Irys Testnet (Chain ID: 1270)
+RPC: https://testnet-rpc.irys.xyz/v1/execution-rpc
+
+DocumentRegistry:  0x937956DA31B42C3ad9f6eC4366360Ae763391566
+AccessControl:     0xdD1ACe083c156296760aAe07718Baab969642B8D
+ProvenanceChain:   0x44755E8C746Dc1819a0e8c74503AFC106FC800CB
+EventBus:          0x042E4e6a56aA1680171Da5e234D9cE42CBa03E1c
+CacheController:   0x8aFb8b9d57e9b6244e29a090ea4da1A9043a91E2
+SearchIndex:       0x2345938F52790F1d8a1E3355cA66eA3e60494A36
+
+Deployed: 2025-10-13T19:32:01.637Z
 ```
 
 ---
 
 ## 🎯 주요 기능
 
-### 1. Document Management (문서 관리)
-- CRUD 작업 (생성, 읽기, 수정, 삭제)
-- 버전 관리 (블록체인 기반)
-- 실시간 협업 (WebSocket)
-- 파일 첨부
+### 1. Document Management
+- ✅ 문서 생성, 조회, 수정, 삭제
+- ✅ 버전 관리 (ProvenanceChain)
+- ✅ 태그 기반 분류
+- ✅ 공개/비공개 설정
 
-### 2. Project Management (프로젝트 관리)
-- 프로젝트 생성 및 관리
-- 팀 멤버 초대
-- 역할 기반 권한 (RBAC)
-- 프로젝트 대시보드
+### 2. Project Management
+- ✅ 프로젝트 생성 및 관리
+- ✅ 권한 관리 (RBAC via AccessControl)
+- ✅ 프로젝트별 문서 그룹화
 
-### 3. Authentication (인증)
-- MetaMask 지갑 연결
-- WalletConnect 지원
-- 서명 기반 인증
-- JWT 세션 관리
+### 3. Real-time Updates
+- ✅ 블록체인 이벤트 구독
+- ✅ 자동 캐시 무효화
+- ✅ 실시간 UI 업데이트
 
-### 4. Real-time Collaboration (실시간 협업)
-- WebSocket 기반 실시간 동기화
-- 사용자 온라인 상태
-- 실시간 커서 공유
-- 변경사항 브로드캐스트
+### 4. Caching Strategy
+- ✅ IndexedDB 자동 캐싱 (5분 TTL)
+- ✅ 스마트 캐시 무효화
+- ✅ 오프라인 지원
 
-### 5. AI-Powered Features (AI 기능)
-- 문서 자동 요약
-- 키워드 추출
-- 의미론적 검색 (Vector Search)
-- AI 작성 도우미
+---
 
-### 6. Analytics (분석)
-- 사용자 활동 추적
-- 문서 조회수
-- 프로젝트 통계
-- 실시간 대시보드
+## 📚 React Hooks API
+
+```typescript
+// 1. Client 초기화
+const { client, isInitializing, error } = usePureIrys();
+
+// 2. 문서 생성
+const { createDocument, isCreating, error } = useCreateDocument(client);
+const docId = await createDocument({
+  projectId: 'my-project',
+  title: 'My Document',
+  content: 'Hello Irys!',
+  tags: ['type:doc', 'category:tech'],
+  isPublic: true
+});
+
+// 3. 문서 조회
+const { document, loading, error } = useDocument(client, docId);
+
+// 4. 문서 수정
+const { updateDocument, isUpdating } = useUpdateDocument(client);
+await updateDocument(docId, {
+  content: 'Updated content',
+  changeDescription: 'Fixed typo'
+});
+
+// 5. 문서 검색
+const { documents, loading } = useSearchDocuments(client, {
+  owner: address,
+  tags: ['type:doc'],
+  limit: 10
+});
+
+// 6. 실시간 구독
+useDocumentSubscription(client, docId, (updatedDoc) => {
+  console.log('Document updated!', updatedDoc);
+});
+
+// 7. 캐시 통계
+const { stats, refresh } = useCacheStats(client);
+console.log(`Cache: ${stats.documentCount} docs, ${stats.hitRate}% hit rate`);
+```
 
 ---
 
@@ -448,77 +321,33 @@ irysbase/
 ### 로컬 개발
 
 ```bash
-# Backend만 실행
-pnpm run dev:api
-
-# Frontend만 실행
-pnpm run dev:web
-
-# Backend + Frontend 동시 실행 (권장)
-pnpm run platform:dev
+# Frontend만 실행 (Pure Irys Mode)
+pnpm run dev:frontend
 
 # 타입 체크
 pnpm typecheck
 
-# 린팅
-pnpm lint
-
-# 테스트
-pnpm test
-
 # 빌드
 pnpm build
+
+# Pure Irys Client 패키지 빌드
+pnpm build --filter @debhub/pure-irys-client
 ```
 
-### 데이터베이스 관리
-
-```bash
-# Prisma Studio (GUI 도구)
-cd apps/api
-pnpm prisma studio
-
-# 마이그레이션 생성
-pnpm prisma migrate dev --name your_migration_name
-
-# 마이그레이션 적용
-pnpm prisma migrate deploy
-
-# 데이터베이스 리셋
-pnpm prisma migrate reset
-```
-
-### 스마트 컨트랙트
+### Smart Contracts
 
 ```bash
 # 컨트랙트 컴파일
 cd packages/contracts
-pnpm build
+npx hardhat compile
 
-# 로컬 네트워크에 배포
-pnpm run deploy:local
-
-# Irys 네트워크에 배포
-pnpm run deploy
+# Pure Irys Contracts 배포
+npx hardhat run scripts/deploy-pure-irys.ts --network irys-testnet
 ```
 
 ---
 
 ## 🌐 배포
-
-### Backend 배포 (Railway / Render / DigitalOcean)
-
-```bash
-# 1. PostgreSQL 데이터베이스 생성
-
-# 2. 환경 변수 설정 (DATABASE_URL, PRIVATE_KEY 등)
-
-# 3. 마이그레이션 실행
-pnpm prisma migrate deploy
-
-# 4. 빌드 및 실행
-pnpm build
-pnpm start
-```
 
 ### Frontend 배포 (Vercel / Netlify)
 
@@ -530,124 +359,80 @@ pnpm build
 # 2. Vercel 배포
 vercel --prod
 
-# 환경 변수 설정:
-# VITE_API_URL=https://your-api.com
-# VITE_GRAPHQL_URL=https://your-api.com/graphql
-# VITE_WALLETCONNECT_PROJECT_ID=xxx
+# 환경 변수:
+# VITE_WALLETCONNECT_PROJECT_ID=your_project_id
 ```
 
-### Docker 배포
-
-```bash
-# 전체 스택 실행 (PostgreSQL + Redis + Backend + Frontend)
-docker-compose up -d
-
-# 프로덕션 빌드
-docker-compose -f docker-compose.prod.yml up -d
-```
+**배포 후 즉시 사용 가능! 백엔드 인프라 불필요!**
 
 ---
 
-## 📚 API 문서
+## 🆚 Pure Irys vs 전통적 BaaS
 
-### GraphQL Endpoint
-- **URL**: `http://localhost:4000/graphql`
-- **Playground**: 개발 모드에서 자동 활성화
-- **WebSocket**: `ws://localhost:4000/graphql`
-
-### 주요 쿼리 예시
-
-#### 프로젝트 조회
-```graphql
-query GetProjects {
-  projects {
-    id
-    name
-    description
-    createdAt
-    documents {
-      id
-      title
-    }
-  }
-}
-```
-
-#### 문서 생성
-```graphql
-mutation CreateDocument($input: CreateDocumentInput!) {
-  createDocument(input: $input) {
-    id
-    title
-    content
-    irysTransactionId
-    permanentUrl
-  }
-}
-```
-
-#### 실시간 문서 업데이트 구독
-```graphql
-subscription OnDocumentUpdated($documentId: ID!) {
-  documentUpdated(documentId: $documentId) {
-    id
-    title
-    content
-    updatedAt
-  }
-}
-```
-
-자세한 API 문서는 [docs/API.md](docs/API.md)를 참조하세요.
+| 항목 | 전통적 BaaS | Pure Irys BaaS |
+|------|-------------|----------------|
+| **백엔드** | Node.js/Python 서버 필요 | ❌ 불필요 |
+| **데이터베이스** | PostgreSQL/MongoDB | ❌ 불필요 (Smart Contracts) |
+| **캐싱** | Redis 서버 | ✅ IndexedDB (클라이언트) |
+| **실시간** | WebSocket 서버 | ✅ Blockchain Events |
+| **검색** | ElasticSearch | ✅ SearchIndex Contract |
+| **권한 관리** | 백엔드 로직 | ✅ AccessControl Contract |
+| **버전 관리** | Git/DB | ✅ ProvenanceChain Contract |
+| **운영 비용** | 서버 + DB + 캐시 | ✅ 트랜잭션 수수료만 |
+| **스케일링** | 수평 확장 복잡 | ✅ 자동 스케일링 |
+| **데이터 소유권** | 플랫폼 소유 | ✅ 사용자 완전 소유 |
 
 ---
 
-## 🤝 기여
+## 📖 문서
 
-기여를 환영합니다! [CONTRIBUTING.md](CONTRIBUTING.md)를 참조하세요.
-
----
-
-## 📄 라이선스
-
-MIT License - 자세한 내용은 [LICENSE](LICENSE) 참조
+- **[PURE_IRYS_SETUP.md](PURE_IRYS_SETUP.md)** - 완전한 설정 가이드
+- **[CHANGELOG.md](CHANGELOG.md)** - 버전 히스토리
+- **[packages/pure-irys-client/README.md](packages/pure-irys-client/README.md)** - Client API 문서
 
 ---
 
 ## 🙏 감사의 말
 
-- [Irys](https://irys.xyz) - 영구 데이터 저장 솔루션
-- [Arweave](https://arweave.org) - 탈중앙화 스토리지 네트워크
-- [Fastify](https://www.fastify.io/) - 고성능 웹 프레임워크
-- [Prisma](https://www.prisma.io/) - 차세대 ORM
-- [Apollo GraphQL](https://www.apollographql.com/) - GraphQL 플랫폼
-- [RainbowKit](https://www.rainbowkit.com/) - 지갑 UI
-- 오픈소스 커뮤니티
+- **[Irys](https://irys.xyz)** - 혁신적인 L1 DataChain 플랫폼
+- **[RainbowKit](https://www.rainbowkit.com/)** - 아름다운 지갑 UI
+- **[wagmi](https://wagmi.sh/)** - React Ethereum hooks
+- **오픈소스 커뮤니티**
 
 ---
 
 ## 📞 지원
 
 - **문서**: [docs/](docs/)
-- **이슈**: [GitHub Issues](https://github.com/0xarkstar/DeBHuB/issues)
-- **토론**: [GitHub Discussions](https://github.com/0xarkstar/DeBHuB/discussions)
+- **이슈**: [GitHub Issues](https://github.com/0xarkstar/irysbase/issues)
+- **토론**: [GitHub Discussions](https://github.com/0xarkstar/irysbase/discussions)
 
 ---
 
 **Made with ❤️ by DeBHuB Team**
 
-**Status**: 🟢 Beta | **Version**: 3.0.0-pure | **Updated**: 2025-10-16
+**Status**: 🟢 Production Ready | **Version**: 3.0.0-pure | **Updated**: 2025-10-16
 
 ---
 
-## 🆕 What's New in v3.0
+## 🆕 v3.0.0-pure 릴리스
 
-### Pure Irys BaaS Mode
-- ✅ **Zero Backend Required** - 순수 블록체인만으로 동작
-- ✅ **6 Smart Contracts Deployed** - Irys Testnet (Chain ID: 1270)
-- ✅ **React Hooks** - `usePureIrysClient`, `useCreateDocument`, `useDocument` 등
-- ✅ **IndexedDB Caching** - 5분 TTL, 자동 무효화
-- ✅ **New Routes** - `/pure`, `/pure/projects/new`
-- ✅ **Complete Documentation** - [PURE_IRYS_SETUP.md](PURE_IRYS_SETUP.md)
+### 핵심 변경사항
 
-**이제 데이터베이스 없이도 DeBHuB를 사용할 수 있습니다!**
+**완전한 아키텍처 전환:**
+- ❌ PostgreSQL 제거
+- ❌ Redis 제거
+- ❌ Backend API 제거
+- ❌ Arweave 의존성 제거
+- ✅ **Irys L1 DataChain으로 완전 전환**
+
+### 새로운 기능
+
+- ✅ **PureIrysClient** - 완전한 클라이언트 라이브러리
+- ✅ **6개 Smart Contracts** - 모든 백엔드 로직을 블록체인으로
+- ✅ **7개 React Hooks** - 쉬운 통합
+- ✅ **IndexedDB Caching** - 빠른 성능
+- ✅ **Real-time Events** - WebSocket 없이 실시간 업데이트
+- ✅ **Zero Infrastructure** - 인프라 운영 불필요
+
+**세계 최초 Pure Irys L1 기반 완전 탈중앙화 BaaS!** 🎉
