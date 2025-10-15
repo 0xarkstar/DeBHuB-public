@@ -9,8 +9,10 @@ import { useIrysInit } from './lib/irys-hooks'
 
 // Lazy load pages for better performance
 const Dashboard = lazy(() => import('./pages/Dashboard'))
+const DashboardPure = lazy(() => import('./pages/DashboardPure'))
 const DocumentPage = lazy(() => import('./pages/DocumentPage'))
 const NewProjectPage = lazy(() => import('./pages/NewProjectPage'))
+const NewProjectPure = lazy(() => import('./pages/NewProjectPure'))
 const ProjectPage = lazy(() => import('./pages/ProjectPage'))
 const SearchPage = lazy(() => import('./pages/SearchPage'))
 const SettingsPage = lazy(() => import('./pages/SettingsPage'))
@@ -41,6 +43,25 @@ function App() {
         <ApolloWrapper>
           <Routes>
           <Route path="/" element={<DashboardLayout />}>
+            {/* Pure Irys Mode Routes */}
+            <Route
+              path="pure"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <DashboardPure />
+                </Suspense>
+              }
+            />
+            <Route
+              path="pure/projects/new"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <NewProjectPure />
+                </Suspense>
+              }
+            />
+
+            {/* Legacy/Hybrid Mode Routes */}
             <Route
               index
               element={

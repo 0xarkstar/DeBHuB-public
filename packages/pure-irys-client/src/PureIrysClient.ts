@@ -86,10 +86,11 @@ export class PureIrysClient {
     // Initialize Irys L1 WebUploader for browser
     try {
       const provider = this.signer.provider;
+      const rpcUrl = this.config.irys.providerUrl || this.config.network.rpcUrl;
 
       this.irysUploader = await WebUploader(WebEthereum)
         .withProvider(provider)
-        .withRpc(this.config.irys.providerUrl);
+        .withRpc(rpcUrl);
 
       console.log("✅ Irys uploader initialized");
     } catch (err) {

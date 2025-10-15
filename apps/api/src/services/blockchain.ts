@@ -86,17 +86,21 @@ export class BlockchainService {
   }
 
   async updatePost(
-    newTransactionId: string, 
-    previousTransactionId: string, 
+    newTransactionId: string,
+    previousTransactionId: string,
     signerPrivateKey: string
   ): Promise<string> {
+    if (!this.enabled || !this.postsContract) {
+      console.warn('BlockchainService: Contract not available, skipping blockchain update');
+      return 'offline-mode';
+    }
     try {
       const wallet = new ethers.Wallet(signerPrivateKey, this.provider);
       const postsWithSigner = this.postsContract.connect(wallet);
-      
+
       const tx = await postsWithSigner.getFunction("updatePost")(newTransactionId, previousTransactionId);
       const receipt = await tx.wait();
-      
+
       console.log(`✅ Post updated on blockchain: ${receipt.hash}`);
       return receipt.hash;
     } catch (error) {
@@ -116,6 +120,10 @@ export class BlockchainService {
   }
 
   async getPostCreatedEvents(fromBlock: number = 0) {
+    if (!this.enabled || !this.postsContract) {
+      console.warn('BlockchainService: Contract not available, skipping event query');
+      return [];
+    }
     try {
       const filter = this.postsContract.filters.PostCreated();
       const events = await this.postsContract.queryFilter(filter, fromBlock);

@@ -39,9 +39,12 @@ DeBHuB는 **2가지 동작 모드**를 지원합니다:
    - Backend API + Frontend + Database + Blockchain
    - 완전한 BaaS 기능 활용
 
-2. **Serverless Mode** (선택)
-   - Frontend만으로 Irys 직접 연결
-   - 백엔드 없이 탈중앙화 동작
+2. **Pure Irys Mode** (새로 추가! ✨)
+   - **Zero Backend, Zero Database** - 순수 블록체인만으로 동작
+   - Frontend → Irys L1 DataChain 직접 연결
+   - 6개 스마트 컨트랙트로 데이터 관리
+   - IndexedDB 클라이언트 캐싱
+   - `/pure` 경로로 접근
 
 ---
 
@@ -127,18 +130,53 @@ Backend API
 
 ### 사전 요구사항
 
+**Full Stack Mode:**
 - Node.js 18+
 - pnpm 9+
 - PostgreSQL 14+
 - Redis (선택사항, 캐싱용)
 - MetaMask 지갑
 
+**Pure Irys Mode (권장 시작):**
+- Node.js 18+
+- pnpm 9+
+- MetaMask 지갑만 있으면 됩니다!
+
 ### 설치 및 실행
+
+#### Option 1: Pure Irys Mode (간단하게 시작하기 🚀)
 
 ```bash
 # 1. 저장소 클론
-git clone https://github.com/0xarkstar/DeBHuB.git
-cd DeBHuB
+git clone https://github.com/0xarkstar/irysbase.git
+cd irysbase
+
+# 2. 의존성 설치
+pnpm install
+
+# 3. 환경 변수 설정 (선택사항)
+cp apps/web-vite/.env.example apps/web-vite/.env
+# VITE_WALLETCONNECT_PROJECT_ID만 설정하면 됩니다
+
+# 4. 프론트엔드 실행
+cd apps/web-vite
+pnpm dev
+```
+
+**접속:** http://localhost:5173/pure
+
+✨ **Pure Irys Mode는 백엔드 설정 없이 바로 사용 가능합니다!**
+
+자세한 가이드: [PURE_IRYS_SETUP.md](PURE_IRYS_SETUP.md)
+
+---
+
+#### Option 2: Full Stack Mode (전체 기능 사용)
+
+```bash
+# 1. 저장소 클론
+git clone https://github.com/0xarkstar/irysbase.git
+cd irysbase
 
 # 2. 의존성 설치
 pnpm install
@@ -149,7 +187,7 @@ createdb debhub
 # 4. 환경 변수 설정
 cp apps/api/.env.example apps/api/.env
 cp apps/web-vite/.env.example apps/web-vite/.env
-# .env 파일들을 열어서 필수 값 입력 (아래 참조)
+# .env 파일들을 열어서 필수 값 입력
 
 # 5. 데이터베이스 마이그레이션
 cd apps/api
@@ -162,7 +200,8 @@ pnpm run platform:dev
 ```
 
 ### 접속 주소
-- **Frontend**: http://localhost:5173
+- **Pure Irys Mode**: http://localhost:5173/pure
+- **Full Stack Mode**: http://localhost:5173
 - **Backend API**: http://localhost:4000/graphql
 - **Health Check**: http://localhost:4000/health
 
@@ -283,70 +322,69 @@ VITE_IRYS_TOKEN=ethereum
 ## 📦 프로젝트 구조
 
 ```
-debhub/
+irysbase/
 ├── apps/
 │   ├── api/                          # 🔥 Backend API (Fastify + GraphQL)
 │   │   ├── src/
 │   │   │   ├── index-enhanced.ts      # Enhanced 서버 엔트리포인트
+│   │   │   ├── index-pure.ts          # Pure Irys 서버 (최소 백엔드)
 │   │   │   ├── resolvers/             # GraphQL Resolvers
-│   │   │   │   ├── enhanced-resolvers.ts
-│   │   │   │   └── index.ts
 │   │   │   ├── services/              # Core Services
 │   │   │   │   ├── database.ts        # Prisma 연결
 │   │   │   │   ├── irys.ts            # Irys 통합
 │   │   │   │   ├── blockchain.ts      # 블록체인 연결
-│   │   │   │   ├── auth.ts            # 인증
-│   │   │   │   └── irysbase-platform.ts  # 플랫폼 Orchestrator
-│   │   │   ├── workers/               # 백그라운드 Workers
-│   │   │   │   ├── sync-worker.ts     # Irys 동기화
-│   │   │   │   └── event-listener.ts  # 이벤트 처리
-│   │   │   ├── schema-enhanced.graphql  # GraphQL 스키마
-│   │   │   └── utils/
-│   │   ├── prisma/
-│   │   │   └── schema.prisma          # 데이터베이스 스키마
-│   │   └── package.json
+│   │   │   │   └── auth.ts            # 인증
+│   │   │   └── schema-enhanced.graphql
+│   │   └── prisma/schema.prisma
 │   │
 │   └── web-vite/                     # 🎨 Frontend (React + Vite)
 │       ├── src/
 │       │   ├── pages/
-│       │   │   ├── Dashboard.tsx      # 프로젝트 대시보드
-│       │   │   ├── ProjectPage.tsx    # 프로젝트 상세
-│       │   │   └── DocumentPage.tsx   # 문서 편집기
+│       │   │   ├── Dashboard.tsx          # Full Stack 대시보드
+│       │   │   ├── DashboardPure.tsx      # 🆕 Pure Irys 대시보드
+│       │   │   ├── NewProjectPure.tsx     # 🆕 Pure Irys 프로젝트 생성
+│       │   │   ├── ProjectPage.tsx        # 프로젝트 상세
+│       │   │   └── DocumentPage.tsx       # 문서 편집기
+│       │   ├── contexts/
+│       │   │   └── PureIrysContext.tsx    # 🆕 Pure Irys Provider
 │       │   ├── components/
 │       │   ├── lib/
-│       │   │   ├── apollo-client.ts   # GraphQL 클라이언트
-│       │   │   ├── irys-database.ts   # Serverless 모드용
-│       │   │   └── wagmi.ts           # 지갑 설정
+│       │   │   ├── apollo-client.ts       # GraphQL 클라이언트
+│       │   │   └── wagmi.ts               # 지갑 설정
 │       │   └── App.tsx
 │       └── package.json
 │
 ├── packages/
+│   ├── pure-irys-client/            # 🆕 Pure Irys BaaS Client
+│   │   ├── src/
+│   │   │   ├── PureIrysClient.ts         # 메인 클라이언트
+│   │   │   ├── cache/IndexedDBCache.ts   # IndexedDB 캐싱
+│   │   │   ├── hooks/usePureIrys.ts      # React Hooks
+│   │   │   ├── contracts/
+│   │   │   │   ├── addresses.ts          # 컨트랙트 주소
+│   │   │   │   └── abis/                 # 6개 컨트랙트 ABI
+│   │   │   │       ├── DocumentRegistry.json
+│   │   │   │       ├── AccessControl.json
+│   │   │   │       ├── ProvenanceChain.json
+│   │   │   │       ├── EventBus.json
+│   │   │   │       ├── CacheController.json
+│   │   │   │       └── SearchIndex.json
+│   │   │   └── types.ts
+│   │   └── README.md
+│   │
 │   ├── core/                         # 🧠 Core Orchestrator
-│   │   ├── src/
-│   │   │   ├── orchestrator.ts        # 중앙 조정 시스템
-│   │   │   └── index.ts
-│   │   └── package.json
-│   │
 │   ├── shared/                       # 📦 Shared Types
-│   │   ├── src/
-│   │   │   ├── types.ts
-│   │   │   └── constants.ts
-│   │   └── package.json
-│   │
 │   ├── contracts/                    # ⚡ Smart Contracts
 │   │   ├── contracts/
+│   │   │   ├── pure-irys/            # 🆕 Pure Irys Contracts (6개)
 │   │   │   ├── AuthRoles.sol
 │   │   │   └── Posts.sol
-│   │   └── hardhat.config.ts
+│   │   └── scripts/
+│   │       └── deploy-pure-irys.ts   # 🆕 배포 스크립트
 │   │
 │   ├── irys-integration/             # 🌐 Irys SDK Wrapper
-│   │   └── src/
-│   │
 │   ├── ai-integration/               # 🤖 AI Services
-│   │   └── src/
-│   │
 │   └── testing/                      # 🧪 Testing Suite
-│       └── src/
 │
 ├── docs/                            # 📚 Documentation
 │   ├── ARCHITECTURE.md
@@ -598,4 +636,18 @@ MIT License - 자세한 내용은 [LICENSE](LICENSE) 참조
 
 **Made with ❤️ by DeBHuB Team**
 
-**Status**: 🟢 Beta | **Version**: 2.0.0 | **Updated**: 2025-01-10
+**Status**: 🟢 Beta | **Version**: 3.0.0-pure | **Updated**: 2025-10-16
+
+---
+
+## 🆕 What's New in v3.0
+
+### Pure Irys BaaS Mode
+- ✅ **Zero Backend Required** - 순수 블록체인만으로 동작
+- ✅ **6 Smart Contracts Deployed** - Irys Testnet (Chain ID: 1270)
+- ✅ **React Hooks** - `usePureIrysClient`, `useCreateDocument`, `useDocument` 등
+- ✅ **IndexedDB Caching** - 5분 TTL, 자동 무효화
+- ✅ **New Routes** - `/pure`, `/pure/projects/new`
+- ✅ **Complete Documentation** - [PURE_IRYS_SETUP.md](PURE_IRYS_SETUP.md)
+
+**이제 데이터베이스 없이도 DeBHuB를 사용할 수 있습니다!**
