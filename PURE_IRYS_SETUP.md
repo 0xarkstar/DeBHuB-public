@@ -617,8 +617,7 @@ MIT License - See LICENSE file
 
 ## 🙏 Acknowledgments
 
-- [Irys](https://irys.xyz) - Permanent data storage
-- [Arweave](https://arweave.org) - Decentralized network
+- [Irys](https://irys.xyz) - L1 DataChain for permanent storage
 - [ethers.js](https://ethers.org) - Ethereum interactions
 - [wagmi](https://wagmi.sh) - React Ethereum hooks
 - [RainbowKit](https://rainbowkit.com) - Wallet UI

@@ -93,7 +93,7 @@ See [PURE_IRYS_SETUP.md](PURE_IRYS_SETUP.md) for quick start guide.
 - Frontend: React 18 + Vite 5
 - Database: PostgreSQL 14+
 - Caching: Redis
-- Blockchain: Irys DataChain + Arweave
+- Blockchain: Irys DataChain (L1 independent blockchain)
 
 ---
 
