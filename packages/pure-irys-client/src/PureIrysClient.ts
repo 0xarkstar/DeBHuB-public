@@ -3,6 +3,8 @@ import { WebUploader } from "@irys/web-upload";
 import { WebEthereum } from "@irys/web-upload-ethereum";
 import Query from "@irys/query";
 import { IndexedDBCache } from "./cache/IndexedDBCache";
+import { VectorClient } from "./VectorClient";
+import { SemanticSearch } from "./SemanticSearch";
 import {
   PureIrysClientConfig,
   Document,
@@ -41,6 +43,11 @@ export class PureIrysClient {
   private eventBus!: Contract;
   private cacheController!: Contract;
   private searchIndex!: Contract;
+  private vectorRegistry!: Contract;
+
+  // Vector DB & Semantic Search
+  private vectorClient!: VectorClient;
+  private semanticSearchEngine!: SemanticSearch;
 
   private initialized = false;
 
@@ -146,6 +153,33 @@ export class PureIrysClient {
       SearchIndexABI.abi,
       this.signer
     );
+
+    // Note: VectorRegistry will be initialized when contract is deployed
+    // For now, we'll check if the address exists in config
+    if (this.config.contracts.vectorRegistry) {
+      const VectorRegistryABI = await import("./contracts/abis/VectorRegistry.json");
+      this.vectorRegistry = new Contract(
+        this.config.contracts.vectorRegistry,
+        VectorRegistryABI.abi,
+        this.signer
+      );
+
+      // Initialize Vector DB components
+      this.vectorClient = new VectorClient(
+        this.irysUploader,
+        this.signer,
+        this.config.ai?.openaiApiKey
+      );
+
+      this.semanticSearchEngine = new SemanticSearch(
+        this.vectorClient,
+        this.vectorRegistry,
+        this.cache,
+        this.signer
+      );
+
+      console.log("✅ Vector DB initialized");
+    }
   }
 
   /**
@@ -463,6 +497,113 @@ export class PureIrysClient {
   async clearCache(): Promise<void> {
     await this.cache.clear();
   }
+
+  // ==================== Vector DB & Semantic Search ====================
+
+  /**
+   * Create vector embedding for a document and store it
+   * Enables semantic search and AI-powered document discovery
+   */
+  async createDocumentVector(
+    docId: string,
+    content: string,
+    metadata?: Record<string, any>
+  ): Promise<void> {
+    await this.ensureInitialized();
+
+    if (!this.vectorClient || !this.vectorRegistry) {
+      throw new Error("Vector DB not initialized. Please deploy VectorRegistry contract.");
+    }
+
+    // 1. Store vector on Irys
+    const vectorRecord = await this.vectorClient.storeVector(
+      docId,
+      content,
+      metadata
+    );
+
+    // 2. Register in VectorRegistry smart contract
+    const docIdBytes = ethers.id(docId);
+    const irysVectorIdBytes = ethers.id(vectorRecord.irysVectorId);
+    const clusterIdBytes = ethers.id(vectorRecord.clusterId);
+
+    await this.vectorRegistry.registerVector(
+      docIdBytes,
+      irysVectorIdBytes,
+      vectorRecord.dimensions,
+      vectorRecord.model,
+      clusterIdBytes
+    );
+
+    console.log(`✅ Vector created for document: ${docId}`);
+  }
+
+  /**
+   * Semantic search - find documents by meaning, not just keywords
+   */
+  async semanticSearch(
+    query: string,
+    options?: { limit?: number; threshold?: number; projectId?: string }
+  ) {
+    await this.ensureInitialized();
+
+    if (!this.semanticSearchEngine) {
+      throw new Error("Semantic search not available. Vector DB not initialized.");
+    }
+
+    return await this.semanticSearchEngine.search(query, options);
+  }
+
+  /**
+   * Find documents similar to an existing document
+   */
+  async findSimilarDocuments(docId: string, options?: { limit?: number }) {
+    await this.ensureInitialized();
+
+    if (!this.semanticSearchEngine) {
+      throw new Error("Semantic search not available. Vector DB not initialized.");
+    }
+
+    return await this.semanticSearchEngine.findSimilarDocuments(docId, options);
+  }
+
+  /**
+   * Ask a question using RAG (Retrieval-Augmented Generation)
+   */
+  async askQuestion(question: string, options?: { maxContext?: number; projectId?: string }) {
+    await this.ensureInitialized();
+
+    if (!this.semanticSearchEngine) {
+      throw new Error("Q&A not available. Vector DB not initialized.");
+    }
+
+    return await this.semanticSearchEngine.askQuestion(question, options);
+  }
+
+  /**
+   * Get document suggestions based on content
+   */
+  async getDocumentSuggestions(
+    content: string,
+    options?: { limit?: number; excludeDocId?: string }
+  ) {
+    await this.ensureInitialized();
+
+    if (!this.semanticSearchEngine) {
+      throw new Error("Suggestions not available. Vector DB not initialized.");
+    }
+
+    return await this.semanticSearchEngine.getSuggestions(content, options);
+  }
+
+  /**
+   * Check if Vector DB is available
+   */
+  isVectorDBAvailable(): boolean {
+    return !!this.vectorClient && !!this.vectorRegistry && !!this.semanticSearchEngine;
+  }
+
+  // ==================== Private Helpers ====================
 
   /**
    * Ensure client is initialized
