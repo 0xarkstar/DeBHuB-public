@@ -8,39 +8,30 @@
   "scripts": {
     "setup": "bash scripts/setup-environment.sh",
     "setup:clean": "docker-compose down -v && rm -rf node_modules packages/*/node_modules apps/*/node_modules && pnpm setup",
-    
     "deploy:contracts": "tsx scripts/deploy-contracts.ts",
     "deploy:local": "tsx scripts/deploy-contracts.ts --network localhost",
-    
     "dev": "turbo run dev --parallel",
     "dev:api": "turbo run dev --filter=@debhub/api",
     "dev:web": "turbo run dev --filter=@debhub/web-vite",
     "dev:enhanced": "concurrently \"pnpm run api:dev:enhanced\" \"pnpm run web:dev\"",
     "dev:frontend": "cd apps/web-vite && pnpm run dev",
-    
     "build": "turbo run build",
     "build:docker": "docker build -t debhub:latest .",
-    
     "test": "turbo run test",
     "test:integration": "vitest run --config packages/testing/vitest.integration.config.ts",
     "test:e2e": "playwright test",
     "test:all": "pnpm test && pnpm test:integration",
-    
     "db:migrate": "turbo run db:migrate",
     "db:seed": "turbo run db:seed",
     "db:reset": "turbo run db:reset",
-    
     "start": "node dist/index.js",
     "start:prod": "NODE_ENV=production pnpm start",
-    
     "monitor": "node scripts/monitor.js",
     "health": "curl http://localhost:4000/health || echo 'Health check failed'",
-    
     "clean": "turbo run clean && rm -rf node_modules",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
-    
     "contracts:deploy": "cd packages/contracts && pnpm run deploy",
     "contracts:compile": "cd packages/contracts && pnpm run build",
     "api:dev": "cd apps/api && pnpm run dev",
@@ -48,22 +39,22 @@
     "web:dev": "cd apps/web-vite && pnpm run dev",
     "platform:dev": "concurrently \"pnpm run api:dev:enhanced\" \"pnpm run web:dev\"",
     "platform:build": "pnpm run build && pnpm run contracts:compile",
-    
     "release": "changeset",
     "release:publish": "changeset publish"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.7",
     "@types/node": "^20.19.12",
-    "concurrently": "^9.2.1",
-    "turbo": "^1.13.4",
-    "typescript": "^5.9.2",
-    "tsx": "^4.19.2",
-    "prettier": "^3.3.3",
+    "axios": "^1.7.9",
     "blessed": "^0.1.81",
     "blessed-contrib": "^4.11.0",
-    "axios": "^1.7.9",
     "chalk": "^4.1.2",
-    "vitest": "^1.6.0",
-    "@changesets/cli": "^2.27.7"
+    "concurrently": "^9.2.1",
+    "prettier": "^3.3.3",
+    "puppeteer": "^24.25.0",
+    "tsx": "^4.19.2",
+    "turbo": "^1.13.4",
+    "typescript": "^5.9.2",
+    "vitest": "^1.6.0"
   }
 }

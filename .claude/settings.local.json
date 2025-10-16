@@ -59,7 +59,17 @@
       "Bash(git reflog:*)",
       "Bash(git gc:*)",
       "Bash(test:*)",
-      "Bash(if exist node_modules rmdir /s /q node_modules)"
+      "Bash(if exist node_modules rmdir /s /q node_modules)",
+      "Bash(git pull:*)",
+      "WebFetch(domain:chainwire.org)",
+      "Bash(npx hardhat compile:*)",
+      "Bash(npx hardhat run:*)",
+      "Bash(node:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(code:*)",
+      "Bash(claude mcp add playwright npx @playwright/mcp@latest)",
+      "Bash(claude mcp:*)",
+      "Bash(npx puppeteer browsers:*)"
     ],
     "deny": [],
     "ask": []
