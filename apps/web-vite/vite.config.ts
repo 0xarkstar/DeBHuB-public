@@ -15,14 +15,15 @@ export default defineConfig({
       crypto: 'crypto-browserify',
       buffer: 'buffer',
       util: 'util',
+      process: 'process/browser',
     },
     // Ensure proper module resolution
-    dedupe: ['stream-browserify', 'crypto-browserify', 'buffer', 'util'],
+    dedupe: ['stream-browserify', 'crypto-browserify', 'buffer', 'util', 'process'],
   },
   define: {
     global: 'globalThis',
     'process.env': {},
-    'Buffer': ['buffer', 'Buffer'],
+    'process.browser': true,
   },
   optimizeDeps: {
     esbuildOptions: {
@@ -30,6 +31,7 @@ export default defineConfig({
         global: 'globalThis',
       },
     },
+    include: ['buffer', 'process', 'util'],
   },
   server: {
     port: 3000,
