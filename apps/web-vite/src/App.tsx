@@ -21,6 +21,7 @@ const BlockchainPage = lazy(() => import('./pages/BlockchainPage'))
 const UsagePage = lazy(() => import('./pages/UsagePage'))
 const ProgrammableDataPage = lazy(() => import('./pages/ProgrammableDataPage'))
 const PureIrysTestPage = lazy(() => import('./pages/PureIrysTestPage'))
+const VectorDBTest = lazy(() => import('./pages/VectorDBTest'))
 
 // Loading fallback component
 const PageLoader = () => (
@@ -147,6 +148,14 @@ function App() {
               element={
                 <Suspense fallback={<PageLoader />}>
                   <PureIrysTestPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="vector-db-test"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <VectorDBTest />
                 </Suspense>
               }
             />

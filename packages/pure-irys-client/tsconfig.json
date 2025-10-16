@@ -12,8 +12,9 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
+    "allowImportingTsExtensions": false,
     "types": ["node"],
     "jsx": "react"
   },

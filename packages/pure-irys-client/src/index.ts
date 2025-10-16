@@ -6,20 +6,20 @@
  * Now with AI-powered Vector DB & Semantic Search!
  */
 
-export { PureIrysClient } from "./PureIrysClient";
-export { IndexedDBCache } from "./cache/IndexedDBCache";
-export * from "./types";
-export { PURE_IRYS_CONTRACTS, NETWORK } from "./contracts/addresses";
+export { PureIrysClient } from "./PureIrysClient.js";
+export { IndexedDBCache } from "./cache/IndexedDBCache.js";
+export * from "./types.js";
+export { PURE_IRYS_CONTRACTS, NETWORK } from "./contracts/addresses.js";
 
 // Vector DB & Semantic Search
-export { VectorClient } from "./VectorClient";
-export { SemanticSearch } from "./SemanticSearch";
+export { VectorClient } from "./VectorClient.js";
+export { SemanticSearch } from "./SemanticSearch.js";
 export type {
   VectorData,
   VectorRecord,
   SimilaritySearchOptions,
   SimilarityResult,
-} from "./VectorClient";
+} from "./VectorClient.js";
 export type {
   SemanticSearchOptions,
   SemanticSearchResult,
@@ -29,7 +29,7 @@ export type {
   QAAnswer,
   SuggestionOptions,
   DocumentSuggestion,
-} from "./SemanticSearch";
+} from "./SemanticSearch.js";
 
 // React Hooks - Document Management
 export {
@@ -40,7 +40,7 @@ export {
   useSearchDocuments,
   useDocumentSubscription,
   useCacheStats,
-} from "./hooks/usePureIrys";
+} from "./hooks/usePureIrys.js";
 
 // React Hooks - Vector DB & AI
 export {
@@ -50,4 +50,4 @@ export {
   useDocumentSuggestions,
   useCreateVector,
   useVectorDBStatus,
-} from "./hooks/useVectorDB";
+} from "./hooks/useVectorDB.js";
