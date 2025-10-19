@@ -2,23 +2,23 @@ import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { http } from 'wagmi';
 import { mainnet, sepolia } from 'wagmi/chains';
 
-// IrysVM Chain Configuration
+// IrysVM Testnet Chain Configuration
 export const irysVM = {
   id: 1270,
-  name: 'IrysVM',
+  name: 'Irys Testnet',
   nativeCurrency: {
     decimals: 18,
-    name: 'Ethereum',
-    symbol: 'ETH',
+    name: 'IRYS',
+    symbol: 'IRYS',
   },
   rpcUrls: {
-    default: { http: ['https://rpc.irys.xyz'] },
-    public: { http: ['https://rpc.irys.xyz'] },
+    default: { http: ['https://testnet-rpc.irys.xyz/v1/execution-rpc'] },
+    public: { http: ['https://testnet-rpc.irys.xyz/v1/execution-rpc'] },
   },
   blockExplorers: {
-    default: { name: 'IrysVM Explorer', url: 'https://explorer.irys.xyz' },
+    default: { name: 'Irys Testnet Explorer', url: 'https://testnet-explorer.irys.xyz' },
   },
-  testnet: false,
+  testnet: true,
 } as const;
 
 export const config = getDefaultConfig({
