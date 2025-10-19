@@ -1,6 +1,7 @@
 import { ethers, Contract, Signer } from "ethers";
 import { WebUploader } from "@irys/web-upload";
 import { WebEthereum } from "@irys/web-upload-ethereum";
+import { EthersV6Adapter } from "@irys/web-upload-ethereum-ethers-v6";
 import Query from "@irys/query";
 import { IndexedDBCache } from "./cache/IndexedDBCache";
 import { VectorClient } from "./VectorClient";
@@ -90,18 +91,21 @@ export class PureIrysClient {
       await this.cache.init();
     }
 
-    // Initialize Irys L1 WebUploader for browser
+    // Initialize Irys L1 WebUploader for browser with ethers v6
     try {
       const provider = this.signer.provider;
-      const rpcUrl = this.config.irys.providerUrl || this.config.network.rpcUrl;
+
+      if (!provider) {
+        throw new Error("Signer does not have a provider attached");
+      }
 
       this.irysUploader = await WebUploader(WebEthereum)
-        .withProvider(provider)
-        .withRpc(rpcUrl);
+        .withAdapter(EthersV6Adapter(provider));
 
-      console.log("✅ Irys uploader initialized");
+      console.log("✅ Irys uploader initialized with ethers v6 adapter");
     } catch (err) {
       console.warn("⚠️ Irys uploader initialization deferred:", err);
+      throw err; // Re-throw to surface the error during development
     }
 
     // Initialize smart contracts

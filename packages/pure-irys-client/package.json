@@ -36,6 +36,7 @@
     "@irys/query": "^0.0.13",
     "@irys/web-upload": "^0.0.15",
     "@irys/web-upload-ethereum": "^0.0.16",
+    "@irys/web-upload-ethereum-ethers-v6": "^0.0.16",
     "ethers": "^6.15.0",
     "idb": "^8.0.0"
   },

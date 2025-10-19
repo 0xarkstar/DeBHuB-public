@@ -129,10 +129,10 @@ export default function CreateData() {
       setValidationError('');
       setError(null);
 
-      // Prepare tags
+      // Prepare tags as string array
       const tags = [
-        { name: 'type', value: selectedTemplate },
-        ...customTags.split(',').map(t => t.trim()).filter(Boolean).map(tag => ({ name: 'tag', value: tag })),
+        `type:${selectedTemplate}`,
+        ...customTags.split(',').map(t => t.trim()).filter(Boolean),
       ];
 
       // Create document
@@ -141,9 +141,8 @@ export default function CreateData() {
       const createPromise = client.createDocument({
         projectId: 'data-console',
         title: title || `${TEMPLATES[selectedTemplate].name} - ${Date.now()}`,
-        content: parsed,
+        content: JSON.stringify(parsed), // Convert to string
         tags,
-        visibility: isPublic ? 'public' : 'private',
       });
 
       toast.promise(createPromise, {
