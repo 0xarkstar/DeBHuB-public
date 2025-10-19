@@ -14,6 +14,7 @@ import {
 
 import { ConnectWallet } from '@/components/ConnectWallet';
 import { NetworkStatus } from '@/components/shared/NetworkStatus';
+import { NetworkGuard } from '@/components/NetworkGuard';
 import { IrysBalance } from '@/components/IrysBalance';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -35,6 +36,9 @@ export default function DashboardLayout() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Network Guard - Blocks UI if wrong network */}
+      <NetworkGuard />
+
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div

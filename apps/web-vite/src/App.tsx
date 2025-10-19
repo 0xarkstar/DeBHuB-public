@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
 import { Providers } from './providers'
 import { ApolloWrapper } from './lib/apollo-wrapper'
 import { ErrorBoundary } from './components/ErrorBoundary'
@@ -48,6 +49,30 @@ function App() {
     <ErrorBoundary>
       <Providers>
         <ApolloWrapper>
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 4000,
+              style: {
+                background: '#363636',
+                color: '#fff',
+              },
+              success: {
+                duration: 3000,
+                iconTheme: {
+                  primary: '#4ade80',
+                  secondary: '#fff',
+                },
+              },
+              error: {
+                duration: 5000,
+                iconTheme: {
+                  primary: '#f87171',
+                  secondary: '#fff',
+                },
+              },
+            }}
+          />
           <Routes>
           <Route path="/" element={<DashboardLayout />}>
             {/* Data Management Console Routes */}
