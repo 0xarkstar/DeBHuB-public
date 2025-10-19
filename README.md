@@ -436,3 +436,20 @@ vercel --prod
 - ✅ **Zero Infrastructure** - 인프라 운영 불필요
 
 **세계 최초 Pure Irys L1 기반 완전 탈중앙화 BaaS!** 🎉
+
+---
+
+## 📚 Documentation
+
+Complete documentation is available in the [`docs/`](./docs) directory:
+
+- **[Architecture](./docs/architecture)** - System design and technical analysis
+- **[Guides](./docs/guides)** - User guides and tutorials
+- **[Testing](./docs/testing)** - Test reports and QA documentation
+- **[Development](./docs/development)** - Internal development docs
+
+**Quick Links:**
+- [Getting Started](./docs/guides/USER_GUIDE_NEXT_STEPS.md)
+- [Architecture Overview](./docs/architecture/IRYS_ARCHITECTURE_ANALYSIS.md)
+- [IrysVM Status](./docs/architecture/IRYSVM_STATUS_REPORT.md)
+- [Frontend Testing Report](./docs/testing/FRONTEND_TESTING_REPORT.md)

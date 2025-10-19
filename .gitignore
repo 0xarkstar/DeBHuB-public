@@ -74,6 +74,13 @@ coverage/
 playwright-report/
 test-results/
 playwright/.cache/
+.playwright-mcp/
+
+# Debug files
+debug-*.png
+debug-*.js
+*-debug-report.json
+*-test-page.png
 
 # -------------------- Cache --------------------
 # General cache
