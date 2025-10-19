@@ -70,7 +70,22 @@
       "Bash(claude mcp add playwright npx @playwright/mcp@latest)",
       "Bash(claude mcp:*)",
       "Bash(npx puppeteer browsers:*)",
-      "Bash(pnpm test:*)"
+      "Bash(pnpm test:*)",
+      "Bash(pnpm dev)",
+      "Bash(npx shadcn@latest add:*)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_wait_for",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_close",
+      "Bash(curl:*)",
+      "mcp__playwright__browser_resize",
+      "mcp__playwright__browser_type",
+      "mcp__playwright__browser_console_messages",
+      "mcp__playwright__browser_tabs",
+      "mcp__playwright__browser_press_key",
+      "mcp__playwright__browser_evaluate"
     ],
     "deny": [],
     "ask": []
