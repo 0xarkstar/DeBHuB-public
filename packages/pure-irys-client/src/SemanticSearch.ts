@@ -5,6 +5,36 @@ import { IndexedDBCache } from "./cache/IndexedDBCache";
 /**
  * Semantic Search Engine for Pure Irys BaaS
  * Enables AI-powered document discovery using vector embeddings
+ *
+ * @remarks
+ * This engine provides advanced search capabilities including:
+ * - Semantic similarity search using vector embeddings
+ * - Hybrid search combining semantic + keyword matching
+ * - Question-answering with RAG (Retrieval-Augmented Generation)
+ * - Document suggestions and recommendations
+ * - Cluster-based efficient retrieval
+ *
+ * @example
+ * ```typescript
+ * const semanticSearch = new SemanticSearch(
+ *   vectorClient,
+ *   vectorRegistry,
+ *   cache,
+ *   signer
+ * );
+ *
+ * // Search for similar documents
+ * const results = await semanticSearch.search(
+ *   'blockchain technology',
+ *   { limit: 10, threshold: 0.7 }
+ * );
+ *
+ * // Ask a question
+ * const answer = await semanticSearch.askQuestion(
+ *   'What is blockchain?',
+ *   { maxContext: 5 }
+ * );
+ * ```
  */
 export class SemanticSearch {
   private vectorClient: VectorClient;
@@ -12,6 +42,14 @@ export class SemanticSearch {
   private cache: IndexedDBCache;
   private signer: Signer;
 
+  /**
+   * Creates a new SemanticSearch instance
+   *
+   * @param vectorClient - VectorClient for embedding operations
+   * @param vectorRegistry - Smart contract for vector metadata
+   * @param cache - IndexedDB cache for query results
+   * @param signer - Ethereum signer for contract interactions
+   */
   constructor(
     vectorClient: VectorClient,
     vectorRegistry: Contract,
@@ -25,8 +63,37 @@ export class SemanticSearch {
   }
 
   /**
-   * Semantic search for similar documents
-   * Uses vector similarity to find relevant content
+   * Semantic search for similar documents using vector similarity
+   *
+   * @param query - The search query text
+   * @param options - Optional search configuration
+   * @param options.limit - Maximum number of results (default: 10)
+   * @param options.threshold - Minimum similarity score 0-1 (default: 0.7)
+   * @param options.projectId - Filter by project ID
+   * @param options.owner - Filter by document owner
+   * @param options.useCache - Use cached results (default: true)
+   * @returns A promise that resolves to an array of search results with metadata
+   *
+   * @remarks
+   * This method:
+   * 1. Generates embedding for the query
+   * 2. Finds relevant cluster using LSH
+   * 3. Retrieves candidate vectors from cluster
+   * 4. Calculates similarity scores
+   * 5. Returns top matches with metadata
+   * 6. Caches results for faster subsequent queries
+   *
+   * @example
+   * ```typescript
+   * const results = await semanticSearch.search(
+   *   'decentralized storage solutions',
+   *   { limit: 5, threshold: 0.75, owner: '0x123...' }
+   * );
+   *
+   * results.forEach(result => {
+   *   console.log(`${result.docId}: ${(result.similarity * 100).toFixed(1)}%`);
+   * });
+   * ```
    */
   async search(
     query: string,
@@ -131,6 +198,23 @@ export class SemanticSearch {
 
   /**
    * Find documents similar to an existing document
+   *
+   * @param docId - The document ID to find similar documents for
+   * @param options - Optional search configuration (same as search method)
+   * @returns A promise that resolves to an array of similar documents
+   *
+   * @remarks
+   * Uses the existing document's content to find semantically similar documents.
+   * Threshold is automatically set higher (0.8) for better quality matches.
+   *
+   * @example
+   * ```typescript
+   * const similar = await semanticSearch.findSimilarDocuments(
+   *   'my-article-123',
+   *   { limit: 5 }
+   * );
+   * console.log(`Found ${similar.length} similar documents`);
+   * ```
    */
   async findSimilarDocuments(
     docId: string,
@@ -160,7 +244,30 @@ export class SemanticSearch {
   }
 
   /**
-   * Hybrid search: combines semantic + keyword search
+   * Hybrid search combining semantic similarity and keyword matching
+   *
+   * @param query - The semantic search query
+   * @param keywords - Array of keywords to boost results
+   * @param options - Optional search configuration
+   * @param options.limit - Maximum number of results (default: 10)
+   * @param options.semanticWeight - Weight for semantic score 0-1 (default: 0.7)
+   * @param options.keywordWeight - Weight for keyword score 0-1 (default: 0.3)
+   * @returns A promise that resolves to hybrid search results with combined scores
+   *
+   * @remarks
+   * Combines the best of both worlds:
+   * - Semantic search finds conceptually similar content
+   * - Keyword matching ensures specific terms are present
+   * - Combined score = (semantic × semanticWeight) + (keyword × keywordWeight)
+   *
+   * @example
+   * ```typescript
+   * const results = await semanticSearch.hybridSearch(
+   *   'database technology',
+   *   ['vector', 'blockchain', 'decentralized'],
+   *   { limit: 10, semanticWeight: 0.6, keywordWeight: 0.4 }
+   * );
+   * ```
    */
   async hybridSearch(
     query: string,
@@ -205,7 +312,35 @@ export class SemanticSearch {
   }
 
   /**
-   * Question-Answer using RAG (Retrieval-Augmented Generation)
+   * Answer questions using RAG (Retrieval-Augmented Generation)
+   *
+   * @param question - The question to answer
+   * @param options - Optional QA configuration
+   * @param options.maxContext - Maximum number of documents to use for context (default: 5)
+   * @param options.projectId - Filter context documents by project
+   * @param options.model - AI model to use for generation (future)
+   * @returns A promise that resolves to an answer with sources and confidence
+   *
+   * @remarks
+   * RAG process:
+   * 1. Search for documents relevant to the question
+   * 2. Build context from top matching documents
+   * 3. Generate answer based on context (requires OpenAI API key)
+   * 4. Return answer with confidence score and source citations
+   *
+   * Note: Full AI generation requires OpenAI API key configuration.
+   *
+   * @example
+   * ```typescript
+   * const answer = await semanticSearch.askQuestion(
+   *   'How does blockchain consensus work?',
+   *   { maxContext: 5 }
+   * );
+   *
+   * console.log('Answer:', answer.answer);
+   * console.log('Confidence:', answer.confidence);
+   * console.log('Sources:', answer.sources.length);
+   * ```
    */
   async askQuestion(
     question: string,
@@ -252,7 +387,29 @@ export class SemanticSearch {
   }
 
   /**
-   * Get document suggestions based on content
+   * Get document suggestions based on content similarity
+   *
+   * @param content - The content to find suggestions for
+   * @param options - Optional suggestion configuration
+   * @param options.limit - Maximum number of suggestions (default: 5)
+   * @param options.excludeDocId - Document ID to exclude from suggestions
+   * @returns A promise that resolves to an array of document suggestions
+   *
+   * @remarks
+   * Useful for "Related Documents" or "You might also like" features.
+   * Each suggestion includes a similarity score and human-readable reason.
+   *
+   * @example
+   * ```typescript
+   * const suggestions = await semanticSearch.getSuggestions(
+   *   currentDocument.content,
+   *   { limit: 5, excludeDocId: currentDocument.id }
+   * );
+   *
+   * suggestions.forEach(s => {
+   *   console.log(`${s.docId}: ${s.reason}`);
+   * });
+   * ```
    */
   async getSuggestions(
     content: string,
@@ -384,7 +541,16 @@ export class SemanticSearch {
   }
 
   /**
-   * Clear semantic search cache
+   * Clear all cached search results
+   *
+   * @remarks
+   * Use this when you want to force fresh results or free up IndexedDB space.
+   *
+   * @example
+   * ```typescript
+   * await semanticSearch.clearCache();
+   * console.log('Cache cleared!');
+   * ```
    */
   async clearCache(): Promise<void> {
     await this.cache.clear();
@@ -392,7 +558,16 @@ export class SemanticSearch {
   }
 
   /**
-   * Get cache statistics
+   * Get cache statistics and performance metrics
+   *
+   * @returns Cache statistics including size, hit rate, etc.
+   *
+   * @example
+   * ```typescript
+   * const stats = await semanticSearch.getCacheStats();
+   * console.log('Cache entries:', stats.count);
+   * console.log('Hit rate:', stats.hitRate);
+   * ```
    */
   async getCacheStats() {
     return await this.cache.getStats();

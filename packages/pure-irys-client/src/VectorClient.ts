@@ -5,6 +5,29 @@ import Query from "@irys/query";
 /**
  * Pure Irys Vector Database Client
  * Enables semantic search and AI features using blockchain-native vector storage
+ *
+ * @remarks
+ * This client provides methods for creating, storing, and searching vector embeddings
+ * on the Irys DataChain. It supports both OpenAI embeddings and mock embeddings for development.
+ *
+ * @example
+ * ```typescript
+ * const vectorClient = new VectorClient(irysUploader, signer, 'your-openai-key');
+ *
+ * // Store a document with vector embedding
+ * const record = await vectorClient.storeVector(
+ *   'doc-123',
+ *   'This is my document content',
+ *   { author: 'John Doe' }
+ * );
+ *
+ * // Find similar documents
+ * const similar = await vectorClient.findSimilar(
+ *   'search query',
+ *   ['vector-id-1', 'vector-id-2'],
+ *   { limit: 10, threshold: 0.7 }
+ * );
+ * ```
  */
 export class VectorClient {
   private irysUploader: any;
@@ -19,6 +42,13 @@ export class VectorClient {
     openaiEndpoint: "https://api.openai.com/v1/embeddings",
   };
 
+  /**
+   * Creates a new VectorClient instance
+   *
+   * @param irysUploader - Irys uploader instance for storing vectors on DataChain
+   * @param signer - Ethereum signer for transaction signing
+   * @param openaiApiKey - Optional OpenAI API key for generating embeddings. If not provided, mock embeddings will be used
+   */
   constructor(
     irysUploader: any,
     signer: Signer,
@@ -32,6 +62,19 @@ export class VectorClient {
 
   /**
    * Create vector embedding for text using OpenAI API
+   *
+   * @param text - The text to convert into a vector embedding
+   * @returns A promise that resolves to a 1536-dimension embedding vector
+   *
+   * @remarks
+   * Uses OpenAI's text-embedding-3-small model by default.
+   * Falls back to mock embeddings if API key is not set or API call fails.
+   *
+   * @example
+   * ```typescript
+   * const embedding = await vectorClient.createEmbedding('Hello world');
+   * console.log(embedding.length); // 1536
+   * ```
    */
   async createEmbedding(text: string): Promise<number[]> {
     if (!this.openaiApiKey) {
@@ -95,6 +138,28 @@ export class VectorClient {
 
   /**
    * Store vector embedding on Irys DataChain
+   *
+   * @param docId - Unique identifier for the document
+   * @param content - The document content to vectorize and store
+   * @param metadata - Optional metadata to associate with the vector
+   * @returns A promise that resolves to a VectorRecord containing storage details
+   *
+   * @remarks
+   * This method:
+   * 1. Generates a vector embedding from the content
+   * 2. Calculates a cluster ID for efficient retrieval
+   * 3. Uploads the vector data to Irys with proper tags
+   * 4. Returns a record with the Irys transaction ID
+   *
+   * @example
+   * ```typescript
+   * const record = await vectorClient.storeVector(
+   *   'article-123',
+   *   'AI and blockchain are transforming the internet',
+   *   { category: 'technology', author: 'Alice' }
+   * );
+   * console.log('Stored at:', record.irysVectorId);
+   * ```
    */
   async storeVector(
     docId: string,
@@ -150,7 +215,19 @@ export class VectorClient {
   }
 
   /**
-   * Retrieve vector from Irys
+   * Retrieve vector data from Irys DataChain
+   *
+   * @param irysVectorId - The Irys transaction ID of the stored vector
+   * @returns A promise that resolves to the VectorData or null if not found
+   *
+   * @example
+   * ```typescript
+   * const vectorData = await vectorClient.getVector('irys-tx-id-123');
+   * if (vectorData) {
+   *   console.log('Document:', vectorData.docId);
+   *   console.log('Embedding dimensions:', vectorData.dimensions);
+   * }
+   * ```
    */
   async getVector(irysVectorId: string): Promise<VectorData | null> {
     try {
@@ -172,6 +249,30 @@ export class VectorClient {
 
   /**
    * Find similar vectors using semantic search
+   *
+   * @param queryText - The search query text
+   * @param candidateVectorIds - Array of Irys vector IDs to search within
+   * @param options - Optional search configuration
+   * @param options.limit - Maximum number of results to return (default: 10)
+   * @param options.threshold - Minimum similarity score (0-1) to include (default: 0.7)
+   * @param options.includeEmbeddings - Whether to include embeddings in results (default: false)
+   * @returns A promise that resolves to an array of similarity results, sorted by score
+   *
+   * @remarks
+   * Uses cosine similarity to measure how semantically similar vectors are.
+   * Results are sorted by similarity score in descending order.
+   *
+   * @example
+   * ```typescript
+   * const results = await vectorClient.findSimilar(
+   *   'blockchain technology',
+   *   ['vec1', 'vec2', 'vec3'],
+   *   { limit: 5, threshold: 0.75 }
+   * );
+   * results.forEach(r => {
+   *   console.log(`${r.docId}: ${(r.similarity * 100).toFixed(1)}% match`);
+   * });
+   * ```
    */
   async findSimilar(
     queryText: string,
@@ -227,6 +328,21 @@ export class VectorClient {
 
   /**
    * Calculate cosine similarity between two vectors
+   *
+   * @param a - First vector
+   * @param b - Second vector
+   * @returns Cosine similarity score between 0 and 1 (1 = identical, 0 = orthogonal)
+   * @throws Error if vector dimensions don't match
+   *
+   * @remarks
+   * Cosine similarity measures the angle between two vectors in high-dimensional space.
+   * It's ideal for semantic similarity as it's invariant to vector magnitude.
+   *
+   * @example
+   * ```typescript
+   * const similarity = vectorClient.cosineSimilarity([1, 0, 1], [1, 1, 0]);
+   * console.log(similarity); // 0.5
+   * ```
    */
   cosineSimilarity(a: number[], b: number[]): number {
     if (a.length !== b.length) {
@@ -289,7 +405,20 @@ export class VectorClient {
   }
 
   /**
-   * Query vectors by cluster (from Irys GraphQL)
+   * Query vectors by cluster ID from Irys GraphQL
+   *
+   * @param clusterId - The cluster ID to search for
+   * @returns A promise that resolves to an array of Irys transaction IDs in the cluster
+   *
+   * @remarks
+   * Clusters are used to group similar vectors for efficient retrieval.
+   * This enables approximate nearest neighbor search at scale.
+   *
+   * @example
+   * ```typescript
+   * const vectorIds = await vectorClient.queryVectorsByCluster('cluster-abc123');
+   * console.log(`Found ${vectorIds.length} vectors in cluster`);
+   * ```
    */
   async queryVectorsByCluster(clusterId: string): Promise<string[]> {
     try {
@@ -309,7 +438,23 @@ export class VectorClient {
   }
 
   /**
-   * Batch vector operations
+   * Batch store multiple vectors in parallel
+   *
+   * @param documents - Array of documents to vectorize and store
+   * @returns A promise that resolves to an array of VectorRecords
+   *
+   * @remarks
+   * Processes all documents in parallel for maximum efficiency.
+   * Use this for bulk operations to save time.
+   *
+   * @example
+   * ```typescript
+   * const records = await vectorClient.batchStoreVectors([
+   *   { docId: 'doc1', content: 'First document' },
+   *   { docId: 'doc2', content: 'Second document', metadata: { author: 'Bob' } }
+   * ]);
+   * console.log(`Stored ${records.length} vectors`);
+   * ```
    */
   async batchStoreVectors(
     documents: Array<{ docId: string; content: string; metadata?: any }>

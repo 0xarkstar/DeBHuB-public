@@ -69,7 +69,8 @@
       "Bash(code:*)",
       "Bash(claude mcp add playwright npx @playwright/mcp@latest)",
       "Bash(claude mcp:*)",
-      "Bash(npx puppeteer browsers:*)"
+      "Bash(npx puppeteer browsers:*)",
+      "Bash(pnpm test:*)"
     ],
     "deny": [],
     "ask": []

@@ -7,7 +7,40 @@ import type {
 } from "../SemanticSearch";
 
 /**
- * React Hook for Semantic Search
+ * React Hook for semantic search with vector embeddings
+ *
+ * @param client - PureIrysClient instance or null
+ * @returns Object containing search results, loading state, error state, and search function
+ *
+ * @remarks
+ * This hook manages the state for semantic search operations.
+ * It automatically handles loading states and errors.
+ *
+ * @example
+ * ```typescript
+ * function SearchComponent() {
+ *   const { client } = usePureIrysClient();
+ *   const { results, isSearching, error, search, clearResults } = useSemanticSearch(client);
+ *
+ *   const handleSearch = async () => {
+ *     const results = await search('blockchain technology', {
+ *       limit: 10,
+ *       threshold: 0.7
+ *     });
+ *     console.log('Found:', results.length);
+ *   };
+ *
+ *   return (
+ *     <div>
+ *       <button onClick={handleSearch} disabled={isSearching}>
+ *         Search
+ *       </button>
+ *       {error && <p>Error: {error.message}</p>}
+ *       {results.map(r => <div key={r.docId}>{r.docId}</div>)}
+ *     </div>
+ *   );
+ * }
+ * ```
  */
 export function useSemanticSearch(client: PureIrysClient | null) {
   const [results, setResults] = useState<SemanticSearchResult[]>([]);
@@ -62,7 +95,40 @@ export function useSemanticSearch(client: PureIrysClient | null) {
 }
 
 /**
- * React Hook for finding similar documents
+ * React Hook for finding documents similar to a given document
+ *
+ * @param client - PureIrysClient instance or null
+ * @returns Object containing similar documents, loading state, error state, and findSimilar function
+ *
+ * @remarks
+ * Useful for building "Related Documents" or "More Like This" features.
+ * Uses the document's content to find semantically similar documents.
+ *
+ * @example
+ * ```typescript
+ * function RelatedDocs({ currentDocId }: { currentDocId: string }) {
+ *   const { client } = usePureIrysClient();
+ *   const { similarDocs, isLoading, error, findSimilar } = useSimilarDocuments(client);
+ *
+ *   useEffect(() => {
+ *     if (currentDocId) {
+ *       findSimilar(currentDocId, { limit: 5 });
+ *     }
+ *   }, [currentDocId]);
+ *
+ *   return (
+ *     <div>
+ *       <h3>Related Documents</h3>
+ *       {isLoading && <p>Loading...</p>}
+ *       {similarDocs.map(doc => (
+ *         <div key={doc.docId}>
+ *           {doc.docId} - {(doc.similarity * 100).toFixed(1)}% match
+ *         </div>
+ *       ))}
+ *     </div>
+ *   );
+ * }
+ * ```
  */
 export function useSimilarDocuments(client: PureIrysClient | null) {
   const [similarDocs, setSimilarDocs] = useState<SemanticSearchResult[]>([]);
@@ -108,7 +174,44 @@ export function useSimilarDocuments(client: PureIrysClient | null) {
 }
 
 /**
- * React Hook for AI Question-Answer
+ * React Hook for AI-powered question answering using RAG
+ *
+ * @param client - PureIrysClient instance or null
+ * @returns Object containing answer, loading state, error state, and ask function
+ *
+ * @remarks
+ * Implements Retrieval-Augmented Generation (RAG) to answer questions
+ * based on stored documents. Requires OpenAI API key for full functionality.
+ *
+ * @example
+ * ```typescript
+ * function QAComponent() {
+ *   const { client } = usePureIrysClient();
+ *   const { answer, isAsking, error, ask, clearAnswer } = useQuestionAnswer(client);
+ *   const [question, setQuestion] = useState('');
+ *
+ *   const handleAsk = async () => {
+ *     const result = await ask(question, { maxContext: 5 });
+ *     if (result) {
+ *       console.log('Answer:', result.answer);
+ *       console.log('Sources:', result.sources);
+ *     }
+ *   };
+ *
+ *   return (
+ *     <div>
+ *       <input value={question} onChange={e => setQuestion(e.target.value)} />
+ *       <button onClick={handleAsk} disabled={isAsking}>Ask</button>
+ *       {answer && (
+ *         <div>
+ *           <p>{answer.answer}</p>
+ *           <p>Confidence: {(answer.confidence * 100).toFixed(0)}%</p>
+ *         </div>
+ *       )}
+ *     </div>
+ *   );
+ * }
+ * ```
  */
 export function useQuestionAnswer(client: PureIrysClient | null) {
   const [answer, setAnswer] = useState<QAAnswer | null>(null);
@@ -163,7 +266,41 @@ export function useQuestionAnswer(client: PureIrysClient | null) {
 }
 
 /**
- * React Hook for document suggestions
+ * React Hook for getting document suggestions based on content
+ *
+ * @param client - PureIrysClient instance or null
+ * @returns Object containing suggestions, loading state, error state, and getSuggestions function
+ *
+ * @remarks
+ * Perfect for recommendation engines and content discovery features.
+ * Suggests documents that are semantically similar to the provided content.
+ *
+ * @example
+ * ```typescript
+ * function Recommendations({ currentContent }: { currentContent: string }) {
+ *   const { client } = usePureIrysClient();
+ *   const { suggestions, isLoading, getSuggestions } = useDocumentSuggestions(client);
+ *
+ *   useEffect(() => {
+ *     if (currentContent) {
+ *       getSuggestions(currentContent, { limit: 5 });
+ *     }
+ *   }, [currentContent]);
+ *
+ *   return (
+ *     <div>
+ *       <h3>You might also like</h3>
+ *       {suggestions.map(s => (
+ *         <div key={s.docId}>
+ *           <strong>{s.docId}</strong>
+ *           <p>{s.reason}</p>
+ *           <p>{s.preview}</p>
+ *         </div>
+ *       ))}
+ *     </div>
+ *   );
+ * }
+ * ```
  */
 export function useDocumentSuggestions(client: PureIrysClient | null) {
   const [suggestions, setSuggestions] = useState<DocumentSuggestion[]>([]);
@@ -215,7 +352,46 @@ export function useDocumentSuggestions(client: PureIrysClient | null) {
 }
 
 /**
- * React Hook for creating document vectors
+ * React Hook for creating and storing document vector embeddings
+ *
+ * @param client - PureIrysClient instance or null
+ * @returns Object containing creation state, error state, and createVector function
+ *
+ * @remarks
+ * Use this hook when you need to vectorize and store new documents.
+ * The vector is automatically uploaded to Irys DataChain.
+ *
+ * @example
+ * ```typescript
+ * function DocumentUpload() {
+ *   const { client } = usePureIrysClient();
+ *   const { isCreating, error, createVector } = useCreateVector(client);
+ *   const [content, setContent] = useState('');
+ *
+ *   const handleCreate = async () => {
+ *     const success = await createVector(
+ *       'doc-' + Date.now(),
+ *       content,
+ *       { author: 'John Doe', category: 'tech' }
+ *     );
+ *
+ *     if (success) {
+ *       alert('Vector created successfully!');
+ *       setContent('');
+ *     }
+ *   };
+ *
+ *   return (
+ *     <div>
+ *       <textarea value={content} onChange={e => setContent(e.target.value)} />
+ *       <button onClick={handleCreate} disabled={isCreating}>
+ *         {isCreating ? 'Creating...' : 'Create Vector'}
+ *       </button>
+ *       {error && <p style={{ color: 'red' }}>{error.message}</p>}
+ *     </div>
+ *   );
+ * }
+ * ```
  */
 export function useCreateVector(client: PureIrysClient | null) {
   const [isCreating, setIsCreating] = useState(false);
@@ -262,7 +438,33 @@ export function useCreateVector(client: PureIrysClient | null) {
 }
 
 /**
- * React Hook for Vector DB availability check
+ * React Hook for checking Vector DB availability status
+ *
+ * @param client - PureIrysClient instance or null
+ * @returns Object containing availability status and checking state
+ *
+ * @remarks
+ * Use this hook to determine if the Vector DB feature is available
+ * before attempting to use vector operations. It automatically updates
+ * when the client changes.
+ *
+ * @example
+ * ```typescript
+ * function VectorDBFeature() {
+ *   const { client } = usePureIrysClient();
+ *   const { isAvailable, isChecking } = useVectorDBStatus(client);
+ *
+ *   if (isChecking) {
+ *     return <p>Checking Vector DB status...</p>;
+ *   }
+ *
+ *   if (!isAvailable) {
+ *     return <p>Vector DB is not available. Please connect your wallet.</p>;
+ *   }
+ *
+ *   return <div>Vector DB is ready to use!</div>;
+ * }
+ * ```
  */
 export function useVectorDBStatus(client: PureIrysClient | null) {
   const [isAvailable, setIsAvailable] = useState(false);
