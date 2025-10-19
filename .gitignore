@@ -216,4 +216,4 @@ config.local.*
 # Local development overrides
 *.local.json
 *.local.yaml
-*.local.yml
+*.local.yml.playwright-mcp/
