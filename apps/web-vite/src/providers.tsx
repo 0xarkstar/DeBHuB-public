@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from 'sonner';
 import { PureIrysProvider } from './contexts/PureIrysContext';
 
 const queryClient = new QueryClient();
@@ -57,6 +58,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           })}
         >
           <PureIrysProvider>
+            <Toaster position="top-right" richColors />
             {children}
           </PureIrysProvider>
         </RainbowKitProvider>

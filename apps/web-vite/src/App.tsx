@@ -8,6 +8,12 @@ import { ProjectCardSkeletonGrid } from './components/ProjectCardSkeleton'
 import { useIrysInit } from './lib/irys-hooks'
 
 // Lazy load pages for better performance
+// Data Management Console (NEW)
+const DataBrowser = lazy(() => import('./pages/DataBrowser'))
+const DataDetail = lazy(() => import('./pages/DataDetail'))
+const CreateData = lazy(() => import('./pages/CreateData'))
+
+// Legacy pages
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 const DashboardPure = lazy(() => import('./pages/DashboardPure'))
 const DocumentPage = lazy(() => import('./pages/DocumentPage'))
@@ -44,6 +50,32 @@ function App() {
         <ApolloWrapper>
           <Routes>
           <Route path="/" element={<DashboardLayout />}>
+            {/* Data Management Console Routes */}
+            <Route
+              path="data"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <DataBrowser />
+                </Suspense>
+              }
+            />
+            <Route
+              path="data/create"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <CreateData />
+                </Suspense>
+              }
+            />
+            <Route
+              path="data/:id"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <DataDetail />
+                </Suspense>
+              }
+            />
+
             {/* Pure Irys Mode Routes */}
             <Route
               path="pure"
@@ -67,7 +99,7 @@ function App() {
               index
               element={
                 <Suspense fallback={<PageLoader />}>
-                  <Dashboard />
+                  <DataBrowser />
                 </Suspense>
               }
             />

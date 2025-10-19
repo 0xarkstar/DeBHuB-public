@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import {
-  Folder,
   Database,
+  Plus,
   Link2,
   BarChart3,
-  Search,
   Settings,
   Menu,
-  X
+  X,
+  Zap,
+  TestTube
 } from 'lucide-react';
 
 import { ConnectWallet } from '@/components/ConnectWallet';
@@ -18,12 +19,13 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 const navigation = [
-  { name: 'Projects', href: '/', icon: Folder },
-  { name: 'Storage', href: '/storage', icon: Database },
+  { name: 'Data Browser', href: '/data', icon: Database },
+  { name: 'Create Data', href: '/data/create', icon: Plus },
   { name: 'Blockchain', href: '/blockchain', icon: Link2 },
   { name: 'Usage', href: '/usage', icon: BarChart3 },
-  { name: 'Search', href: '/search', icon: Search },
   { name: 'Settings', href: '/settings', icon: Settings },
+  { name: 'Vector DB Test', href: '/vector-db-test', icon: TestTube },
+  { name: 'Pure Irys Test', href: '/pure-irys-test', icon: Zap },
 ];
 
 export default function DashboardLayout() {
