@@ -80,8 +80,7 @@ Irys L1 DataChain (链 ID: 1270)
 
 ## 📚 文档
 
-- **[入门指南](./docs/guides/USER_GUIDE_NEXT_STEPS.md)** - IrysVM 测试网指南
-- **[文档主页](./docs)** - 查看所有文档
+**[查看文档](./docs)** - 安装指南和使用方法
 
 ---
 

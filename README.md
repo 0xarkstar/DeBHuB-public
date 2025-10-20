@@ -80,8 +80,7 @@ Irys L1 DataChain (Chain ID: 1270)
 
 ## 📚 문서
 
-- **[시작 가이드](./docs/guides/USER_GUIDE_NEXT_STEPS.md)** - IrysVM 테스트넷 시작하기
-- **[문서 홈](./docs)** - 전체 문서 보기
+**[문서 보기](./docs)** - 설치 가이드 및 사용법
 
 ---
 

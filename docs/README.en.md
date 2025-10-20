@@ -2,20 +2,80 @@
 
 > **Languages**: [English](README.en.md) | [한국어](README.md) | [中文](README.zh.md)
 
-Documentation for the DeBHuB (Decentralized Backend-as-a-Service) project.
+---
+
+## 🚀 Getting Started
+
+### 1. Installation
+
+```bash
+git clone https://github.com/0xarkstar/DeBHuB.git
+cd DeBHuB
+pnpm install
+```
+
+### 2. Environment Setup
+
+```bash
+cd apps/web-vite
+cp .env.example .env
+```
+
+Configure `.env` file:
+```
+VITE_WALLETCONNECT_PROJECT_ID=your_project_id
+```
+
+### 3. Run Development Server
+
+```bash
+pnpm dev
+```
+
+**Access**: http://localhost:5173
 
 ---
 
-## 📚 User Guide
+## 🎯 Core Concepts
 
-### Getting Started
-- **[USER_GUIDE_NEXT_STEPS.md](./guides/USER_GUIDE_NEXT_STEPS.md)** - IrysVM Testnet Getting Started Guide
+### IrysVM Testnet
+- **Chain ID**: 1270
+- **RPC URL**: https://testnet-rpc.irys.xyz/v1/execution-rpc
+- **Native Token**: IRYS
+- **Block Explorer**: https://explorer.irys.xyz
+
+### Add MetaMask Network
+
+1. Open MetaMask
+2. Click Add Network
+3. Enter the following:
+   - Network Name: `IrysVM Testnet`
+   - RPC URL: `https://testnet-rpc.irys.xyz/v1/execution-rpc`
+   - Chain ID: `1270`
+   - Currency Symbol: `IRYS`
+
+### Get Test Tokens
+
+Irys Faucet: https://irys.xyz/faucet
+
+---
+
+## 💡 Key Features
+
+### Automatic Network Switching
+- Automatically detects IrysVM network on app access
+- Prompts for network switch if on different network
+- Auto-switches network after 2 seconds
+
+### Fully Decentralized
+- No backend server required
+- No database required
+- All data stored on IrysVM blockchain
 
 ---
 
 ## 📞 Support
 
-- **Main README**: [../README.md](../README.md)
 - **Issues**: [GitHub Issues](https://github.com/0xarkstar/DeBHuB/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/0xarkstar/DeBHuB/discussions)
 
