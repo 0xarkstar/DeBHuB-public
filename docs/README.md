@@ -1,125 +1,80 @@
-# DeBHuB Documentation
+# DeBHuB 문서
 
-Complete documentation for the DeBHuB (Decentralized Backend-as-a-Service) project.
+> **언어**: [English](README.en.md) | [한국어](README.md) | [中文](README.zh.md)
 
----
-
-## 📚 Documentation Structure
-
-### 🏗️ Architecture
-Deep technical analysis and system design documents.
-
-- **[IRYS_ARCHITECTURE_ANALYSIS.md](./architecture/IRYS_ARCHITECTURE_ANALYSIS.md)** - Complete analysis of Irys's 3-layer architecture
-- **[IRYSVM_STATUS_REPORT.md](./architecture/IRYSVM_STATUS_REPORT.md)** - Current IrysVM testnet deployment status
-- **[PURE_IRYS_SETUP.md](./architecture/PURE_IRYS_SETUP.md)** - Pure Irys stack configuration guide
-
-### 📖 User Guides
-Step-by-step guides for users and developers.
-
-- **[USER_GUIDE_NEXT_STEPS.md](./guides/USER_GUIDE_NEXT_STEPS.md)** - Getting started with IrysVM testnet
-- **[MIGRATION_GUIDE.md](./guides/MIGRATION_GUIDE.md)** - Migration from hybrid to pure Irys
-- **[PUBLIC_RELEASE_GUIDE.md](./guides/PUBLIC_RELEASE_GUIDE.md)** - Public release preparation
-- **[VECTOR_DB_GUIDE.md](./guides/VECTOR_DB_GUIDE.md)** - Vector database usage guide
-
-### 🧪 Testing & QA
-Test reports and quality assurance documentation.
-
-- **[FRONTEND_TESTING_REPORT.md](./testing/FRONTEND_TESTING_REPORT.md)** - Comprehensive Playwright test results
-- **[PLAYWRIGHT_TEST_SUMMARY.md](./testing/PLAYWRIGHT_TEST_SUMMARY.md)** - Executive summary of frontend testing
-- **[VECTOR_DB_TEST_RESULTS.md](./testing/VECTOR_DB_TEST_RESULTS.md)** - Vector DB integration test results
-- **[IRYS_INTEGRATION_FIX_REPORT.md](./testing/IRYS_INTEGRATION_FIX_REPORT.md)** - Irys SDK ethers v6 compatibility fix
-
-### 💻 Development
-Internal development documentation and implementation reports.
-
-- **[IRYSVM_MIGRATION_PLAN.md](./development/IRYSVM_MIGRATION_PLAN.md)** - IrysVM migration strategy
-- **[NETWORK_AUTO_SWITCH_IMPLEMENTATION.md](./development/NETWORK_AUTO_SWITCH_IMPLEMENTATION.md)** - Automatic network switching feature
-- **[CRITICAL_FIXES_NEEDED.md](./development/CRITICAL_FIXES_NEEDED.md)** - Configuration fixes guide
-- **[POST_RELEASE_CHECKLIST.md](./development/POST_RELEASE_CHECKLIST.md)** - Release checklist
-- **[PROJECT_ANALYSIS_REPORT.md](./development/PROJECT_ANALYSIS_REPORT.md)** - Project analysis and roadmap
+DeBHuB (탈중앙화 Backend-as-a-Service) 프로젝트의 완전한 문서입니다.
 
 ---
 
-## 🚀 Quick Start
+## 📚 문서 구조
 
-### For New Users
-1. Start with [USER_GUIDE_NEXT_STEPS.md](./guides/USER_GUIDE_NEXT_STEPS.md)
-2. Review [IRYS_ARCHITECTURE_ANALYSIS.md](./architecture/IRYS_ARCHITECTURE_ANALYSIS.md) to understand the system
-3. Check [IRYSVM_STATUS_REPORT.md](./architecture/IRYSVM_STATUS_REPORT.md) for current deployment
+### 🏗️ 아키텍처
+기술 분석 및 시스템 설계 문서
 
-### For Developers
-1. Read [PURE_IRYS_SETUP.md](./architecture/PURE_IRYS_SETUP.md) for setup
-2. Review [MIGRATION_GUIDE.md](./guides/MIGRATION_GUIDE.md) for migration steps
-3. Check [NETWORK_AUTO_SWITCH_IMPLEMENTATION.md](./development/NETWORK_AUTO_SWITCH_IMPLEMENTATION.md) for UX features
+- **[IRYS_ARCHITECTURE_ANALYSIS.md](./architecture/IRYS_ARCHITECTURE_ANALYSIS.md)** - Irys 3계층 아키텍처 완전 분석
+- **[IRYSVM_STATUS_REPORT.md](./architecture/IRYSVM_STATUS_REPORT.md)** - IrysVM 테스트넷 배포 현황
+- **[PURE_IRYS_SETUP.md](./architecture/PURE_IRYS_SETUP.md)** - Pure Irys 스택 설정 가이드
 
-### For QA/Testers
-1. See [FRONTEND_TESTING_REPORT.md](./testing/FRONTEND_TESTING_REPORT.md) for test coverage
-2. Review [PLAYWRIGHT_TEST_SUMMARY.md](./testing/PLAYWRIGHT_TEST_SUMMARY.md) for summary
-3. Check [VECTOR_DB_TEST_RESULTS.md](./testing/VECTOR_DB_TEST_RESULTS.md) for Vector DB tests
+### 📖 사용자 가이드
+사용자 및 개발자를 위한 단계별 가이드
 
----
+- **[USER_GUIDE_NEXT_STEPS.md](./guides/USER_GUIDE_NEXT_STEPS.md)** - IrysVM 테스트넷 시작하기
+- **[MIGRATION_GUIDE.md](./guides/MIGRATION_GUIDE.md)** - 하이브리드에서 Pure Irys로 마이그레이션
+- **[PUBLIC_RELEASE_GUIDE.md](./guides/PUBLIC_RELEASE_GUIDE.md)** - 공개 릴리스 준비
+- **[VECTOR_DB_GUIDE.md](./guides/VECTOR_DB_GUIDE.md)** - 벡터 데이터베이스 사용 가이드
 
-## 📊 Documentation Stats
+### 🧪 테스팅 & QA
+테스트 리포트 및 품질 보증 문서
 
-- **Total Documents**: 14
-- **Architecture**: 3 docs
-- **Guides**: 4 docs
-- **Testing**: 4 docs
-- **Development**: 5 docs
-- **Total Pages**: ~15,000+ words
+- **[FRONTEND_TESTING_REPORT.md](./testing/FRONTEND_TESTING_REPORT.md)** - Playwright 테스트 결과
+- **[PLAYWRIGHT_TEST_SUMMARY.md](./testing/PLAYWRIGHT_TEST_SUMMARY.md)** - 프론트엔드 테스팅 요약
+- **[VECTOR_DB_TEST_RESULTS.md](./testing/VECTOR_DB_TEST_RESULTS.md)** - Vector DB 통합 테스트 결과
+- **[IRYS_INTEGRATION_FIX_REPORT.md](./testing/IRYS_INTEGRATION_FIX_REPORT.md)** - Irys SDK ethers v6 호환성 수정
 
----
+### 💻 개발
+내부 개발 문서 및 구현 리포트
 
-## 🔍 Finding Information
-
-### Search by Topic
-
-**IrysVM Testnet**
-- Architecture: [IRYSVM_STATUS_REPORT.md](./architecture/IRYSVM_STATUS_REPORT.md)
-- Setup: [USER_GUIDE_NEXT_STEPS.md](./guides/USER_GUIDE_NEXT_STEPS.md)
-- Migration: [IRYSVM_MIGRATION_PLAN.md](./development/IRYSVM_MIGRATION_PLAN.md)
-
-**Frontend/UI**
-- Testing: [FRONTEND_TESTING_REPORT.md](./testing/FRONTEND_TESTING_REPORT.md)
-- Summary: [PLAYWRIGHT_TEST_SUMMARY.md](./testing/PLAYWRIGHT_TEST_SUMMARY.md)
-- Network UX: [NETWORK_AUTO_SWITCH_IMPLEMENTATION.md](./development/NETWORK_AUTO_SWITCH_IMPLEMENTATION.md)
-
-**Irys Integration**
-- Architecture: [IRYS_ARCHITECTURE_ANALYSIS.md](./architecture/IRYS_ARCHITECTURE_ANALYSIS.md)
-- Setup: [PURE_IRYS_SETUP.md](./architecture/PURE_IRYS_SETUP.md)
-- Fixes: [IRYS_INTEGRATION_FIX_REPORT.md](./testing/IRYS_INTEGRATION_FIX_REPORT.md)
-
-**Vector Database**
-- Guide: [VECTOR_DB_GUIDE.md](./guides/VECTOR_DB_GUIDE.md)
-- Tests: [VECTOR_DB_TEST_RESULTS.md](./testing/VECTOR_DB_TEST_RESULTS.md)
+- **[IRYSVM_MIGRATION_PLAN.md](./development/IRYSVM_MIGRATION_PLAN.md)** - IrysVM 마이그레이션 전략
+- **[NETWORK_AUTO_SWITCH_IMPLEMENTATION.md](./development/NETWORK_AUTO_SWITCH_IMPLEMENTATION.md)** - 자동 네트워크 전환 기능
+- **[CRITICAL_FIXES_NEEDED.md](./development/CRITICAL_FIXES_NEEDED.md)** - 설정 수정 가이드
+- **[POST_RELEASE_CHECKLIST.md](./development/POST_RELEASE_CHECKLIST.md)** - 릴리스 체크리스트
+- **[PROJECT_ANALYSIS_REPORT.md](./development/PROJECT_ANALYSIS_REPORT.md)** - 프로젝트 분석 및 로드맵
 
 ---
 
-## 📝 Contributing to Documentation
+## 🚀 빠른 시작
 
-When adding new documentation:
+### 신규 사용자
+1. [USER_GUIDE_NEXT_STEPS.md](./guides/USER_GUIDE_NEXT_STEPS.md)로 시작
+2. [IRYS_ARCHITECTURE_ANALYSIS.md](./architecture/IRYS_ARCHITECTURE_ANALYSIS.md)로 시스템 이해
+3. [IRYSVM_STATUS_REPORT.md](./architecture/IRYSVM_STATUS_REPORT.md)에서 현재 배포 상태 확인
 
-1. **Choose the right category**:
-   - Architecture: System design, technical analysis
-   - Guides: Step-by-step instructions
-   - Testing: Test reports, QA results
-   - Development: Implementation details, checklists
+### 개발자
+1. [PURE_IRYS_SETUP.md](./architecture/PURE_IRYS_SETUP.md)로 설정
+2. [MIGRATION_GUIDE.md](./guides/MIGRATION_GUIDE.md)로 마이그레이션 단계 검토
+3. [NETWORK_AUTO_SWITCH_IMPLEMENTATION.md](./development/NETWORK_AUTO_SWITCH_IMPLEMENTATION.md)에서 UX 기능 확인
 
-2. **Follow naming convention**:
-   - Use UPPERCASE_SNAKE_CASE.md
-   - Be descriptive and specific
-   - Include date if time-sensitive
-
-3. **Update this README**:
-   - Add link to new document
-   - Update stats
-   - Add to search section if applicable
+### QA/테스터
+1. [FRONTEND_TESTING_REPORT.md](./testing/FRONTEND_TESTING_REPORT.md)에서 테스트 커버리지 확인
+2. [PLAYWRIGHT_TEST_SUMMARY.md](./testing/PLAYWRIGHT_TEST_SUMMARY.md)에서 요약 검토
+3. [VECTOR_DB_TEST_RESULTS.md](./testing/VECTOR_DB_TEST_RESULTS.md)에서 Vector DB 테스트 확인
 
 ---
 
-## 🎯 Maintained By
+## 📊 문서 통계
 
-This documentation is automatically organized and maintained by the DeBHuB development team.
+- **총 문서**: 14개
+- **아키텍처**: 3개
+- **가이드**: 4개
+- **테스팅**: 4개
+- **개발**: 5개
+- **총 페이지**: ~15,000단어 이상
 
-**Last Updated**: 2025-10-20
-**Documentation Version**: 1.0
+---
+
+## 🎯 관리
+
+이 문서는 DeBHuB 개발팀이 자동으로 구성하고 관리합니다.
+
+**마지막 업데이트**: 2025-10-20
+**문서 버전**: 1.0

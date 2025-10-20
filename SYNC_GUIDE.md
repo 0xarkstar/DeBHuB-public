@@ -1,74 +1,76 @@
-# DeBHuB Sync Guide
+# DeBHuB 동기화 가이드
 
-## Repository Structure
+> **언어**: [English](SYNC_GUIDE.en.md) | [한국어](SYNC_GUIDE.md) | [中文](SYNC_GUIDE.zh.md)
 
-This repository uses **dual remote** setup:
-- **private**: Development repository (DeBHuB-private)
-- **public**: Production repository for Vercel deployment (DeBHuB-public)
+## 레포지토리 구조
 
-## Daily Workflow
+이 레포지토리는 **이중 remote** 구조를 사용합니다:
+- **private**: 개발 레포지토리 (DeBHuB-private)
+- **public**: Vercel 배포용 프로덕션 레포지토리 (DeBHuB-public)
 
-### 1. Development (Private Only)
+## 일상 워크플로우
+
+### 1. 개발 작업 (Private만)
 ```bash
-# Work on features
+# 기능 개발
 git add .
-git commit -m "feat: your feature"
+git commit -m "feat: 새로운 기능"
 git push private master
 ```
 
-### 2. Release to Production (Private + Public)
+### 2. 프로덕션 배포 (Private + Public)
 ```bash
-# Push to both repositories
+# 양쪽 레포지토리에 push
 git push private master
 git push public master:main
 ```
 
-**Note**: Public repository uses `main` branch as default.
+**참고**: 퍼블릭 레포지토리는 `main` 브랜치를 기본으로 사용합니다.
 
-## Remote URLs
+## Remote URL
 
 ```bash
-# View remotes
+# Remote 확인
 git remote -v
 
-# Output:
+# 출력:
 # private   https://github.com/0xarkstar/DeBHuB-private.git
 # public    https://github.com/0xarkstar/DeBHuB-public.git
 ```
 
-## Important Notes
+## 중요 사항
 
-⚠️ **Before pushing to public:**
-- Ensure no sensitive files (.env, API keys, etc.)
-- .gitignore already configured to exclude:
-  - `.env*` files
-  - `.claude/` directory
+⚠️ **퍼블릭에 push하기 전:**
+- 민감한 파일이 없는지 확인 (.env, API 키 등)
+- .gitignore가 이미 다음 항목들을 제외하도록 설정되어 있습니다:
+  - `.env*` 파일들
+  - `.claude/` 디렉토리
   - `node_modules/`
-  - Build artifacts
+  - 빌드 산출물
 
-✅ **Safe to push:**
-- All source code
-- Documentation
-- Configuration examples (.env.example)
-- Package files (package.json, etc.)
+✅ **안전하게 push 가능:**
+- 모든 소스 코드
+- 문서
+- 설정 예시 파일 (.env.example)
+- 패키지 파일 (package.json 등)
 
-## Vercel Deployment
+## Vercel 배포
 
-Vercel is connected to **public** repository:
-- Auto-deploys when you push to `public/main`
+Vercel은 **public** 레포지토리에 연결되어 있습니다:
+- `public/main`에 push하면 자동 배포
 - Framework: Vite
 - Root Directory: `apps/web-vite`
 
-## Quick Commands
+## 빠른 명령어
 
 ```bash
-# Push to private only (development)
+# 프라이빗에만 push (개발)
 git push private master
 
-# Push to both (release)
+# 양쪽에 push (배포)
 git push private master && git push public master:main
 
-# Check remote status
+# Remote 상태 확인
 git ls-remote private
 git ls-remote public
 ```
