@@ -8,14 +8,14 @@ DeBHuB (탈중앙화 Backend-as-a-Service) 프로젝트의 완전한 문서입�
 
 ## 📚 문서 구조
 
-### 🏗️ 아키텍처
-기술 분석 및 시스템 설계 문서
+### 🏗️ Architecture (아키텍처)
+시스템 설계 및 기술 분석 문서
 
 - **[IRYS_ARCHITECTURE_ANALYSIS.md](./architecture/IRYS_ARCHITECTURE_ANALYSIS.md)** - Irys 3계층 아키텍처 완전 분석
 - **[IRYSVM_STATUS_REPORT.md](./architecture/IRYSVM_STATUS_REPORT.md)** - IrysVM 테스트넷 배포 현황
 - **[PURE_IRYS_SETUP.md](./architecture/PURE_IRYS_SETUP.md)** - Pure Irys 스택 설정 가이드
 
-### 📖 사용자 가이드
+### 📖 Guides (가이드)
 사용자 및 개발자를 위한 단계별 가이드
 
 - **[USER_GUIDE_NEXT_STEPS.md](./guides/USER_GUIDE_NEXT_STEPS.md)** - IrysVM 테스트넷 시작하기
@@ -23,7 +23,7 @@ DeBHuB (탈중앙화 Backend-as-a-Service) 프로젝트의 완전한 문서입�
 - **[PUBLIC_RELEASE_GUIDE.md](./guides/PUBLIC_RELEASE_GUIDE.md)** - 공개 릴리스 준비
 - **[VECTOR_DB_GUIDE.md](./guides/VECTOR_DB_GUIDE.md)** - 벡터 데이터베이스 사용 가이드
 
-### 🧪 테스팅 & QA
+### 🧪 Testing (테스팅)
 테스트 리포트 및 품질 보증 문서
 
 - **[FRONTEND_TESTING_REPORT.md](./testing/FRONTEND_TESTING_REPORT.md)** - Playwright 테스트 결과
@@ -31,7 +31,7 @@ DeBHuB (탈중앙화 Backend-as-a-Service) 프로젝트의 완전한 문서입�
 - **[VECTOR_DB_TEST_RESULTS.md](./testing/VECTOR_DB_TEST_RESULTS.md)** - Vector DB 통합 테스트 결과
 - **[IRYS_INTEGRATION_FIX_REPORT.md](./testing/IRYS_INTEGRATION_FIX_REPORT.md)** - Irys SDK ethers v6 호환성 수정
 
-### 💻 개발
+### 💻 Development (개발)
 내부 개발 문서 및 구현 리포트
 
 - **[IRYSVM_MIGRATION_PLAN.md](./development/IRYSVM_MIGRATION_PLAN.md)** - IrysVM 마이그레이션 전략
@@ -63,18 +63,18 @@ DeBHuB (탈중앙화 Backend-as-a-Service) 프로젝트의 완전한 문서입�
 
 ## 📊 문서 통계
 
-- **총 문서**: 14개
-- **아키텍처**: 3개
-- **가이드**: 4개
-- **테스팅**: 4개
-- **개발**: 5개
-- **총 페이지**: ~15,000단어 이상
+- **총 문서**: 16개
+  - **README**: 3개 (한/영/중)
+  - **Architecture**: 3개
+  - **Guides**: 4개
+  - **Testing**: 4개
+  - **Development**: 5개
 
 ---
 
-## 🎯 관리
+## 🎯 유지 관리
 
-이 문서는 DeBHuB 개발팀이 자동으로 구성하고 관리합니다.
+이 문서는 DeBHuB 개발팀이 관리합니다.
 
 **마지막 업데이트**: 2025-10-20
-**문서 버전**: 1.0
+**문서 버전**: 2.0
