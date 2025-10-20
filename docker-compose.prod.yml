@@ -3,18 +3,18 @@ version: '3.8'
 services:
   postgres:
     image: postgres:15-alpine
-    container_name: irysbase-postgres-prod
+    container_name: debhub-postgres-prod
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-irysbase}
+      POSTGRES_USER: ${POSTGRES_USER:-debhub}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB:-irysbase}
+      POSTGRES_DB: ${POSTGRES_DB:-debhub}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./backups:/backups
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-irysbase}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-debhub}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -22,7 +22,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: irysbase-redis-prod
+    container_name: debhub-redis-prod
     ports:
       - "6379:6379"
     volumes:
@@ -37,7 +37,7 @@ services:
 
   vector-db:
     image: qdrant/qdrant
-    container_name: irysbase-vector-db-prod
+    container_name: debhub-vector-db-prod
     ports:
       - "6333:6333"
     volumes:
@@ -52,12 +52,12 @@ services:
       retries: 3
     restart: unless-stopped
 
-  irysbase-api:
+  debhub-api:
     build:
       context: .
       dockerfile: Dockerfile
       target: api
-    container_name: irysbase-api-prod
+    container_name: debhub-api-prod
     environment:
       NODE_ENV: production
       DATABASE_URL: ${DATABASE_URL}
@@ -81,12 +81,12 @@ services:
     volumes:
       - ./logs:/app/logs
 
-  irysbase-web:
+  debhub-web:
     build:
       context: .
       dockerfile: Dockerfile
       target: web
-    container_name: irysbase-web-prod
+    container_name: debhub-web-prod
     environment:
       NODE_ENV: production
       VITE_GRAPHQL_URL: ${VITE_GRAPHQL_URL:-http://localhost:4000/graphql}
@@ -95,7 +95,7 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - irysbase-api
+      - debhub-api
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
       interval: 30s
@@ -105,7 +105,7 @@ services:
 
   nginx:
     image: nginx:alpine
-    container_name: irysbase-nginx-prod
+    container_name: debhub-nginx-prod
     ports:
       - "80:80"
       - "443:443"
@@ -113,8 +113,8 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./ssl:/etc/nginx/ssl:ro
     depends_on:
-      - irysbase-web
-      - irysbase-api
+      - debhub-web
+      - debhub-api
     restart: unless-stopped
 
 volumes:

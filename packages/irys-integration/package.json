@@ -1,7 +1,7 @@
 {
   "name": "@debhub/irys-integration",
   "version": "1.0.0",
-  "description": "Irys Testnet integration for IrysBase",
+  "description": "Irys Testnet integration for DeBHuB",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

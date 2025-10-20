@@ -1,7 +1,7 @@
 {
   "name": "@debhub/ai-integration",
   "version": "1.0.0",
-  "description": "AI services integration for IrysBase",
+  "description": "AI services integration for DeBHuB",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

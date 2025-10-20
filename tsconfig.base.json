@@ -17,9 +17,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@irysbase/shared": ["./packages/shared/src"],
-      "@irysbase/ai-integration": ["./packages/ai-integration/src"],
-      "@irysbase/irys-integration": ["./packages/irys-integration/src"]
+      "@debhub/shared": ["./packages/shared/src"],
+      "@debhub/ai-integration": ["./packages/ai-integration/src"],
+      "@debhub/irys-integration": ["./packages/irys-integration/src"]
     }
   },
   "include": [],

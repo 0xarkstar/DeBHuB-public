@@ -96,7 +96,7 @@ export async function teardownTestDatabase(): Promise<void> {
 export function createTestEnvironment() {
   // Set test environment variables
   process.env.NODE_ENV = 'test'
-  process.env.DATABASE_URL = process.env.TEST_DATABASE_URL || 'postgresql://test:test@localhost:5433/irysbase_test'
+  process.env.DATABASE_URL = process.env.TEST_DATABASE_URL || 'postgresql://test:test@localhost:5433/debhub_test'
   process.env.REDIS_URL = process.env.TEST_REDIS_URL || 'redis://localhost:6380'
   
   console.log('🧪 Test environment configured')

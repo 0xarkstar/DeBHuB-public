@@ -20,7 +20,7 @@ import { extractAuthFromHeaders, AuthContext } from './services/auth';
 import { 
   createPlatform, 
   DeBHuBPlatformImpl 
-} from './services/irysbase-platform';
+} from './services/debhub-platform';
 
 // Import resolvers
 import { resolvers } from './resolvers'; // Legacy resolvers
@@ -286,7 +286,7 @@ async function startEnhancedServer() {
       platform: 'DeBHuB',
       version: '2.0.0',
       description: 'Web3 Backend-as-a-Service Platform',
-      documentation: 'https://docs.irysbase.io',
+      documentation: 'https://docs.debhub.io',
       graphql: {
         endpoint: '/graphql',
         playground: process.env.NODE_ENV !== 'production',

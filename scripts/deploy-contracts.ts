@@ -59,16 +59,16 @@ async function main() {
     console.log(chalk.blue('\n📝 Deploying DeBHuBCore...'))
     
     const DeBHuBCore = await ethers.getContractFactory('DeBHuBCore')
-    const irysBaseCore = await DeBHuBCore.deploy(authRolesAddress)
-    await irysBaseCore.waitForDeployment()
-    const irysCoreAddress = await irysBaseCore.getAddress()
+    const debhubCore = await DeBHuBCore.deploy(authRolesAddress)
+    await debhubCore.waitForDeployment()
+    const debhubCoreAddress = await debhubCore.getAddress()
     
-    console.log(chalk.green(`✅ DeBHuBCore deployed at: ${irysCoreAddress}`))
+    console.log(chalk.green(`✅ DeBHuBCore deployed at: ${debhubCoreAddress}`))
     
     deployment.contracts.DeBHuBCore = {
-      address: irysCoreAddress,
-      transactionHash: irysBaseCore.deploymentTransaction()?.hash || '',
-      blockNumber: irysBaseCore.deploymentTransaction()?.blockNumber || 0,
+      address: debhubCoreAddress,
+      transactionHash: debhubCore.deploymentTransaction()?.hash || '',
+      blockNumber: debhubCore.deploymentTransaction()?.blockNumber || 0,
       abi: JSON.parse(DeBHuBCore.interface.formatJson())
     }
     
@@ -101,7 +101,7 @@ async function main() {
     
     // DeBHuBCore 초기화 (if initialize function exists)
     try {
-      await irysBaseCore.initialize()
+      await debhubCore.initialize()
       console.log(chalk.green('✅ DeBHuBCore initialized'))
     } catch (error) {
       console.log(chalk.yellow('ℹ️ DeBHuBCore initialize function not found or already initialized'))

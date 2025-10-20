@@ -14,7 +14,7 @@ param(
     [switch]$DryRun = $false
 )
 
-$PRIVATE_DIR = "C:\Users\user\irysbase"
+$PRIVATE_DIR = "C:\Users\user\DeBHuB"
 $PUBLIC_DIR = "C:\Users\user\DeBHuB-public"
 
 # 색상 출력 함수

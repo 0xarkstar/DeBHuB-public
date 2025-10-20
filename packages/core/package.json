@@ -1,7 +1,7 @@
 {
   "name": "@debhub/core",
   "version": "1.0.0",
-  "description": "IrysBase Core Orchestrator - Central coordination for all services",
+  "description": "DeBHuB Core Orchestrator - Central coordination for all services",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

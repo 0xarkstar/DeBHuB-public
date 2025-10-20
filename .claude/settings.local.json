@@ -86,7 +86,14 @@
       "mcp__playwright__browser_tabs",
       "mcp__playwright__browser_press_key",
       "mcp__playwright__browser_evaluate",
-      "Bash(awk '{print $9}')"
+      "Bash(awk '{print $9}')",
+      "Bash(if [ -d \"C:\\Users\\user\\DeBHuB-public\" ])",
+      "Bash(then echo \"EXISTS\")",
+      "Bash(else echo \"NOT_FOUND\")",
+      "Bash(fi)",
+      "Bash(git remote rename origin private)",
+      "Bash(git remote add public https://github.com/0xarkstar/DeBHuB-public.git)",
+      "Bash(git remote set-url private https://github.com/0xarkstar/DeBHuB-private.git)"
     ],
     "deny": [],
     "ask": []

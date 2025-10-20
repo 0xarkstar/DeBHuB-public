@@ -1,7 +1,7 @@
 {
   "name": "@debhub/testing",
   "version": "1.0.0",
-  "description": "IrysBase Testing Suite - Integration and E2E tests",
+  "description": "DeBHuB Testing Suite - Integration and E2E tests",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

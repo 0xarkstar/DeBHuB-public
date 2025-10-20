@@ -16,15 +16,15 @@ async function main() {
   console.log("Deploying DeBHuBCore...");
   const DeBHuBCore = await ethers.getContractFactory("DeBHuBCore");
   
-  const irysBaseCore = await DeBHuBCore.deploy();
-  await irysBaseCore.waitForDeployment();
+  const debhubCore = await DeBHuBCore.deploy();
+  await debhubCore.waitForDeployment();
   
-  const contractAddress = await irysBaseCore.getAddress();
+  const contractAddress = await debhubCore.getAddress();
   console.log("✅ DeBHuBCore deployed to:", contractAddress);
 
   // Verify deployment by calling a read function
   try {
-    const totalDocuments = await irysBaseCore.getTotalDocuments();
+    const totalDocuments = await debhubCore.getTotalDocuments();
     console.log("Initial document count:", totalDocuments.toString());
   } catch (error) {
     console.log("Warning: Could not verify deployment:", error);
@@ -37,7 +37,7 @@ async function main() {
     deployerAddress: deployer.address,
     blockNumber: await ethers.provider.getBlockNumber(),
     timestamp: new Date().toISOString(),
-    transactionHash: irysBaseCore.deploymentTransaction()?.hash
+    transactionHash: debhubCore.deploymentTransaction()?.hash
   };
 
   // Create deployments directory if it doesn't exist
@@ -58,7 +58,7 @@ async function main() {
   console.log(`Contract Address: ${contractAddress}`);
   console.log(`Network: Irys Testnet (Chain ID: 1270)`);
   console.log(`Deployer: ${deployer.address}`);
-  console.log(`Gas Used: ${irysBaseCore.deploymentTransaction()?.gasLimit || 'N/A'}`);
+  console.log(`Gas Used: ${debhubCore.deploymentTransaction()?.gasLimit || 'N/A'}`);
   console.log("=".repeat(50));
   
   console.log("\n🎉 Deployment completed successfully!");

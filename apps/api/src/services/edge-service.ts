@@ -411,7 +411,7 @@ export class EdgeService {
 
   private generateEndpoints(functionName: string, regions: string[]): string[] {
     return regions.map(region =>
-      `https://${region}.edge.irysbase.io/fn/${functionName}`
+      `https://${region}.edge.debhub.io/fn/${functionName}`
     );
   }
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "🚀 IrysBase Environment Setup"
+echo "🚀 DeBHuB Environment Setup"
 echo "=============================="
 
 # 색상 정의
@@ -54,7 +54,7 @@ IRYS_NETWORK=testnet
 CHAIN_ID=1270
 
 # Database
-DATABASE_URL="postgresql://irysbase:password@localhost:5432/irysbase?schema=public"
+DATABASE_URL="postgresql://debhub:password@localhost:5432/debhub?schema=public"
 REDIS_URL="redis://localhost:6379"
 
 # Irys Configuration
@@ -85,7 +85,7 @@ EOF
     # packages/database/.env
     mkdir -p packages/database
     cat > packages/database/.env << 'EOF'
-DATABASE_URL="postgresql://irysbase:password@localhost:5432/irysbase?schema=public"
+DATABASE_URL="postgresql://debhub:password@localhost:5432/debhub?schema=public"
 EOF
 
     # apps/web-vite/.env
@@ -106,7 +106,7 @@ EOF
     cat > apps/api/.env << 'EOF'
 PORT=4000
 NODE_ENV=development
-DATABASE_URL="postgresql://irysbase:password@localhost:5432/irysbase?schema=public"
+DATABASE_URL="postgresql://debhub:password@localhost:5432/debhub?schema=public"
 REDIS_URL="redis://localhost:6379"
 JWT_SECRET=$(openssl rand -base64 32 2>/dev/null || echo "your-jwt-secret-here")
 EOF
@@ -124,24 +124,24 @@ version: '3.8'
 services:
   postgres:
     image: postgres:15-alpine
-    container_name: irysbase-postgres
+    container_name: debhub-postgres
     environment:
-      POSTGRES_USER: irysbase
+      POSTGRES_USER: debhub
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: irysbase
+      POSTGRES_DB: debhub
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U irysbase"]
+      test: ["CMD-SHELL", "pg_isready -U debhub"]
       interval: 5s
       timeout: 5s
       retries: 5
 
   redis:
     image: redis:7-alpine
-    container_name: irysbase-redis
+    container_name: debhub-redis
     ports:
       - "6379:6379"
     healthcheck:
@@ -152,7 +152,7 @@ services:
 
   vector-db:
     image: qdrant/qdrant
-    container_name: irysbase-vector-db
+    container_name: debhub-vector-db
     ports:
       - "6333:6333"
     volumes:
@@ -216,7 +216,7 @@ main() {
     run_migrations
     
     echo ""
-    echo -e "${GREEN}🎉 IrysBase environment setup complete!${NC}"
+    echo -e "${GREEN}🎉 DeBHuB environment setup complete!${NC}"
     echo ""
     echo "Next steps:"
     echo "1. Add your private keys to .env files"

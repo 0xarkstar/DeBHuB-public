@@ -70,7 +70,7 @@ model ContractEvent {
   @@map("contract_events")
 }
 
-// Enhanced models for Irys integration and IrysBase platform
+// Enhanced models for Irys integration and DeBHuB platform
 
 model Project {
   id          String      @id @default(cuid())

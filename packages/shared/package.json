@@ -1,7 +1,7 @@
 {
   "name": "@debhub/shared",
   "version": "1.0.0",
-  "description": "Shared types and utilities for IrysBase",
+  "description": "Shared types and utilities for DeBHuB",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

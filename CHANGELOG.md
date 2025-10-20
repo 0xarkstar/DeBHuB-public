@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to DeBHuB (IrysBase) will be documented in this file.
+All notable changes to DeBHuB will be documented in this file.
 
 ## [3.0.0-pure] - 2025-10-16
 

@@ -1,4 +1,4 @@
-# DeBHuB (IrysBase)
+# DeBHuB
 
 > **세계 최초 Pure Irys L1 기반 완전 탈중앙화 BaaS 플랫폼**
 
@@ -138,8 +138,8 @@ Frontend (자동 리렌더링)
 
 ```bash
 # 1. 저장소 클론
-git clone https://github.com/0xarkstar/irysbase.git
-cd irysbase
+git clone https://github.com/0xarkstar/DeBHuB.git
+cd DeBHuB
 
 # 2. 의존성 설치
 pnpm install
@@ -162,7 +162,7 @@ pnpm dev
 ## 📦 프로젝트 구조
 
 ```
-irysbase/
+DeBHuB/
 ├── apps/
 │   └── web-vite/                     # React Frontend
 │       ├── src/
@@ -404,8 +404,8 @@ vercel --prod
 ## 📞 지원
 
 - **문서**: [docs/](docs/)
-- **이슈**: [GitHub Issues](https://github.com/0xarkstar/irysbase/issues)
-- **토론**: [GitHub Discussions](https://github.com/0xarkstar/irysbase/discussions)
+- **이슈**: [GitHub Issues](https://github.com/0xarkstar/DeBHuB/issues)
+- **토론**: [GitHub Discussions](https://github.com/0xarkstar/DeBHuB/discussions)
 
 ---
 

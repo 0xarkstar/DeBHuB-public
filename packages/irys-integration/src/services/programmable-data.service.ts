@@ -9,7 +9,7 @@ import {
 } from '../types'
 
 // Contract ABI (this would typically be generated from typechain)
-const IRYSBASE_CORE_ABI = [
+const DEBHUB_CORE_ABI = [
   // Constructor
   "constructor()",
   
@@ -50,7 +50,7 @@ export class ProgrammableDataService {
     private signer: ethers.Signer,
     irysClient: IrysTestnetClient
   ) {
-    this.contract = new ethers.Contract(contractAddress, IRYSBASE_CORE_ABI, signer)
+    this.contract = new ethers.Contract(contractAddress, DEBHUB_CORE_ABI, signer)
     this.irysClient = irysClient
   }
   

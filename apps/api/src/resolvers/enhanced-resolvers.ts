@@ -683,7 +683,7 @@ export const enhancedResolvers = {
       const jwt = await import('jsonwebtoken');
       const token = jwt.sign(
         { userId: user.id, address: user.address },
-        process.env.JWT_SECRET || 'irysbase-dev-secret-change-in-production',
+        process.env.JWT_SECRET || 'debhub-dev-secret-change-in-production',
         { expiresIn: '7d' }
       );
 
