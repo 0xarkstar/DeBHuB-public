@@ -4,73 +4,68 @@
 
 ---
 
-## 🚀 Getting Started
+## 💡 Overview
 
-### 1. Installation
+**DeBHuB** is the world's first fully decentralized Backend-as-a-Service platform powered entirely by Pure Irys L1 DataChain.
 
-```bash
-git clone https://github.com/0xarkstar/DeBHuB.git
-cd DeBHuB
-pnpm install
-```
+**Zero Backend. Zero Database. Pure Blockchain.**
 
-### 2. Environment Setup
-
-```bash
-cd apps/web-vite
-cp .env.example .env
-```
-
-Configure `.env` file:
-```
-VITE_WALLETCONNECT_PROJECT_ID=your_project_id
-```
-
-### 3. Run Development Server
-
-```bash
-pnpm dev
-```
-
-**Access**: http://localhost:5173
+Without traditional backend servers and databases, it provides all backend functionality using only blockchain smart contracts and permanent storage.
 
 ---
 
-## 🎯 Core Concepts
+## 🏗️ Architecture
 
-### IrysVM Testnet
-- **Chain ID**: 1270
-- **RPC URL**: https://testnet-rpc.irys.xyz/v1/execution-rpc
-- **Native Token**: IRYS
-- **Block Explorer**: https://explorer.irys.xyz
+```
+Frontend (React + Vite)
+    ↓ Direct RPC Connection
+Irys L1 DataChain (Chain ID: 1270)
+    ├─ Smart Contracts Layer (6 Contracts)
+    │  ├─ DocumentRegistry    - Document registration & management
+    │  ├─ AccessControl        - Permission & access control
+    │  ├─ ProvenanceChain      - Data provenance tracking
+    │  ├─ EventBus             - Event publish/subscribe
+    │  ├─ CacheController      - Cache invalidation control
+    │  └─ SearchIndex          - Search index management
+    └─ Permanent Storage (Irys Native)
+        └─ Immutable permanent data storage
+```
 
-### Add MetaMask Network
-
-1. Open MetaMask
-2. Click Add Network
-3. Enter the following:
-   - Network Name: `IrysVM Testnet`
-   - RPC URL: `https://testnet-rpc.irys.xyz/v1/execution-rpc`
-   - Chain ID: `1270`
-   - Currency Symbol: `IRYS`
-
-### Get Test Tokens
-
-Irys Faucet: https://irys.xyz/faucet
+### Tech Stack
+- **Frontend**: React 18, Vite 5, TypeScript 5, TailwindCSS
+- **Blockchain**: Irys L1 DataChain, ethers.js v6, wagmi v2
+- **Caching**: IndexedDB (idb v8.0.0)
+- **Storage**: Irys Native Permanent Storage
 
 ---
 
-## 💡 Key Features
-
-### Automatic Network Switching
-- Automatically detects IrysVM network on app access
-- Prompts for network switch if on different network
-- Auto-switches network after 2 seconds
+## ✨ Core Features
 
 ### Fully Decentralized
 - No backend server required
 - No database required
-- All data stored on IrysVM blockchain
+- All logic implemented as smart contracts
+- Direct RPC calls from client to blockchain
+
+### Smart Contract-Based Data Management
+- All backend functionality provided by 6 Solidity contracts
+- Document registration, permission management, provenance tracking, event handling
+- Programmable data logic executed directly on blockchain
+
+### Permanent Storage
+- Utilizing Irys L1's native permanent storage
+- Guaranteed data immutability
+- Complete user ownership of data
+
+### High-Performance Caching
+- IndexedDB client-side caching
+- Fast data access with 5-minute TTL
+- Minimized network load
+
+### Automatic Network Switching
+- Automatic IrysVM network detection
+- Auto-switch prompt when on different network
+- Seamless user experience
 
 ---
 
@@ -81,4 +76,10 @@ Irys Faucet: https://irys.xyz/faucet
 
 ---
 
+<div align="center">
+
+**Made with ❤️ by DeBHuB Team**
+
 **Last Updated**: 2025-10-20
+
+</div>

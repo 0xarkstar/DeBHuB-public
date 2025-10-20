@@ -4,73 +4,68 @@
 
 ---
 
-## 🚀 入门
+## 💡 概述
 
-### 1. 安装
+**DeBHuB** 是全球首个完全由 Pure Irys L1 DataChain 驱动的完全去中心化 Backend-as-a-Service 平台。
 
-```bash
-git clone https://github.com/0xarkstar/DeBHuB.git
-cd DeBHuB
-pnpm install
-```
+**零后端。零数据库。纯区块链。**
 
-### 2. 环境设置
-
-```bash
-cd apps/web-vite
-cp .env.example .env
-```
-
-配置 `.env` 文件:
-```
-VITE_WALLETCONNECT_PROJECT_ID=your_project_id
-```
-
-### 3. 运行开发服务器
-
-```bash
-pnpm dev
-```
-
-**访问**: http://localhost:5173
+无需传统后端服务器和数据库，仅使用区块链智能合约和永久存储即可提供所有后端功能。
 
 ---
 
-## 🎯 核心概念
+## 🏗️ 架构
 
-### IrysVM 测试网
-- **链 ID**: 1270
-- **RPC URL**: https://testnet-rpc.irys.xyz/v1/execution-rpc
-- **原生代币**: IRYS
-- **区块浏览器**: https://explorer.irys.xyz
+```
+前端 (React + Vite)
+    ↓ 直接 RPC 连接
+Irys L1 DataChain (链 ID: 1270)
+    ├─ 智能合约层 (6个合约)
+    │  ├─ DocumentRegistry    - 文档注册与管理
+    │  ├─ AccessControl        - 权限与访问控制
+    │  ├─ ProvenanceChain      - 数据出处追踪
+    │  ├─ EventBus             - 事件发布/订阅
+    │  ├─ CacheController      - 缓存失效控制
+    │  └─ SearchIndex          - 搜索索引管理
+    └─ 永久存储 (Irys 原生)
+        └─ 不可变永久数据存储
+```
 
-### 添加 MetaMask 网络
-
-1. 打开 MetaMask
-2. 点击添加网络
-3. 输入以下信息:
-   - Network Name: `IrysVM Testnet`
-   - RPC URL: `https://testnet-rpc.irys.xyz/v1/execution-rpc`
-   - Chain ID: `1270`
-   - Currency Symbol: `IRYS`
-
-### 获取测试代币
-
-Irys Faucet: https://irys.xyz/faucet
+### 技术栈
+- **前端**: React 18, Vite 5, TypeScript 5, TailwindCSS
+- **区块链**: Irys L1 DataChain, ethers.js v6, wagmi v2
+- **缓存**: IndexedDB (idb v8.0.0)
+- **存储**: Irys 原生永久存储
 
 ---
 
-## 💡 主要功能
-
-### 自动网络切换
-- 应用访问时自动检测 IrysVM 网络
-- 如果在不同网络上则提示切换网络
-- 2秒后自动切换网络
+## ✨ 核心功能
 
 ### 完全去中心化
 - 无需后端服务器
 - 无需数据库
-- 所有数据存储在 IrysVM 区块链上
+- 所有逻辑均以智能合约实现
+- 客户端直接向区块链发起 RPC 调用
+
+### 基于智能合约的数据管理
+- 6个 Solidity 合约提供所有后端功能
+- 文档注册、权限管理、出处追踪、事件处理
+- 直接在区块链上执行的可编程数据逻辑
+
+### 永久存储
+- 利用 Irys L1 的原生永久存储
+- 保证数据不可变性
+- 数据所有权完全归属用户
+
+### 高性能缓存
+- IndexedDB 客户端缓存
+- 5分钟 TTL 实现快速数据访问
+- 最小化网络负载
+
+### 自动网络切换
+- 自动检测 IrysVM 网络
+- 使用不同网络时自动切换提示
+- 提供无缝用户体验
 
 ---
 
@@ -81,4 +76,10 @@ Irys Faucet: https://irys.xyz/faucet
 
 ---
 
+<div align="center">
+
+**Made with ❤️ by DeBHuB Team**
+
 **最后更新**: 2025-10-20
+
+</div>
