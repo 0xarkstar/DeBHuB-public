@@ -80,17 +80,8 @@ Irys L1 DataChain (链 ID: 1270)
 
 ## 📚 文档
 
-完整文档可在 [`docs/`](./docs) 目录中找到：
-
-- **[架构](./docs/architecture)** - 系统设计和技术分析
-- **[指南](./docs/guides)** - 用户指南和教程
-- **[测试](./docs/testing)** - 测试报告和 QA 文档
-- **[开发](./docs/development)** - 内部开发文档
-
-**快速链接:**
-- [入门指南](./docs/guides/USER_GUIDE_NEXT_STEPS.md)
-- [架构概述](./docs/architecture/IRYS_ARCHITECTURE_ANALYSIS.md)
-- [IrysVM 状态](./docs/architecture/IRYSVM_STATUS_REPORT.md)
+- **[入门指南](./docs/guides/USER_GUIDE_NEXT_STEPS.md)** - IrysVM 测试网指南
+- **[文档主页](./docs)** - 查看所有文档
 
 ---
 

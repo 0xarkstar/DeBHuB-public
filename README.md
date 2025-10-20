@@ -80,17 +80,8 @@ Irys L1 DataChain (Chain ID: 1270)
 
 ## 📚 문서
 
-자세한 문서는 [`docs/`](./docs) 디렉토리를 참조하세요:
-
-- **[아키텍처](./docs/architecture)** - 시스템 설계 및 기술 분석
-- **[가이드](./docs/guides)** - 사용자 가이드 및 튜토리얼
-- **[테스팅](./docs/testing)** - 테스트 보고서 및 QA 문서
-- **[개발](./docs/development)** - 내부 개발 문서
-
-**빠른 링크:**
-- [시작하기](./docs/guides/USER_GUIDE_NEXT_STEPS.md)
-- [아키텍처 개요](./docs/architecture/IRYS_ARCHITECTURE_ANALYSIS.md)
-- [IrysVM 상태](./docs/architecture/IRYSVM_STATUS_REPORT.md)
+- **[시작 가이드](./docs/guides/USER_GUIDE_NEXT_STEPS.md)** - IrysVM 테스트넷 시작하기
+- **[문서 홈](./docs)** - 전체 문서 보기
 
 ---
 

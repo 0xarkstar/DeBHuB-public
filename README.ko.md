@@ -386,9 +386,9 @@ vercel --prod
 
 ## 📖 문서
 
-- **[PURE_IRYS_SETUP.md](PURE_IRYS_SETUP.md)** - 완전한 설정 가이드
+- **[시작 가이드](./docs/guides/USER_GUIDE_NEXT_STEPS.md)** - IrysVM 테스트넷 시작하기
 - **[CHANGELOG.md](CHANGELOG.md)** - 버전 히스토리
-- **[packages/pure-irys-client/README.md](packages/pure-irys-client/README.md)** - Client API 문서
+- **[문서 홈](./docs)** - 전체 문서 보기
 
 ---
 

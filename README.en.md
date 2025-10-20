@@ -80,17 +80,8 @@ Irys L1 DataChain (Chain ID: 1270)
 
 ## 📚 Documentation
 
-Complete documentation is available in the [`docs/`](./docs) directory:
-
-- **[Architecture](./docs/architecture)** - System design and technical analysis
-- **[Guides](./docs/guides)** - User guides and tutorials
-- **[Testing](./docs/testing)** - Test reports and QA documentation
-- **[Development](./docs/development)** - Internal development docs
-
-**Quick Links:**
-- [Getting Started](./docs/guides/USER_GUIDE_NEXT_STEPS.md)
-- [Architecture Overview](./docs/architecture/IRYS_ARCHITECTURE_ANALYSIS.md)
-- [IrysVM Status](./docs/architecture/IRYSVM_STATUS_REPORT.md)
+- **[Getting Started](./docs/guides/USER_GUIDE_NEXT_STEPS.md)** - IrysVM Testnet Guide
+- **[Documentation Home](./docs)** - View all documentation
 
 ---
 
